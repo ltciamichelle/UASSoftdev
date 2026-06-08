@@ -46,41 +46,41 @@ function formatTanggal(tanggalStr) {
 
 async function loginUser(data) {
     data.aksi = 'login';
-    const response = await fetch(`${BASE_URL}/simpan_akun.php`, {
+    const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(data)
     });
-    return response.json();
+    return await res.json();
 }
 
 async function registerUser(data) {
     data.aksi = 'daftar';
-    const response = await fetch(`${BASE_URL}/simpan_akun.php`, {
+    const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(data)
     });
-    return response.json();
+    return await res.json();
 }
 
 async function updateUser(data) {
     data.aksi = 'update_profil';
-    const response = await fetch(`${BASE_URL}/simpan_akun.php`, {
+    const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(data)
     });
-    return response.json();
+    return await res.json();
 }
 
-async function deleteUser(user_id, role) {
-    const response = await fetch(`${BASE_URL}/simpan_akun.php`, {
+async function deleteUser(userId, role) {
+    const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ aksi: 'hapus_akun', user_id, role })
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ aksi: 'hapus_akun', user_id: userId, role: role })
     });
-    return response.json();
+    return await res.json();
 }
 
 function logoutUser() {
