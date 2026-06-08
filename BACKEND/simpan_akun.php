@@ -130,11 +130,9 @@ if ($data['aksi'] === 'daftar') {
 // 2. READ / LOGIN
 // ==========================================
 if ($data['aksi'] === 'login') {
-    $sql_login = "SELECT * FROM users WHERE role = :role AND loginId = :loginId AND username = :username";
+    $sql_login = "SELECT * FROM users WHERE username = :username";
     $stmt_login = $pdo->prepare($sql_login);
     $stmt_login->execute([
-        ':role'     => $data['role'],
-        ':loginId'  => $data['loginId'],
         ':username' => $data['username']
     ]);
     
@@ -147,9 +145,6 @@ if ($data['aksi'] === 'login') {
             $stmt_profil = $pdo->prepare("SELECT * FROM mahasiswa WHERE user_id = ?");
             $stmt_profil->execute([$user['id']]);
             $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
-            if (!$profil || $profil['nim'] !== $data['nim']) {
-                echo json_encode(['status' => 'gagal', 'pesan' => 'NIM Anda salah.']); exit;
-            }
         } elseif ($user['role'] === 'non_mahasiswa') {
             $stmt_profil = $pdo->prepare("SELECT * FROM non_mahasiswa WHERE user_id = ?");
             $stmt_profil->execute([$user['id']]);
@@ -158,9 +153,6 @@ if ($data['aksi'] === 'login') {
             $stmt_profil = $pdo->prepare("SELECT * FROM panitia WHERE user_id = ?");
             $stmt_profil->execute([$user['id']]);
             $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
-            if (!$profil || $profil['nim'] !== $data['nim']) {
-                echo json_encode(['status' => 'gagal', 'pesan' => 'NIM Panitia Anda salah.']); exit;
-            }
         }
 
         if (!$profil) {

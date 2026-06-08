@@ -113,28 +113,12 @@
         <!-- FORM LOGIN -->
         <form id="loginForm" class="auth-form active">
           <div class="form-group">
-            <label>Pilih Peran</label>
-            <select class="form-control" id="logRole" onchange="toggleNim('log', this.value)" required>
-              <option value="mahasiswa">Mahasiswa</option>
-              <option value="non_mahasiswa">Non Mahasiswa</option>
-              <option value="panitia">Panitia</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>ID Login</label>
-            <input type="text" id="logId" class="form-control" placeholder="Contoh: USR-001" required>
-          </div>
-          <div class="form-group">
             <label>Username</label>
             <input type="text" id="logUsername" class="form-control" required>
           </div>
           <div class="form-group">
             <label>Password</label>
             <input type="password" id="logPassword" class="form-control" required>
-          </div>
-          <div class="form-group" id="logNimGroup">
-            <label>NIM (Khusus Mahasiswa/Panitia)</label>
-            <input type="text" id="logNim" class="form-control">
           </div>
           <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 16px;">
             Masuk ke Eventra
@@ -230,15 +214,7 @@
       }
     }
 
-    // Toggle NIM field for Login
-    function toggleNim(prefix, role) {
-      const nimGroup = document.getElementById(`${prefix}NimGroup`);
-      if (role === 'non_mahasiswa') {
-        nimGroup.style.display = 'none';
-      } else {
-        nimGroup.style.display = 'block';
-      }
-    }
+
 
     // Toggle dynamic fields for Register
     function toggleRoleFields(role) {
@@ -266,14 +242,10 @@
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const role = document.getElementById('logRole').value;
       const data = {
-        role: role,
-        loginId: document.getElementById('logId').value,
         username: document.getElementById('logUsername').value,
         password: document.getElementById('logPassword').value
       };
-      if(role !== 'non_mahasiswa') data.nim = document.getElementById('logNim').value;
 
       try {
         const res = await window.api.loginUser(data);
