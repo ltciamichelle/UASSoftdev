@@ -3,7 +3,7 @@
 // Jika diunggah ke Vercel dan backend ke InfinityFree, ubah BASE_URL ini ke domain InfinityFree Anda.
 const BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost/UASSoftdev/BACKEND' 
-    : 'https://backend-eventra-anda.com/BACKEND'; // Ganti dengan domain cloud Anda nantinya
+    : 'https://eventra-api.infinityfree.me';
 
 /**
  * Fetch semua event dari database
