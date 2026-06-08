@@ -1,9 +1,9 @@
 <?php
 // koneksi.php
-$host = "localhost";
-$user = "root";     
-$pass = "";         
-$db   = "eventra";  
+$host = "sql308.infinityfree.com";
+$user = "if0_42130432";     
+$pass = "CarlosSainzNo55";         
+$db   = "if0_42130432_eventra";  
 
 $koneksi = mysqli_connect($host, $user, $pass, $db);
 
