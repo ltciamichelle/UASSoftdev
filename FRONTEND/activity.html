@@ -195,9 +195,12 @@
 
   </main>
 
+  <!-- Load API first for auth -->
+  <script src="js/api.js"></script>
   <script src="js/gsap-animations.js"></script>
   <script>
     lucide.createIcons();
+    window.api.updateNavbarAuth();
 
     // Tab Logic
     const tabBtns = document.querySelectorAll('.tab-btn');

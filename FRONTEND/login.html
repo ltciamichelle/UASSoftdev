@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventra | Masuk & Daftar</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #fafafa;
+    }
+    .auth-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 24px;
+    }
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 32px;
+      gap: 16px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 16px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: rgba(0,0,0,0.05);
+      color: var(--gray-400);
+    }
+    .auth-tab.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 10px 20px rgba(255, 141, 40, 0.2);
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+    .form-control {
+      width: 100%;
+      padding: 16px;
+      border-radius: 1rem;
+      border: 1px solid var(--gray-200);
+      background: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(255, 141, 40, 0.1);
+    }
+    .auth-form {
+      display: none;
+    }
+    .auth-form.active {
+      display: block;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .message-box {
+      padding: 16px;
+      border-radius: 1rem;
+      margin-bottom: 24px;
+      display: none;
+      font-weight: 600;
+      text-align: center;
+    }
+    .message-box.error { background: #fee2e2; color: #ef4444; display: block; }
+    .message-box.success { background: #dcfce7; color: #22c55e; display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="bg-mesh"></div>
+
+  <div class="auth-container gsap-reveal">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <a href="index.html">
+        <img src="assets/logo%20eventra.png" alt="Eventra" style="height: 64px; margin: 0 auto;">
+      </a>
+    </div>
+
+    <div class="doppelrand-card">
+      <div class="card-inner" style="padding: 40px;">
+        
+        <div id="msgBox" class="message-box"></div>
+
+        <div class="auth-tabs">
+          <div class="auth-tab active" onclick="switchTab('login')">Masuk</div>
+          <div class="auth-tab" onclick="switchTab('register')">Daftar</div>
+        </div>
+
+        <!-- FORM LOGIN -->
+        <form id="loginForm" class="auth-form active">
+          <div class="form-group">
+            <label>Pilih Peran</label>
+            <select class="form-control" id="logRole" onchange="toggleNim('log', this.value)" required>
+              <option value="mahasiswa">Mahasiswa</option>
+              <option value="non_mahasiswa">Non Mahasiswa</option>
+              <option value="panitia">Panitia</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ID Login</label>
+            <input type="text" id="logId" class="form-control" placeholder="Contoh: USR-001" required>
+          </div>
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="logUsername" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="logPassword" class="form-control" required>
+          </div>
+          <div class="form-group" id="logNimGroup">
+            <label>NIM (Khusus Mahasiswa/Panitia)</label>
+            <input type="text" id="logNim" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 16px;">
+            Masuk ke Eventra
+          </button>
+        </form>
+
+        <!-- FORM REGISTER -->
+        <form id="registerForm" class="auth-form">
+          <div class="form-group">
+            <label>Pilih Peran</label>
+            <select class="form-control" id="regRole" onchange="toggleRoleFields(this.value)" required>
+              <option value="mahasiswa">Mahasiswa</option>
+              <option value="non_mahasiswa">Non Mahasiswa</option>
+              <option value="panitia">Panitia</option>
+            </select>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label>Nama Lengkap</label>
+              <input type="text" id="regNama" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="regUsername" class="form-control" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="regEmail" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>No. WhatsApp</label>
+              <input type="text" id="regPhone" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="regPassword" class="form-control" required>
+          </div>
+
+          <!-- Dynamic Fields based on Role -->
+          <div id="dynamicFields">
+            <!-- Mahasiswa Default -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group"><label>NIM</label><input type="text" id="regNim" class="form-control"></div>
+              <div class="form-group"><label>Fakultas</label><input type="text" id="regFakultas" class="form-control"></div>
+            </div>
+            <div class="form-group"><label>Program Studi</label><input type="text" id="regProdi" class="form-control"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 16px;">
+            Daftar Akun Baru
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/gsap-animations.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Pastikan tidak masuk jika sudah login
+    if(localStorage.getItem('eventra_user')) {
+      window.location.href = 'index.html';
+    }
+
+    const msgBox = document.getElementById('msgBox');
+
+    function showMsg(text, type) {
+      msgBox.className = `message-box ${type}`;
+      msgBox.innerText = text;
+    }
+
+    // Toggle Tabs
+    function switchTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      msgBox.className = 'message-box'; // Hide msg
+
+      if(tab === 'login') {
+        document.querySelectorAll('.auth-tab')[0].classList.add('active');
+        document.getElementById('loginForm').classList.add('active');
+      } else {
+        document.querySelectorAll('.auth-tab')[1].classList.add('active');
+        document.getElementById('registerForm').classList.add('active');
+      }
+    }
+
+    // Toggle NIM field for Login
+    function toggleNim(prefix, role) {
+      const nimGroup = document.getElementById(`${prefix}NimGroup`);
+      if (role === 'non_mahasiswa') {
+        nimGroup.style.display = 'none';
+      } else {
+        nimGroup.style.display = 'block';
+      }
+    }
+
+    // Toggle dynamic fields for Register
+    function toggleRoleFields(role) {
+      const container = document.getElementById('dynamicFields');
+      if (role === 'mahasiswa') {
+        container.innerHTML = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group"><label>NIM</label><input type="text" id="regNim" class="form-control" required></div>
+            <div class="form-group"><label>Fakultas</label><input type="text" id="regFakultas" class="form-control" required></div>
+          </div>
+          <div class="form-group"><label>Program Studi</label><input type="text" id="regProdi" class="form-control" required></div>
+        `;
+      } else if (role === 'panitia') {
+        container.innerHTML = `
+          <div class="form-group"><label>NIM Panitia</label><input type="text" id="regNim" class="form-control" required></div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="form-group"><label>Pekerjaan / Instansi</label><input type="text" id="regPekerjaan" class="form-control" required></div>
+        `;
+      }
+    }
+
+    // Handle Login
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const role = document.getElementById('logRole').value;
+      const data = {
+        role: role,
+        loginId: document.getElementById('logId').value,
+        username: document.getElementById('logUsername').value,
+        password: document.getElementById('logPassword').value
+      };
+      if(role !== 'non_mahasiswa') data.nim = document.getElementById('logNim').value;
+
+      try {
+        const res = await window.api.loginUser(data);
+        if(res.status === 'sukses') {
+          showMsg(res.pesan, 'success');
+          localStorage.setItem('eventra_user', JSON.stringify(res.user));
+          setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+        } else {
+          showMsg(res.pesan, 'error');
+        }
+      } catch (err) {
+        showMsg('Gagal terhubung ke server', 'error');
+      }
+    });
+
+    // Handle Register
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const role = document.getElementById('regRole').value;
+      const data = {
+        role: role,
+        nama: document.getElementById('regNama').value,
+        username: document.getElementById('regUsername').value,
+        email: document.getElementById('regEmail').value,
+        phone: document.getElementById('regPhone').value,
+        password: document.getElementById('regPassword').value
+      };
+
+      if(role === 'mahasiswa') {
+        data.nim = document.getElementById('regNim').value;
+        data.fakultas = document.getElementById('regFakultas').value;
+        data.prodi = document.getElementById('regProdi').value;
+      } else if (role === 'panitia') {
+        data.nim = document.getElementById('regNim').value;
+      } else {
+        data.pekerjaan = document.getElementById('regPekerjaan').value;
+      }
+
+      try {
+        const res = await window.api.registerUser(data);
+        if(res.status === 'sukses') {
+          showMsg(res.pesan, 'success');
+          document.getElementById('registerForm').reset();
+        } else {
+          showMsg(res.pesan, 'error');
+        }
+      } catch (err) {
+        showMsg('Gagal terhubung ke server', 'error');
+      }
+    });
+
+  </script>
+</body>
+</html>

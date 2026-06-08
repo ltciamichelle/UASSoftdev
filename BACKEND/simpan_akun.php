@@ -1,21 +1,28 @@
 <?php
+// Mencegah error CORS dari Vercel
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE, PUT');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// --- KONFIGURASI DATABASE XAMPP ---
-$host       = "localhost";
-$username_db= "root"; 
-$password_db= "";     
-$dbname     = "EVENTRA";
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
+// Mengambil file konfigurasi global agar kredensial sama persis
+include 'koneksi.php';
+
+// Koneksi PDO (Menggunakan variabel dari koneksi.php)
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username_db, $password_db);
+    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     echo json_encode(['status' => 'gagal', 'pesan' => 'Koneksi database gagal: ' . $e->getMessage()]);
     exit;
 }
 
-// Menangkap kiriman data JSON dari browser (Fetch API)
+// Menangkap kiriman data JSON
 $input_mentah = file_get_contents('php://input');
 $data = json_decode($input_mentah, true);
 
@@ -24,49 +31,40 @@ if (!$data) {
     exit;
 }
 
-// --- PROSES REGISTRASI / DAFTAR AKUN BARU ---
+// ==========================================
+// 1. CREATE / DAFTAR AKUN
+// ==========================================
 if ($data['aksi'] === 'daftar') {
     
-    // 1. Validasi Duplikasi Username Terlebih Dahulu
+    // Validasi username
     $stmt_cek = $pdo->prepare("SELECT username FROM users WHERE username = ?");
     $stmt_cek->execute([$data['username']]);
     if ($stmt_cek->rowCount() > 0) {
-        echo json_encode(['status' => 'gagal', 'pesan' => 'Pendaftaran Gagal! Username sudah digunakan akun lain.']);
+        echo json_encode(['status' => 'gagal', 'pesan' => 'Pendaftaran Gagal! Username sudah digunakan.']);
         exit;
     }
 
-    // 2. Generate Auto Login ID Berdasarkan Role
     $role = $data['role'];
     $prefix = '';
     
-    if ($role === 'mahasiswa') {
-        $prefix = 'USR-';
-    } elseif ($role === 'non_mahasiswa') {
-        $prefix = 'UNM-';
-    } elseif ($role === 'panitia') {
-        $prefix = 'PNT-';
-    } else {
+    if ($role === 'mahasiswa') $prefix = 'USR-';
+    elseif ($role === 'non_mahasiswa') $prefix = 'UNM-';
+    elseif ($role === 'panitia') $prefix = 'PNT-';
+    else {
         echo json_encode(['status' => 'gagal', 'pesan' => 'Role tidak valid.']);
         exit;
     }
 
-    // Menghitung user dengan role yang sama untuk menentukan nomor urut berikutnya
     $stmt_count = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role = ?");
     $stmt_count->execute([$role]);
-    $count = $stmt_count->fetchColumn();
-    $next_number = $count + 1;
-    
-    // Format menjadi 3 digit (misal: USR-001)
+    $next_number = $stmt_count->fetchColumn() + 1;
     $loginId_otomatis = $prefix . sprintf('%03d', $next_number);
 
-    // Amankan password
     $password_aman = password_hash($data['password'], PASSWORD_BCRYPT);
 
     try {
-        // Mulai transaksi database agar penyimpanan sinkron ke 2 tabel
         $pdo->beginTransaction();
 
-        // 3. Insert ke Tabel Utama (users) menggunakan loginId otomatis
         $sql_user = "INSERT INTO users (role, loginId, username, password) VALUES (:role, :loginId, :username, :password)";
         $stmt_user = $pdo->prepare($sql_user);
         $stmt_user->execute([
@@ -76,10 +74,8 @@ if ($data['aksi'] === 'daftar') {
             ':password' => $password_aman
         ]);
 
-        // Mengambil ID terakhir yang baru saja terbuat di tabel users
         $new_user_id = $pdo->lastInsertId();
 
-        // 4. Insert ke Tabel Spesifik berdasarkan Role masing-masing
         if ($role === 'mahasiswa') {
             $sql_spesifik = "INSERT INTO mahasiswa (user_id, nama, email, phone, nim, fakultas, prodi) 
                              VALUES (:user_id, :nama, :email, :phone, :nim, :fakultas, :prodi)";
@@ -90,10 +86,9 @@ if ($data['aksi'] === 'daftar') {
                 ':email'    => $data['email'],
                 ':phone'    => $data['phone'],
                 ':nim'      => $data['nim'],
-                ':fakultas' => $data['fakultas'] ?? null,
-                ':prodi'    => $data['prodi'] ?? null
+                ':fakultas' => isset($data['fakultas']) ? $data['fakultas'] : null,
+                ':prodi'    => isset($data['prodi']) ? $data['prodi'] : null
             ]);
-
         } elseif ($role === 'non_mahasiswa') {
             $sql_spesifik = "INSERT INTO non_mahasiswa (user_id, nama, email, phone, pekerjaan) 
                              VALUES (:user_id, :nama, :email, :phone, :pekerjaan)";
@@ -105,7 +100,6 @@ if ($data['aksi'] === 'daftar') {
                 ':phone'     => $data['phone'],
                 ':pekerjaan' => $data['pekerjaan']
             ]);
-
         } elseif ($role === 'panitia') {
             $sql_spesifik = "INSERT INTO panitia (user_id, nama, email, phone, nim) 
                              VALUES (:user_id, :nama, :email, :phone, :nim)";
@@ -119,27 +113,23 @@ if ($data['aksi'] === 'daftar') {
             ]);
         }
 
-        // Jika semua query sukses, terapkan perubahan ke database resmi
         $pdo->commit();
-        
-        // Berikan feedback info ID Login otomatisnya kepada user agar mereka tahu info kartu loginnya
         echo json_encode([
             'status' => 'sukses', 
-            'pesan' => "Pendaftaran Berhasil! ID Login Anda adalah: $loginId_otomatis. Silakan gunakan ID ini untuk Masuk."
+            'pesan' => "Pendaftaran Berhasil! ID Login Anda: $loginId_otomatis"
         ]);
 
     } catch (PDOException $e) {
-        // Jika ada yang error di tengah jalan, batalkan semua agar tidak berantakan
         $pdo->rollBack();
         echo json_encode(['status' => 'gagal', 'pesan' => 'Gagal mendaftar: ' . $e->getMessage()]);
     }
     exit;
 }
 
-// --- PROSES AUTENTIKASI / VERIFIKASI LOGIN ---
+// ==========================================
+// 2. READ / LOGIN
+// ==========================================
 if ($data['aksi'] === 'login') {
-    
-    // Cari akun di tabel utama terlebih dahulu
     $sql_login = "SELECT * FROM users WHERE role = :role AND loginId = :loginId AND username = :username";
     $stmt_login = $pdo->prepare($sql_login);
     $stmt_login->execute([
@@ -150,58 +140,107 @@ if ($data['aksi'] === 'login') {
     
     $user = $stmt_login->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
-        // Verifikasi kesesuaian password
-        if (password_verify($data['password'], $user['password'])) {
-            
-            $profil = [];
+    if ($user && password_verify($data['password'], $user['password'])) {
+        $profil = [];
 
-            // Menggabungkan data profil asli dari sub-tabel berdasarkan rolenya
-            if ($user['role'] === 'mahasiswa') {
-                $stmt_profil = $pdo->prepare("SELECT * FROM mahasiswa WHERE user_id = ?");
-                $stmt_profil->execute([$user['id']]);
-                $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
-                
-                if (!$profil || $profil['nim'] !== $data['nim']) {
-                    echo json_encode(['status' => 'gagal', 'pesan' => 'Login Gagal! NIM Anda salah.']);
-                    exit;
-                }
-            } elseif ($user['role'] === 'non_mahasiswa') {
-                $stmt_profil = $pdo->prepare("SELECT * FROM non_mahasiswa WHERE user_id = ?");
-                $stmt_profil->execute([$user['id']]);
-                $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
-            } elseif ($user['role'] === 'panitia') {
-                // DI SINI PERBAIKANNYA: Menghapus kata 'set' yang typo/salah syntax SQL
-                $stmt_profil = $pdo->prepare("SELECT * FROM panitia WHERE user_id = ?");
-                $stmt_profil->execute([$user['id']]);
-                $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
-                
-                if (!$profil || $profil['nim'] !== $data['nim']) {
-                    echo json_encode(['status' => 'gagal', 'pesan' => 'Login Gagal! NIM Panitia Anda salah.']);
-                    exit;
-                }
+        if ($user['role'] === 'mahasiswa') {
+            $stmt_profil = $pdo->prepare("SELECT * FROM mahasiswa WHERE user_id = ?");
+            $stmt_profil->execute([$user['id']]);
+            $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
+            if (!$profil || $profil['nim'] !== $data['nim']) {
+                echo json_encode(['status' => 'gagal', 'pesan' => 'NIM Anda salah.']); exit;
             }
-
-            // Jika profil tidak ditemukan sama sekali
-            if (!$profil) {
-                echo json_encode(['status' => 'gagal', 'pesan' => 'Login Gagal! Data profil tidak ditemukan.']);
-                exit;
+        } elseif ($user['role'] === 'non_mahasiswa') {
+            $stmt_profil = $pdo->prepare("SELECT * FROM non_mahasiswa WHERE user_id = ?");
+            $stmt_profil->execute([$user['id']]);
+            $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
+        } elseif ($user['role'] === 'panitia') {
+            $stmt_profil = $pdo->prepare("SELECT * FROM panitia WHERE user_id = ?");
+            $stmt_profil->execute([$user['id']]);
+            $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
+            if (!$profil || $profil['nim'] !== $data['nim']) {
+                echo json_encode(['status' => 'gagal', 'pesan' => 'NIM Panitia Anda salah.']); exit;
             }
-
-            // Gabungkan data dasar dan data profil lengkap untuk dikirim balik ke Frontend
-            unset($user['password']); // Keamanan
-            $user_lengkap = array_merge($user, $profil);
-
-            echo json_encode([
-                'status' => 'sukses', 
-                'pesan' => 'Login Sukses! Selamat datang kembali di platform EVENTRA.',
-                'user'   => $user_lengkap
-            ]);
-            exit;
         }
+
+        if (!$profil) {
+            echo json_encode(['status' => 'gagal', 'pesan' => 'Profil tidak ditemukan.']); exit;
+        }
+
+        unset($user['password']);
+        echo json_encode([
+            'status' => 'sukses', 
+            'pesan' => 'Login Sukses!',
+            'user'   => array_merge($user, $profil)
+        ]);
+        exit;
     }
 
-    echo json_encode(['status' => 'gagal', 'pesan' => 'Login Gagal! Kredensial tidak cocok atau akun tidak terdaftar.']);
+    echo json_encode(['status' => 'gagal', 'pesan' => 'Kredensial tidak cocok.']);
+    exit;
+}
+
+// ==========================================
+// 3. UPDATE / EDIT PROFIL
+// ==========================================
+if ($data['aksi'] === 'update_profil') {
+    $user_id = $data['user_id'];
+    $role = $data['role'];
+
+    try {
+        if ($role === 'mahasiswa') {
+            $sql = "UPDATE mahasiswa SET nama = ?, email = ?, phone = ?, nim = ?, fakultas = ?, prodi = ? WHERE user_id = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                $data['nama'], $data['email'], $data['phone'], $data['nim'], 
+                isset($data['fakultas']) ? $data['fakultas'] : null, 
+                isset($data['prodi']) ? $data['prodi'] : null, 
+                $user_id
+            ]);
+        } elseif ($role === 'non_mahasiswa') {
+            $sql = "UPDATE non_mahasiswa SET nama = ?, email = ?, phone = ?, pekerjaan = ? WHERE user_id = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                $data['nama'], $data['email'], $data['phone'], $data['pekerjaan'], $user_id
+            ]);
+        } elseif ($role === 'panitia') {
+            $sql = "UPDATE panitia SET nama = ?, email = ?, phone = ?, nim = ? WHERE user_id = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                $data['nama'], $data['email'], $data['phone'], $data['nim'], $user_id
+            ]);
+        }
+        echo json_encode(['status' => 'sukses', 'pesan' => 'Profil berhasil diperbarui! Silakan login ulang untuk melihat perubahan.']);
+    } catch (PDOException $e) {
+        echo json_encode(['status' => 'gagal', 'pesan' => 'Gagal update: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// ==========================================
+// 4. DELETE / HAPUS AKUN
+// ==========================================
+if ($data['aksi'] === 'hapus_akun') {
+    $user_id = $data['user_id'];
+    $role = $data['role'];
+
+    try {
+        $pdo->beginTransaction();
+
+        // Hapus dari tabel spesifik dulu
+        if ($role === 'mahasiswa') $pdo->prepare("DELETE FROM mahasiswa WHERE user_id = ?")->execute([$user_id]);
+        elseif ($role === 'non_mahasiswa') $pdo->prepare("DELETE FROM non_mahasiswa WHERE user_id = ?")->execute([$user_id]);
+        elseif ($role === 'panitia') $pdo->prepare("DELETE FROM panitia WHERE user_id = ?")->execute([$user_id]);
+
+        // Hapus dari tabel utama
+        $pdo->prepare("DELETE FROM users WHERE id = ?")->execute([$user_id]);
+
+        $pdo->commit();
+        echo json_encode(['status' => 'sukses', 'pesan' => 'Akun berhasil dihapus permanen.']);
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        echo json_encode(['status' => 'gagal', 'pesan' => 'Gagal menghapus: ' . $e->getMessage()]);
+    }
     exit;
 }
 ?>
