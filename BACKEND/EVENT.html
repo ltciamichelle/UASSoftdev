@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Event - EVENTRA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #ff7a00;
+            --primary-light: #ff9533;
+            --secondary: #ffedd5;
+            --accent: #f43f5e;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-gray: #64748b;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR DESIGN --- */
+        aside {
+            width: 280px;
+            background: var(--text-dark);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        aside .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 50px;
+            background: linear-gradient(to right, #ff7a00, #ffba73);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item { margin-bottom: 10px; }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: var(--transition);
+            gap: 15px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 122, 0, 0.1);
+            color: var(--primary);
+        }
+
+        .logout-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: #f43f5e;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-logout:hover { background: #e11d48; transform: scale(1.02); }
+
+        /* --- MAIN CONTENT AREA --- */
+        main {
+            flex-grow: 1;
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .user-greeting h2 { font-size: 1.8rem; font-weight: 700; }
+        .user-greeting p { color: var(--text-gray); }
+
+        .profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--bg-card);
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .profile-trigger img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .profile-trigger span { font-weight: 600; font-size: 0.9rem; }
+
+        /* --- DINAMIS EVENT GRID & CARD DESIGN --- */
+        .event-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .event-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            border: 1px solid rgba(15, 23, 42, 0.05);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .event-banner {
+            width: 35%;
+            max-width: 280px;
+            object-fit: cover;
+            height: 220px;
+        }
+
+        .event-details {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .badge-category {
+            align-self: flex-start;
+            background: rgba(255, 122, 0, 0.1);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+        }
+
+        .ticket-info-block {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+        }
+
+        .info-meta h5 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-gray);
+            margin-bottom: 2px;
+        }
+
+        .info-meta p {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .btn-view-qr {
+            position: absolute;
+            right: 25px;
+            bottom: 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .btn-view-qr:hover { background: #e06b00; }
+
+        /* --- COMPLEX EMPTY STATE DESIGN --- */
+        .empty-state-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            border: 2px dashed #e2e8f0;
+            margin-top: 20px;
+            min-height: 450px;
+        }
+
+        .empty-icon-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--primary-light);
+            border-radius: 50%;
+            animation: pulse 2s infinite ease-out;
+            opacity: 0;
+        }
+
+        .pulse-ring:nth-child(2) { animation-delay: 0.6s; }
+
+        .empty-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), #ffba73);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 10px 20px rgba(255, 122, 0, 0.3);
+            z-index: 2;
+        }
+
+        .empty-state-container h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .empty-state-container p {
+            color: var(--text-gray);
+            max-width: 400px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .notice-tag {
+            background: rgba(255, 122, 0, 0.08);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.6); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        /* --- MODAL SYSTEM --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px;
+            padding: 35px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            cursor: pointer; font-size: 1.2rem; color: var(--text-gray);
+        }
+
+        .modal-header { text-align: center; margin-bottom: 25px; }
+        .modal-header h3 { font-size: 1.5rem; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+        .form-group input {
+            width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; outline: none;
+        }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.15); }
+
+        .btn-save {
+            width: 100%; padding: 14px; background: var(--primary); color: white;
+            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px;
+            transition: var(--transition);
+        }
+        .btn-save:hover { background: #e06b00; }
+
+        .danger-zone {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed #e2e8f0;
+            text-align: center;
+        }
+
+        .btn-delete {
+            background: none; border: none; color: var(--accent); font-weight: 700; cursor: pointer; text-underline-position: from-font; text-decoration: underline;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @media (max-width: 992px) {
+            aside { width: 80px; padding: 20px 10px; }
+            aside .logo, aside .nav-link span, .logout-section span { display: none; }
+            main { margin-left: 80px; width: calc(100% - 80px); }
+            .event-card { flex-direction: column; }
+            .event-banner { width: 100%; max-width: 100%; height: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="logo">EVENTRA</div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="EVENT.html" class="nav-link active">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Beranda</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="EVENT_SAYA.html" class="nav-link" id="eventMenu">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Event Saya</span>
+                </a>
+            </li>
+        </ul>
+        <div class="logout-section">
+            <button class="btn-logout" onclick="handleLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Keluar</span>
+            </button>
+        </div>
+    </aside>
+
+    <main>
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div class="user-greeting" style="display: flex; align-items: center; gap: 20px;">
+                <button onclick="history.back()" style="background: white; border: 1px solid rgba(0,0,0,0.08); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dark); box-shadow: var(--shadow); transition: var(--transition);" onmouseover="this.style.transform='scale(1.05)'; this.style.color='var(--primary)'" onmouseout="this.style.transform='scale(1)'; this.style.color='var(--text-dark)'">
+                    <i class="fa-solid fa-arrow-left" style="font-size: 1.1rem;"></i>
+                </button>
+                
+                <div>
+                    <h2 id="welcomeText" style="font-size: 1.8rem; font-weight: 700;">Halo, Pengguna!</h2>
+                    <p style="color: var(--text-gray);">Temukan keseruan event kampus di EVENTRA.</p>
+                </div>
+            </div>
+            
+            <div class="profile-trigger" onclick="openModal('profileModal')">
+                <span id="userNameDisplay">Memuat...</span>
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" alt="User Profile" id="userPhoto">
+            </div>
+        </header>
+
+        <div id="mainContent">
+            <div class="empty-state-container">
+                <div class="empty-icon-wrapper">
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring"></div>
+                    <div class="empty-icon">
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                    </div>
+                </div>
+                <h3>Belum Ada Event Tersedia</h3>
+                <p>Saat ini panitia belum merilis atau membuat event baru. Silakan pantau halaman ini secara berkala untuk info selanjutnya!</p>
+                <div class="notice-tag">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Menunggu Konfirmasi Panitia</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeModal('profileModal')"></i>
+            <div class="modal-header">
+                <h3>Kelola Akun</h3>
+                <p>Perbarui informasi profil Anda</p>
+            </div>
+            <form id="editProfileForm" onsubmit="saveProfile(event)">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="editName" value="">
+                </div>
+                <div class="form-group">
+                    <label>NIM / ID</label>
+                    <input type="text" id="editNim" value="" disabled>
+                </div>
+                <button type="submit" class="btn-save">Simpan Perubahan</button>
+            </form>
+
+            <div class="danger-zone">
+                <p style="font-size: 0.8rem; color: var(--text-gray); margin-bottom: 10px;">Ingin berhenti dari EVENTRA?</p>
+                <button class="btn-delete" onclick="handleDeleteAccount()">Hapus Akun Selamanya</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // 1. Memeriksa validasi data Login User
+            const userData = localStorage.getItem('user_eventra');
+            
+            if (!userData) {
+                alert('Anda harus login terlebih dahulu!');
+                window.location.href = 'Login.html';
+                return;
+            }
+
+            const user = JSON.parse(userData);
+            
+            // Jika panitia entah bagaimana tersasar ke halaman ini, paksa lempar ke CREATEEVENT.html
+            if (user.role.toLowerCase() === 'panitia') {
+                window.location.href = 'CREATEEVENT.html';
+                return;
+            }
+            
+            // Tampilkan data profil
+            document.getElementById('userNameDisplay').innerText = user.nama;
+            document.getElementById('welcomeText').innerText = `Halo, ${user.nama}! (${user.role})`;
+            document.getElementById('userPhoto').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`;
+            
+            document.getElementById('editName').value = user.nama;
+            document.getElementById('editNim').value = user.nim ? user.nim : 'Umum (Tidak Ada NIM)';
+
+            // 2. Memanggil data event dinamis dari database secara asynchronous
+            muatDaftarEventDariDatabase();
+        };
+
+        function muatDaftarEventDariDatabase() {
+            const mainContent = document.getElementById('mainContent');
+
+            fetch('buat_event.php?aksi=ambil_event')
+            .then(response => response.json())
+            .then(events => {
+                if(!events || events.length === 0) {
+                    return;
+                }
+
+                let htmlGrid = '<div class="event-grid">';
+
+                events.forEach(event => {
+                    const opsiTanggal = { year: 'numeric', month: 'short', day: 'numeric' };
+                    const formatTgl = new Date(event.tanggal).toLocaleDateString('id-ID', opsiTanggal);
+
+                    let iconKategori = 'fa-calendar-check';
+                    if(event.kategori === 'Music') iconKategori = 'fa-music';
+                    if(event.kategori === 'Tech') iconKategori = 'fa-laptop-code';
+                    if(event.kategori === 'Food') iconKategori = 'fa-utensils';
+
+                    htmlGrid += `
+                        <div class="event-card">
+                            <img src="uploads/${event.banner_img}" alt="${event.nama_event}" class="event-banner">
+                            <div class="event-details">
+                                <div>
+                                    <span class="badge-category"><i class="fa-solid ${iconKategori}"></i> ${event.kategori}</span>
+                                    <h3 class="event-title">${event.nama_event}</h3>
+                                    <div class="info-row"><i class="fa-regular fa-calendar"></i> <span>${formatTgl} • ${event.waktu.substring(0,5)} WIB</span></div>
+                                    <div class="info-row"><i class="fa-solid fa-location-dot"></i> <span>${event.lokasi}</span></div>
+                                </div>
+                                
+                                <div class="ticket-info-block">
+                                    <div class="info-meta"><h5>Ticket Type</h5><p>${event.tipe_tiket}</p></div>
+                                    ${event.slot_kursi ? `<div class="info-meta"><h5>Seat</h5><p>${event.slot_kursi}</p></div>` : ''}
+                                </div>
+                                
+                                <a href="#" class="btn-view-qr">View QR Ticket</a>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                htmlGrid += '</div>';
+                mainContent.innerHTML = htmlGrid;
+            })
+            .catch(error => {
+                console.error('Error saat fetch event:', error);
+            });
+        }
+
+        // Fungsi modal & akun tetap dipertahankan
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function saveProfile(e) {
+            e.preventDefault();
+            const newName = document.getElementById('editName').value;
+            document.getElementById('userNameDisplay').innerText = newName;
+            
+            const userData = JSON.parse(localStorage.getItem('user_eventra'));
+            userData.nama = newName;
+            localStorage.setItem('user_eventra', JSON.stringify(userData));
+
+            document.getElementById('welcomeText').innerText = `Halo, ${newName}! (${userData.role})`;
+            alert('Profil berhasil diperbarui!');
+            closeModal('profileModal');
+        }
+
+        function handleDeleteAccount() {
+            const confirmDelete = confirm("Apakah Anda yakin ingin menghapus akun? Semua data Anda di EVENTRA akan hilang.");
+            if (confirmDelete) {
+                localStorage.removeItem('user_eventra');
+                alert("Akun telah sukses dihapus dari sistem.");
+                window.location.href = 'Login.html'; 
+            }
+        }
+
+        function handleLogout() {
+            if(confirm("Yakin ingin keluar dari EVENTRA?")) {
+                localStorage.removeItem('user_eventra');
+                alert("Berhasil Keluar!");
+                window.location.href = "Login.html"; 
+            }
+        }
+    </script>
+</body>
+</html>
