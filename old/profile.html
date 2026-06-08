@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventra | Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="glass-panel">
+    <div class="container navbar">
+      <a href="index.html" class="logo">
+        <svg height="32" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 6L20 2L23 10L15 6Z" fill="#FF8D28"/>
+          <path d="M5 12L0 8L8 16L5 12Z" fill="#FF8D28"/>
+          <text x="30" y="30" font-family="'Nunito', sans-serif" font-weight="800" font-size="28" fill="#FF8D28" letter-spacing="-1">Eventra</text>
+        </svg>
+      </a>
+      <nav class="nav-links">
+        <a href="search.html">Discover</a>
+        <a href="activity.html">Activity</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#organizations">Organizations</a>
+        <a href="profile.html">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="nav-avatar" alt="Profile">
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="profile-layout">
+    
+    <!-- Header Card -->
+    <section class="profile-header glass-card">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="profile-avatar" id="avatarPreview" alt="Profile Picture">
+      <div class="profile-name">Budi Santoso</div>
+      <div class="profile-meta">@budisantoso · Universitas Brawijaya</div>
+      <div class="profile-actions">
+        <button class="btn-ghost" id="btnToggleEdit"><i data-lucide="pencil" class="icon-sm"></i> Edit Profil</button>
+        <button class="btn-ghost"><i data-lucide="settings" class="icon-sm"></i> Pengaturan</button>
+      </div>
+      <!-- Hidden file input for demo -->
+      <input type="file" id="avatarInput" style="display: none;" accept="image/*">
+    </section>
+
+    <!-- Stats Row -->
+    <section class="pill-stats-row">
+      <div class="pill-stat"><i data-lucide="tent" class="icon-sm"></i> Event Diikuti: 12</div>
+      <div class="pill-stat"><i data-lucide="heart" class="icon-sm"></i> Disimpan: 8</div>
+      <div class="pill-stat"><i data-lucide="star" class="icon-sm"></i> Feedback Diberikan: 9</div>
+    </section>
+
+    <!-- Info Section (Toggleable Edit/View) -->
+    <section class="info-section glass-card" id="profileInfoContainer">
+      <div class="section-title">Informasi Pribadi</div>
+      
+      <div class="info-field">
+        <div class="info-label">Nama Lengkap</div>
+        <div class="info-value view-mode-only" id="valNama">Budi Santoso</div>
+        <input type="text" class="info-input edit-mode-only" id="inputNama" value="Budi Santoso">
+      </div>
+
+      <div class="info-field">
+        <div class="info-label">Email</div>
+        <div class="info-value view-mode-only">budi.santoso@student.ub.ac.id</div>
+        <input type="email" class="info-input edit-mode-only" value="budi.santoso@student.ub.ac.id" disabled title="Email tidak dapat diubah">
+      </div>
+
+      <div class="info-field">
+        <div class="info-label">Universitas / Kampus</div>
+        <div class="info-value view-mode-only" id="valKampus">Universitas Brawijaya</div>
+        <input type="text" class="info-input edit-mode-only" id="inputKampus" value="Universitas Brawijaya">
+      </div>
+
+      <div class="info-field">
+        <div class="info-label">Jurusan</div>
+        <div class="info-value view-mode-only" id="valJurusan">Sistem Informasi</div>
+        <input type="text" class="info-input edit-mode-only" id="inputJurusan" value="Sistem Informasi">
+      </div>
+
+      <div class="info-field">
+        <div class="info-label">Angkatan</div>
+        <div class="info-value view-mode-only" id="valAngkatan">2022</div>
+        <select class="info-input edit-mode-only" id="inputAngkatan">
+          <option>2021</option>
+          <option selected>2022</option>
+          <option>2023</option>
+          <option>2024</option>
+          <option>2025</option>
+          <option>2026</option>
+        </select>
+      </div>
+
+      <div class="info-field" style="margin-bottom: 0;">
+        <div class="info-label">Bio Singkat</div>
+        <div class="info-value view-mode-only" id="valBio">Tech enthusiast. Pengurus BEM divisi acara.</div>
+        <textarea class="info-input edit-mode-only" id="inputBio" rows="3" maxlength="160">Tech enthusiast. Pengurus BEM divisi acara.</textarea>
+      </div>
+    </section>
+
+    <!-- Notification Preferences -->
+    <section class="info-section glass-card">
+      <div class="section-title">Preferensi Notifikasi</div>
+      
+      <div class="toggle-row">
+        <span class="toggle-label">Email notifikasi event baru</span>
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="toggle-row">
+        <span class="toggle-label">Reminder H-1 event yang didaftar</span>
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-row">
+        <span class="toggle-label">Notifikasi dari penyelenggara yang diikuti</span>
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-row">
+        <span class="toggle-label">Update status pendaftaran</span>
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Account Actions -->
+    <div class="account-actions">
+      <button class="btn-danger-ghost">Keluar dari Akun</button>
+      <span class="link-danger" id="btnDeleteAccount">Hapus Akun</span>
+    </div>
+
+  </main>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+      <h2 style="color: #DC2626; margin-bottom: 16px;">Hapus Akun?</h2>
+      <p style="color: var(--gray-700); margin-bottom: 32px;">Tindakan ini tidak dapat dibatalkan. Semua data pendaftaran event dan sertifikatmu akan terhapus permanen.</p>
+      
+      <div style="display: flex; gap: 16px;">
+        <button class="btn-ghost" style="flex: 1;" id="btnCancelDelete">Batal</button>
+        <button class="btn-primary" style="flex: 1; background: #DC2626; border-color: #DC2626;" id="btnConfirmDelete">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="profile.js"></script>
+  <script>lucide.createIcons();</script>
+  <script src="app.js"></script>
+</body>
+</html>

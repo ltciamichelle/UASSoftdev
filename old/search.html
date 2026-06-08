@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventra | Search Events</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <header class="glass-panel">
+    <div class="container navbar">
+      <a href="index.html" class="logo">
+        <svg height="32" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 6L20 2L23 10L15 6Z" fill="#FF8D28"/>
+          <path d="M5 12L0 8L8 16L5 12Z" fill="#FF8D28"/>
+          <text x="30" y="30" font-family="'Nunito', sans-serif" font-weight="800" font-size="28" fill="#FF8D28" letter-spacing="-1">Eventra</text>
+        </svg>
+      </a>
+      <nav class="nav-links">
+        <a href="search.html">Discover</a>
+        <a href="activity.html">Activity</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#organizations">Organizations</a>
+        <a href="profile.html">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="nav-avatar" alt="Profile">
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Large Search Bar -->
+    <section class="search-header">
+      <div class="search-input-wrapper">
+        <svg class="search-icon-left" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="large-search-bar" id="searchInput"
+          placeholder="Cari event, topik, atau penyelenggara..." autocomplete="off">
+        <svg class="search-icon-right" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="23"></line>
+          <line x1="8" y1="23" x2="16" y2="23"></line>
+        </svg>
+
+        <!-- Instant Results Dropdown -->
+        <div class="search-dropdown" id="searchDropdown">
+          <div class="dropdown-item">
+            <span style="font-size: 20px;"><i data-lucide="party-popper" class="icon-sm"></i></span>
+            <div>
+              <div style="font-weight: 700; color: var(--gray-900);">Tech Leadership Summit</div>
+              <div style="font-size: 13px; color: var(--gray-400);">Event • 14 Jun 2025</div>
+            </div>
+          </div>
+          <div class="dropdown-item">
+            <span style="font-size: 20px;"><i data-lucide="palette" class="icon-sm"></i></span>
+            <div>
+              <div style="font-weight: 700; color: var(--gray-900);">Acoustic Night & Art Expo</div>
+              <div style="font-size: 13px; color: var(--gray-400);">Event • 20 Jun 2025</div>
+            </div>
+          </div>
+          <div class="dropdown-item">
+            <span style="font-size: 20px;"><i data-lucide="users" class="icon-sm"></i></span>
+            <div>
+              <div style="font-weight: 700; color: var(--gray-900);">BEM Universitas</div>
+              <div style="font-size: 13px; color: var(--gray-400);">Penyelenggara • 3 Event Aktif</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two-Column Layout -->
+    <section class="search-page-layout">
+
+      <!-- Filter Sidebar -->
+      <aside class="filter-sidebar glass-card reveal-item">
+        <div class="filter-group">
+          <div class="filter-group-title">Kategori</div>
+          <label class="checkbox-label"><input type="checkbox" checked> <i data-lucide="graduation-cap" class="icon-sm"></i> Seminar</label>
+          <label class="checkbox-label"><input type="checkbox" checked> <i data-lucide="wrench" class="icon-sm"></i> Workshop</label>
+          <label class="checkbox-label"><input type="checkbox"> <i data-lucide="trophy" class="icon-sm"></i> Lomba</label>
+          <label class="checkbox-label"><input type="checkbox"> <i data-lucide="music" class="icon-sm"></i> Konser</label>
+          <label class="checkbox-label"><input type="checkbox"> <i data-lucide="message-circle" class="icon-sm"></i> Talkshow</label>
+          <label class="checkbox-label"><input type="checkbox"> <i data-lucide="dribbble" class="icon-sm"></i> Olahraga</label>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-group-title">Tanggal</div>
+          <input type="date" class="date-input">
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-group-title">Lokasi</div>
+          <select class="date-input">
+            <option>Semua Lokasi</option>
+            <option>Online</option>
+            <option>Offline</option>
+            <option>Hybrid</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-group-title">Biaya</div>
+          <div class="toggle-group">
+            <div class="toggle-btn active">Semua</div>
+            <div class="toggle-btn">Gratis</div>
+            <div class="toggle-btn">Berbayar</div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-group-title">Status</div>
+          <div class="toggle-group">
+            <div class="toggle-btn active">All</div>
+            <div class="toggle-btn">Open</div>
+            <div class="toggle-btn">Closed</div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-group-title">Urutkan</div>
+          <label class="radio-label"><input type="radio" name="sort" checked> Terbaru</label>
+          <label class="radio-label"><input type="radio" name="sort"> Terpopuler</label>
+          <label class="radio-label"><input type="radio" name="sort"> Deadline</label>
+        </div>
+
+        <button class="btn-primary" style="width: 100%; margin-top: 16px;">Terapkan Filter</button>
+      </aside>
+
+      <!-- Results Area -->
+      <div class="results-area">
+
+        <div id="resultsContainer">
+          <div class="results-header">
+            <div class="results-count">Menampilkan 24 dari 87 event</div>
+          </div>
+
+          <div class="search-event-grid">
+
+            <!-- Standard Event Card -->
+            <article class="event-card glass-card-premium reveal-item">
+<div class="card-inner">
+              <div class="card-top-bar">
+                <span class="badge badge-seminar">Seminar</span>
+                <button class="btn-save" aria-label="Save event">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="event-banner"
+                style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80');">
+              </div>
+              <div class="card-body">
+                <h3 class="event-title">Tech Leadership Summit 2026</h3>
+                <div class="event-detail">
+                  <span class="icon"><i data-lucide="calendar" class="icon-sm"></i></span> Sabtu, 14 Jun 2025
+                </div>
+                <div class="event-detail">
+                  <span class="icon"><i data-lucide="map-pin" class="icon-sm"></i></span> Gedung Rektorat Lt.3
+                </div>
+                <div class="event-detail">
+                  <span class="icon">🏷</span> Gratis · Seminar
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="organizer">
+                  <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop"
+                    alt="Org Avatar" class="org-avatar">
+                  <span class="org-name">BEM Universitas</span>
+                </div>
+                <button class="btn-primary btn-block">Daftar Sekarang <span class="btn-icon-wrapper">→</span></button>
+              </div>
+            </div>
+</article>
+
+            <!-- Closing Soon Event Card -->
+            <article class="event-card glass-card-premium reveal-item">
+<div class="card-inner">
+              <div class="card-top-bar">
+                <span class="badge badge-closing pulse">Closing Soon!</span>
+                <button class="btn-save" aria-label="Save event">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="event-banner"
+                style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&q=80');">
+              </div>
+              <div class="card-body">
+                <h3 class="event-title">National Hackathon 4.0</h3>
+                <div class="event-detail">
+                  <span class="icon"><i data-lucide="calendar" class="icon-sm"></i></span> Minggu, 15 Jun 2025
+                </div>
+                <div class="event-detail">
+                  <span class="icon"><i data-lucide="map-pin" class="icon-sm"></i></span> Fakultas Ilmu Komputer
+                </div>
+                <div class="event-detail">
+                  <span class="icon">🏷</span> Rp 50.000 · Lomba
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="organizer">
+                  <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=100&h=100&fit=crop"
+                    alt="Org Avatar" class="org-avatar">
+                  <span class="org-name">Tech Club</span>
+                </div>
+                <button class="btn-primary btn-block">Daftar Sekarang <span class="btn-icon-wrapper">→</span></button>
+              </div>
+            </div>
+</article>
+
+            <!-- Full Event Card -->
+            <article class="event-card glass-card-premium reveal-item">
+<div class="card-inner">
+              <div class="card-top-bar">
+                <span class="badge badge-full">Penuh</span>
+                <button class="btn-save" aria-label="Save event">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="event-banner"
+                style="background-image: url('https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600&q=80'); opacity: 0.7;">
+              </div>
+              <div class="card-body">
+                <h3 class="event-title">Acoustic Night & Art Expo</h3>
+                <div class="event-detail">
+                  <span class="icon"><i data-lucide="calendar" class="icon-sm"></i></span> Jumat, 20 Jun 2025
+                </div>
+                <div class="event-detail">
+                  <span class="icon"><i data-lucide="map-pin" class="icon-sm"></i></span> Lapangan Utama
+                </div>
+                <div class="event-detail">
+                  <span class="icon">🏷</span> Gratis · Konser
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="organizer">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
+                    alt="Org Avatar" class="org-avatar">
+                  <span class="org-name">UKM Seni Musik</span>
+                </div>
+                <button class="btn-disabled btn-block" disabled>Penuh</button>
+              </div>
+            </div>
+</article>
+
+            <article class="event-card glass-card-premium reveal-item">
+<div class="card-inner">
+              <div class="card-top-bar">
+                <span class="badge badge-seminar">Workshop</span>
+                <button class="btn-save" aria-label="Save event">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="event-banner"
+                style="background-image: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80');">
+              </div>
+              <div class="card-body">
+                <h3 class="event-title">Public Speaking 101</h3>
+                <div class="event-detail">
+                  <span class="icon"><i data-lucide="calendar" class="icon-sm"></i></span> Senin, 23 Jun 2025
+                </div>
+                <div class="event-detail">
+                  <span class="icon"><i data-lucide="map-pin" class="icon-sm"></i></span> Zoom Meeting
+                </div>
+                <div class="event-detail">
+                  <span class="icon">🏷</span> Rp 25.000 · Workshop
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="organizer">
+                  <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop"
+                    alt="Org Avatar" class="org-avatar">
+                  <span class="org-name">BEM FISIP</span>
+                </div>
+                <button class="btn-primary btn-block">Daftar Sekarang <span class="btn-icon-wrapper">→</span></button>
+              </div>
+            </div>
+</article>
+
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <div class="page-btn">&lt;</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <div class="page-btn" style="border: none; background: transparent;">...</div>
+            <div class="page-btn">8</div>
+            <div class="page-btn">&gt;</div>
+          </div>
+        </div>
+
+        <!-- Zero State -->
+        <div id="zeroState" class="zero-state">
+          <img src="assets/evy_megaphone.png" alt="Evy Mascot">
+          <h3>Event-nya belum ada... tapi kamu bisa bikin yang pertama!</h3>
+          <p style="color: var(--gray-400); margin-bottom: 24px;">Coba gunakan kata kunci lain atau ubah filter
+            pencarianmu.</p>
+          <button class="btn-primary">Daftar Jadi Penyelenggara</button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="search.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+
+</html>
