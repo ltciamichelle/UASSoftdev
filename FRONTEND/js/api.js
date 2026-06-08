@@ -1,9 +1,9 @@
 // js/api.js
-// Konfigurasi URL Backend.
-// Jika diunggah ke Vercel dan backend ke InfinityFree, ubah BASE_URL ini ke domain InfinityFree Anda.
+// Konfigurasi URL Backend API
+// Menggunakan jalur relatif karena Frontend dan Backend digabungkan di server yang sama (InfinityFree htdocs)
 const BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost/UASSoftdev/BACKEND' 
-    : 'https://eventra-api.infinityfree.me';
+    : '.';
 
 /**
  * Fetch semua event dari database
