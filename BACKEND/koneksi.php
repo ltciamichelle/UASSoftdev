@@ -1,5 +1,6 @@
 <?php
 // koneksi.php
+// Trigger deployment
 $host = "sql308.infinityfree.com";
 $user = "if0_42130432";     
 $pass = "CarlosSainzNo55";         
