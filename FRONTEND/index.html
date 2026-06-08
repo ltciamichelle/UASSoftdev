@@ -125,12 +125,16 @@
     }
   </style>
 
+  <!-- Hubungkan API & Animasi -->
   <script src="js/api.js"></script>
   <script src="js/gsap-animations.js"></script>
   <script>
     lucide.createIcons();
     window.api.updateNavbarAuth();
+  </script>
+  <!-- Trigger Deployment -->
 
+  <script>
     // Render 3 Latest Events
     document.addEventListener("DOMContentLoaded", async () => {
       const container = document.getElementById('hero-events-container');
