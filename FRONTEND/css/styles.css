@@ -45,14 +45,22 @@ body {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: var(--bg);
+  background-color: #FCF9FF;
+  background-image: 
+    radial-gradient(at 10% 0%, hsla(273, 53%, 90%, 0.8) 0px, transparent 50vw),
+    radial-gradient(at 90% 10%, hsla(285, 60%, 92%, 0.7) 0px, transparent 50vw),
+    radial-gradient(at 80% 90%, hsla(260, 50%, 88%, 0.6) 0px, transparent 60vw),
+    radial-gradient(at 20% 80%, hsla(290, 40%, 94%, 0.7) 0px, transparent 50vw),
+    radial-gradient(at 50% 50%, hsla(270, 60%, 96%, 0.5) 0px, transparent 60vw);
   pointer-events: none;
+  filter: blur(40px) saturate(120%);
+  opacity: 0.8;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5 {
-  color: var(--gray-900);
-  font-weight: 400;
+  color: var(--primary-dark);
+  font-weight: 700;
   letter-spacing: -0.025em;
   margin-bottom: 0.5em;
   line-height: 1.1;
@@ -61,7 +69,7 @@ h1, h2, h3, h4, h5 {
 h1 { font-size: clamp(3rem, 8vw, 6rem); line-height: 1.0; }
 h2 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; }
 h3 { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.2; }
-h4 { font-size: 1.25rem; font-weight: 400; }
+h4 { font-size: 1.25rem; }
 
 .eyebrow {
   display: block;
@@ -98,15 +106,17 @@ a {
 
 .header-container {
   position: fixed;
-  top: 24px;
+  top: 0;
   left: 0;
   right: 0;
+  height: 80px;
   padding: 0 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+  box-shadow: 0 4px 20px rgba(102, 45, 145, 0.3);
   z-index: 1000;
-  pointer-events: none;
 }
 
 .header-container > * {
@@ -120,16 +130,10 @@ a {
   transform: translate(-50%, -50%);
   width: max-content;
   max-width: 90vw;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: 100px;
   padding: 12px 32px;
   display: flex;
   align-items: center;
   gap: 32px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: all 0.5s var(--ease-spring);
 }
 
@@ -161,13 +165,13 @@ a {
 
 .nav-link {
   font-weight: 700;
-  color: var(--gray-700);
+  color: var(--white);
   transition: color 0.3s;
   font-size: 0.95rem;
 }
 
 .nav-link:hover, .nav-link.active {
-  color: var(--primary);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .nav-avatar {
@@ -238,27 +242,31 @@ a {
 }
 
 .btn-primary {
-  background: var(--primary-lighter);
-  color: var(--primary-dark);
-  padding: 16px 32px;
-  font-size: 1rem;
-  box-shadow: 0 0 4px rgba(102, 45, 145, 0.2);
+  background: var(--primary);
+  color: var(--white);
+  padding: 16px 36px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  box-shadow: 0 10px 30px rgba(102, 45, 145, 0.3);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 0 8px rgba(102, 45, 145, 0.3);
-  color: var(--primary-dark);
+  background: var(--primary-dark);
+  box-shadow: 0 6px 16px rgba(102, 45, 145, 0.4);
+  color: var(--white);
 }
 
 .btn-ghost {
-  background: rgba(102, 45, 145, 0.1);
-  color: var(--primary-dark);
+  background: transparent;
+  color: var(--primary);
+  font-weight: 700;
   padding: 14px 28px;
-  border: 1px solid rgba(102, 45, 145, 0.2);
+  border: 2px solid var(--primary);
 }
 
 .btn-ghost:hover {
-  background: rgba(102, 45, 145, 0.15);
+  background: var(--primary);
+  color: var(--white);
 }
 
 /* Button nested trailing icon */
@@ -266,13 +274,17 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.3);
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  margin-left: 8px;
-  margin-right: -12px;
-  transition: transform 0.5s var(--ease-spring);
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.btn-icon-wrapper i {
+  width: 16px;
+  height: 16px;
+  color: var(--white);
 }
 
 .btn-primary:hover .btn-icon-wrapper {

@@ -79,18 +79,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 3. Fluid Nav shrink on scroll
-  const nav = document.querySelector('.fluid-nav');
-  if (nav) {
-    ScrollTrigger.create({
-      start: "top -50",
-      onUpdate: (self) => {
-        if (self.direction === 1) { // scrolling down
-          gsap.to(nav, { y: -10, scale: 0.95, duration: 0.4, ease: "power2.out" });
-        } else { // scrolling up
-          gsap.to(nav, { y: 0, scale: 1, duration: 0.4, ease: "power2.out" });
+  // Auto-append circular icon wrapper to all primary and ghost buttons
+  const allBtns = document.querySelectorAll('.btn-primary, .btn-ghost');
+  allBtns.forEach(btn => {
+    if (!btn.querySelector('.btn-icon-wrapper')) {
+      const wrapper = document.createElement('span');
+      wrapper.className = 'btn-icon-wrapper';
+      
+      // Check if button already has a trailing icon
+      const lastNode = btn.childNodes[btn.childNodes.length - 1];
+      let trailingIcon = null;
+      if (lastNode && lastNode.nodeType === Node.ELEMENT_NODE && lastNode.tagName === 'I') {
+        trailingIcon = lastNode;
+      } else if (lastNode && lastNode.nodeType === Node.TEXT_NODE && lastNode.textContent.trim() === '') {
+        const prev = lastNode.previousSibling;
+        if (prev && prev.nodeType === Node.ELEMENT_NODE && prev.tagName === 'I') {
+          trailingIcon = prev;
         }
       }
-    });
+      
+      if (trailingIcon) {
+        wrapper.appendChild(trailingIcon);
+      } else {
+        wrapper.innerHTML = `<i data-lucide="arrow-right"></i>`;
+      }
+      
+      btn.appendChild(wrapper);
+    }
+  });
+
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
   }
 });

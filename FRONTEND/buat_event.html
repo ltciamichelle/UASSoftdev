@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventra | Buat Event</title>
+  <link rel="stylesheet" href="css/styles.css?v=8">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script>
+    // Security check before page fully loads to prevent flashing
+    const user = JSON.parse(localStorage.getItem('eventra_user'));
+    if (!user) {
+      alert("Anda harus login terlebih dahulu untuk membuat event!");
+      window.location.href = 'login.html';
+    }
+  </script>
+  <style>
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary-dark);
+    }
+    .form-control {
+      width: 100%;
+      padding: 16px 24px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      background: rgba(255,255,255,0.7);
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(102, 45, 145, 0.1);
+      background: #fff;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .image-upload-wrapper {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      border: 2px dashed var(--primary);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      background: rgba(102, 45, 145, 0.05);
+      transition: all 0.3s ease;
+    }
+    .image-upload-wrapper:hover {
+      background: rgba(102, 45, 145, 0.1);
+    }
+    .image-upload-wrapper input[type="file"] {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 10;
+    }
+    #imagePreview {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      display: none;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <!-- Soft Ambient Background -->
+  <div class="ambient-bg"></div>
+
+  <!-- Full-Width Navbar -->
+  <header class="header-container" style="background: linear-gradient(90deg, var(--primary-dark), var(--primary)); padding: 24px 48px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+    <nav class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
+      <a href="index.html" class="logo">
+        <img src="assets/logo eventra.png" alt="Eventra Logo" style="width: 220px; height: auto; transform: translateY(4px); filter: brightness(0) invert(1);">
+      </a>
+      
+      <div style="display: flex; gap: 32px; align-items: center;">
+        <a href="search.html" style="color: rgba(255,255,255,0.8); font-weight: 500; font-size: 1.1rem; transition: color 0.3s;">Discover</a>
+        <a href="activity.html" style="color: rgba(255,255,255,0.8); font-weight: 500; font-size: 1.1rem; transition: color 0.3s;">Activity</a>
+        <a href="#" style="color: rgba(255,255,255,0.8); font-weight: 500; font-size: 1.1rem; transition: color 0.3s;">Calendar</a>
+      </div>
+
+      <div style="display: flex; align-items: center;">
+        <a href="profile.html">
+          <img src="https://i.pravatar.cc/150?u=1" alt="Profile" class="nav-avatar" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container section" style="padding-top: 100px;">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h1 class="gsap-reveal" style="text-align: center; margin-bottom: 16px;">Buat Event Baru</h1>
+      <p class="gsap-reveal" style="text-align: center; color: var(--gray-500); margin-bottom: 48px;">Bagikan momen terbaik dengan ribuan mahasiswa lainnya di kampus.</p>
+
+      <div class="doppelrand-card gsap-reveal" style="padding: 40px !important;">
+        <form id="buatEventForm">
+          
+          <!-- Image Upload -->
+          <div class="form-group">
+            <label class="form-label">Banner Event</label>
+            <div class="image-upload-wrapper" id="uploadWrapper">
+              <i data-lucide="image" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px;"></i>
+              <span style="font-weight: 700; color: var(--primary-dark);">Klik untuk mengunggah banner</span>
+              <span style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px;">Format JPG, PNG (Maks. 2MB)</span>
+              <img id="imagePreview" src="" alt="Preview">
+              <input type="file" id="banner_img" name="banner_img" accept="image/*" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Event</label>
+            <input type="text" class="form-control" name="nama_event" placeholder="Cth: Seminar Nasional Teknologi 2026" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Kategori</label>
+              <select class="form-control" name="kategori" required>
+                <option value="" disabled selected>Pilih Kategori</option>
+                <option value="Akademik">Akademik</option>
+                <option value="Olahraga">Olahraga</option>
+                <option value="Seni & Budaya">Seni & Budaya</option>
+                <option value="Seminar">Seminar</option>
+                <option value="Hiburan">Hiburan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lokasi</label>
+              <input type="text" class="form-control" name="lokasi" placeholder="Cth: Auditorium Utama" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tanggal Mulai</label>
+              <input type="date" class="form-control" name="tanggal" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waktu Mulai</label>
+              <input type="time" class="form-control" name="waktu" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tanggal Selesai</label>
+              <input type="date" class="form-control" name="tanggal_selesai" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Waktu Selesai</label>
+              <input type="time" class="form-control" name="waktu_selesai" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tipe Tiket</label>
+              <select class="form-control" name="tipe_tiket" required>
+                <option value="Gratis">Gratis</option>
+                <option value="Berbayar">Berbayar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kuota Peserta</label>
+              <input type="number" class="form-control" name="slot_kursi" placeholder="Cth: 150" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Deskripsi Lengkap</label>
+            <textarea class="form-control" name="deskripsi" rows="6" placeholder="Ceritakan detail event Anda di sini..." required></textarea>
+          </div>
+
+          <div style="text-align: right; margin-top: 32px;">
+            <button type="submit" class="btn btn-primary magnetic" id="submitBtn">Publikasikan Event</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer style="background: var(--white); padding: 64px 0; border-top: 1px solid var(--gray-200); text-align: center; position: relative; z-index: 10;">
+    <img src="assets/logo eventra.png" alt="Eventra" style="width: 150px; opacity: 0.5; margin-bottom: 24px; filter: grayscale(100%);">
+    <p style="color: var(--gray-400); font-size: 0.9rem;">© 2026 Eventra by BEM FTI UNTAR. All rights reserved.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/gsap-animations.js?v=3"></script>
+  
+  <!-- Image Preview & Submit Logic -->
+  <script>
+    // Update Navbar Auth state
+    window.api.updateNavbarAuth();
+
+    // Image Preview Logic
+    const bannerInput = document.getElementById('banner_img');
+    const imagePreview = document.getElementById('imagePreview');
+
+    bannerInput.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        }
+        reader.readAsDataURL(this.files[0]);
+      } else {
+        imagePreview.style.display = 'none';
+      }
+    });
+
+    // Form Submission
+    const form = document.getElementById('buatEventForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const user = JSON.parse(localStorage.getItem('eventra_user'));
+      if (!user) {
+        alert('Sesi Anda telah habis. Silakan login kembali.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Basic validation
+      const tanggalMulai = new Date(form.tanggal.value + ' ' + form.waktu.value);
+      const tanggalSelesai = new Date(form.tanggal_selesai.value + ' ' + form.waktu_selesai.value);
+      
+      if (tanggalSelesai <= tanggalMulai) {
+        alert('Waktu selesai harus lebih besar dari waktu mulai!');
+        return;
+      }
+
+      // Setup loading state
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = 'Memproses...';
+      submitBtn.disabled = true;
+
+      try {
+        const formData = new FormData(form);
+        
+        // Inject Auto Fields
+        const idEventGen = 'EV-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+        formData.append('id_event', idEventGen);
+        formData.append('id_panitia', user.id);
+
+        const response = await fetch(`${window.api.BASE_URL}/buat_event.php?aksi=tambah_event`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          // Success animation then redirect
+          gsap.to('.doppelrand-card', {
+            y: -20, opacity: 0, duration: 0.5, onComplete: () => {
+              alert(result.message);
+              window.location.href = 'activity.html'; // Redirect to Activity so they can see their events (if they are organizer)
+            }
+          });
+        } else {
+          alert('Gagal: ' + result.message);
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        }
+
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('Terjadi kesalahan jaringan atau server. Pastikan backend berjalan.');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
