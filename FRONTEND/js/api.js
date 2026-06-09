@@ -74,6 +74,28 @@ async function updateUser(data) {
     return await res.json();
 }
 
+async function submitPendaftaran(data) {
+    data.aksi = 'daftar';
+    const res = await fetch(`${BASE_URL}/pendaftaran.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    return await res.json();
+}
+
+async function fetchEventUser(userId) {
+    try {
+        const response = await fetch(`${BASE_URL}/pendaftaran.php?aksi=ambil_event_user&user_id=${userId}`);
+        if (!response.ok) throw new Error(`HTTP error!`);
+        const data = await response.json();
+        return data.status === 'success' ? data.data : [];
+    } catch (error) {
+        console.error("Gagal mengambil histori pendaftaran:", error);
+        return [];
+    }
+}
+
 async function deleteUser(userId, role) {
     const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
         method: 'POST',
@@ -131,5 +153,7 @@ window.api = {
     deleteUser,
     logoutUser,
     updateNavbarAuth,
+    submitPendaftaran,
+    fetchEventUser,
     BASE_URL
 };
