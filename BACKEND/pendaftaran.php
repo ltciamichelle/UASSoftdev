@@ -23,26 +23,23 @@ $aksi = isset($data['aksi']) ? $data['aksi'] : (isset($_GET['aksi']) ? $_GET['ak
 if ($aksi === 'daftar') {
     $user_id = mysqli_real_escape_string($koneksi, $data['user_id']);
     $event_id = mysqli_real_escape_string($koneksi, $data['event_id']);
-    $nama_pendaftar = mysqli_real_escape_string($koneksi, $data['nama_pendaftar']);
-    $email = mysqli_real_escape_string($koneksi, $data['email']);
-    $no_wa = mysqli_real_escape_string($koneksi, $data['no_wa']);
-    $instansi = mysqli_real_escape_string($koneksi, $data['instansi']);
+    $status = 'Terdaftar'; // Default status
 
-    if (empty($user_id) || empty($event_id) || empty($nama_pendaftar) || empty($email) || empty($no_wa)) {
-        echo json_encode(['status' => 'error', 'message' => 'Semua kolom wajib diisi.']);
+    if (empty($user_id) || empty($event_id)) {
+        echo json_encode(['status' => 'error', 'message' => 'Data tidak lengkap.']);
         exit;
     }
 
     // Cek apakah sudah pernah mendaftar
-    $cek_query = "SELECT id FROM pendaftaran WHERE user_id = '$user_id' AND event_id = '$event_id'";
+    $cek_query = "SELECT id FROM pendaftaran_event WHERE user_id = '$user_id' AND event_id = '$event_id'";
     $cek_result = mysqli_query($koneksi, $cek_query);
     if (mysqli_num_rows($cek_result) > 0) {
         echo json_encode(['status' => 'error', 'message' => 'Anda sudah terdaftar pada event ini.']);
         exit;
     }
 
-    $query_insert = "INSERT INTO pendaftaran (user_id, event_id, nama_pendaftar, email, no_wa, instansi) 
-                     VALUES ('$user_id', '$event_id', '$nama_pendaftar', '$email', '$no_wa', '$instansi')";
+    $query_insert = "INSERT INTO pendaftaran_event (user_id, event_id, status_pendaftaran) 
+                     VALUES ('$user_id', '$event_id', '$status')";
 
     if (mysqli_query($koneksi, $query_insert)) {
         echo json_encode(['status' => 'success', 'message' => 'Pendaftaran berhasil!']);
@@ -63,9 +60,9 @@ if ($aksi === 'ambil_event_user') {
         exit;
     }
 
-    // Melakukan JOIN antara tabel pendaftaran dan events
-    $query = "SELECT e.*, p.tanggal_daftar 
-              FROM pendaftaran p 
+    // Melakukan JOIN antara tabel pendaftaran_event dan events
+    $query = "SELECT e.*, p.tanggal_daftar, p.status_pendaftaran 
+              FROM pendaftaran_event p 
               JOIN events e ON p.event_id = e.id 
               WHERE p.user_id = '$user_id' 
               ORDER BY p.tanggal_daftar DESC";

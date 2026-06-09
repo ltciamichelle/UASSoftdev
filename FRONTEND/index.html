@@ -361,11 +361,7 @@
 
       const data = {
         user_id: user.id,
-        event_id: document.getElementById('reg_event_id').value,
-        nama_pendaftar: document.getElementById('reg_nama').value,
-        email: document.getElementById('reg_email').value,
-        no_wa: document.getElementById('reg_wa').value,
-        instansi: document.getElementById('reg_instansi').value
+        event_id: document.getElementById('reg_event_id').value
       };
 
       try {
@@ -389,28 +385,13 @@
   <div class="modal-overlay" id="registrationModal">
     <div class="modal-card">
       <button class="modal-close" onclick="closeRegistrationModal()"><i data-lucide="x"></i></button>
-      <h3 style="margin-bottom: 8px;">Pendaftaran Event</h3>
-      <p style="color: var(--primary); font-weight: 800; margin-bottom: 24px;" id="reg_event_name">Nama Event</p>
+      <h3 style="margin-bottom: 8px;">Konfirmasi Pendaftaran</h3>
+      <p style="color: var(--primary); font-weight: 800; margin-bottom: 8px;" id="reg_event_name">Nama Event</p>
+      <p style="color: var(--gray-700); margin-bottom: 24px;">Apakah Anda yakin ingin mendaftar untuk event ini?</p>
       
       <form id="registrationForm" style="display: flex; flex-direction: column; gap: 16px;">
         <input type="hidden" id="reg_event_id">
-        <div class="form-group">
-          <label class="form-label">Nama Lengkap</label>
-          <input type="text" class="form-control" id="reg_nama" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email Aktif</label>
-          <input type="email" class="form-control" id="reg_email" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">No. WhatsApp</label>
-          <input type="text" class="form-control" id="reg_wa" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Instansi / Fakultas</label>
-          <input type="text" class="form-control" id="reg_instansi" required>
-        </div>
-        <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="margin-top: 16px; padding: 16px;">Kirim Pendaftaran</button>
+        <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="padding: 16px; font-size: 1.1rem;">Konfirmasi Pendaftaran</button>
       </form>
     </div>
   </div>
