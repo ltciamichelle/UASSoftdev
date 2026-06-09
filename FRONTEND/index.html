@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
+
 <body>
 
   <div class="bg-mesh"></div>
@@ -25,16 +27,19 @@
       <a href="#calendar" class="nav-link">Calendar</a>
     </div>
     <a href="profile.html">
-      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="nav-avatar" alt="Profile">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="nav-avatar"
+        alt="Profile">
     </a>
   </nav>
 
   <main>
     <!-- HERO SECTION -->
-    <section class="section container" style="display: flex; align-items: center; justify-content: space-between; min-height: 90vh;">
+    <section class="section container"
+      style="display: flex; align-items: center; justify-content: space-between; min-height: 90vh;">
       <div style="max-width: 600px;" class="gsap-reveal">
         <h1 style="font-size: 4.5rem; line-height: 1;">Temukan Event <br>Kampus Favoritmu 🎉</h1>
-        <p style="font-size: 1.25rem; margin-bottom: 40px; color: var(--gray-700);">Seminar, workshop, lomba, konser — semua ada di sini. Mulai eksplorasi dan jadilah bagian dari momen tak terlupakan.</p>
+        <p style="font-size: 1.25rem; margin-bottom: 40px; color: var(--gray-700);">Seminar, workshop, lomba, konser —
+          semua ada di sini. Mulai eksplorasi dan jadilah bagian dari momen tak terlupakan.</p>
         <button class="btn btn-primary magnetic" onclick="window.location.href='search.html'">
           Jelajahi Event Sekarang
           <span class="btn-icon-wrapper"><i data-lucide="arrow-right" class="icon-sm"></i></span>
@@ -56,13 +61,15 @@
         </div>
       </div>
       <div class="gsap-reveal" style="flex: 1; display: flex; justify-content: center;">
-        <img src="assets/maskot%201.png" alt="Evy Mascot" style="max-width: 400px; animation: float 4s ease-in-out infinite;">
+        <img src="assets/maskot%201.png" alt="Evy Mascot"
+          style="max-width: 400px; animation: float 4s ease-in-out infinite;">
       </div>
     </section>
 
     <!-- TRENDING SECTION -->
     <section class="section container">
-      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px;" class="gsap-reveal">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px;"
+        class="gsap-reveal">
         <div>
           <span class="eyebrow">Highlights</span>
           <h2>Lagi Trending di Kampus 🔥</h2>
@@ -77,21 +84,39 @@
           grid-auto-rows: 240px;
           gap: 32px;
         }
+
         .bento-hero {
           grid-column: span 2;
           grid-row: span 2;
         }
-        .bento-hero .h-img { height: 100%; flex: 1; }
+
+        .bento-hero .h-img {
+          height: 100%;
+          flex: 1;
+        }
+
         @media (max-width: 900px) {
-          .bento-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
-          .bento-hero { grid-column: span 1; grid-row: span 1; }
-          .bento-hero .h-img { height: 240px; }
+          .bento-grid {
+            grid-template-columns: 1fr;
+            grid-auto-rows: auto;
+          }
+
+          .bento-hero {
+            grid-column: span 1;
+            grid-row: span 1;
+          }
+
+          .bento-hero .h-img {
+            height: 240px;
+          }
         }
       </style>
 
       <!-- Dynamic Event Cards Grid -->
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; margin-top: -64px; position: relative; z-index: 10;" id="hero-events-container">
-        
+      <div
+        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; margin-top: -64px; position: relative; z-index: 10;"
+        id="hero-events-container">
+
         <!-- Loader -->
         <div style="grid-column: span 3; text-align: center; padding: 48px; color: var(--gray-400);">
           <i data-lucide="loader" class="icon-md" style="animation: spin 2s linear infinite;"></i>
@@ -103,14 +128,21 @@
 
     <!-- ORGANIZER CTA -->
     <section class="section container">
-      <div class="doppelrand-card gsap-reveal" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">
-        <div class="card-inner" style="background: transparent; box-shadow: none; padding: 64px; text-align: center; color: var(--gray-900);">
+      <div class="doppelrand-card gsap-reveal"
+        style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">
+        <div class="card-inner"
+          style="background: transparent; box-shadow: none; padding: 64px; text-align: center; color: var(--gray-900);">
           <img src="assets/evy_megaphone.png" alt="Megaphone" style="width: 120px; margin-bottom: 24px;">
           <h2 style="color: var(--gray-900); font-size: 3rem;">Punya Event Sendiri?</h2>
-          <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">Gapai ribuan mahasiswa di kampusmu. Publikasikan event, kelola peserta, dan pantau pendaftaran dengan mudah.</p>
-          <button class="btn btn-primary magnetic" style="background: var(--gray-900); color: var(--white); box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
+          <p
+            style="font-size: 1.25rem; font-weight: 600; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Gapai ribuan mahasiswa di kampusmu. Publikasikan event, kelola peserta, dan pantau pendaftaran dengan mudah.
+          </p>
+          <button class="btn btn-primary magnetic"
+            style="background: var(--gray-900); color: var(--white); box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
             Buat Event Sekarang
-            <span class="btn-icon-wrapper" style="background: rgba(255,255,255,0.1);"><i data-lucide="arrow-right" class="icon-sm"></i></span>
+            <span class="btn-icon-wrapper" style="background: rgba(255,255,255,0.1);"><i data-lucide="arrow-right"
+                class="icon-sm"></i></span>
           </button>
         </div>
       </div>
@@ -120,8 +152,15 @@
 
   <style>
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
     }
   </style>
 
@@ -150,17 +189,17 @@
       }
 
       container.innerHTML = '';
-      
+
       // Ambil 3 event terbaru
       const latestEvents = events.slice(0, 3);
-      
+
       latestEvents.forEach((event, index) => {
-        const imageUrl = event.banner_img 
-            ? `${window.api.BASE_URL}/uploads/${event.banner_img}` 
-            : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600';
+        const imageUrl = event.banner_img
+          ? `${window.api.BASE_URL}/uploads/${event.banner_img}`
+          : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600';
 
         const article = document.createElement('article');
-        
+
         if (index === 0) {
           // Card 1 (Large, span 2)
           article.className = 'doppelrand-card gsap-reveal';
@@ -168,8 +207,8 @@
           article.style.display = 'flex';
           article.style.flexDirection = 'row';
           article.style.padding = '0';
-          
-          let ticketDisplay = event.tipe_tiket === 'Gratis' 
+
+          let ticketDisplay = event.tipe_tiket === 'Gratis'
             ? '<span style="font-weight: 900; color: var(--primary-dark); font-size: 1.5rem;">Gratis</span>'
             : `<span style="font-weight: 900; color: var(--gray-900); font-size: 1.5rem;">${event.tipe_tiket}</span>`;
 
@@ -197,7 +236,7 @@
         } else {
           // Card 2 & 3 (Small)
           article.className = 'doppelrand-card gsap-reveal';
-          
+
           let ticketDisplay = event.tipe_tiket === 'Gratis'
             ? '<span class="badge badge-primary">Gratis</span>'
             : `<span style="font-weight: 800; color: var(--gray-900);">${event.tipe_tiket}</span>`;
@@ -215,7 +254,7 @@
             </div>
           `;
         }
-        
+
         container.appendChild(article);
       });
 
@@ -224,4 +263,5 @@
     });
   </script>
 </body>
+
 </html>
