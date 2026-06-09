@@ -91,24 +91,28 @@
   <div class="ambient-bg"></div>
 
   <!-- Full-Width Navbar -->
-  <header class="header-container" style="background: linear-gradient(90deg, var(--primary-dark), var(--primary)); padding: 24px 48px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-    <nav class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
-      <a href="index.html" class="logo">
-        <img src="assets/logo eventra.png" alt="Eventra Logo" style="width: 220px; height: auto; transform: translateY(4px); filter: brightness(0) invert(1);">
-      </a>
-      
-      <div style="display: flex; gap: 32px; align-items: center;">
-        <a href="search.html" style="color: rgba(255,255,255,0.8); font-weight: 500; font-size: 1.1rem; transition: color 0.3s;">Discover</a>
-        <a href="activity.html" style="color: rgba(255,255,255,0.8); font-weight: 500; font-size: 1.1rem; transition: color 0.3s;">Activity</a>
-        <a href="#" style="color: rgba(255,255,255,0.8); font-weight: 500; font-size: 1.1rem; transition: color 0.3s;">Calendar</a>
-      </div>
+  <header class="header-container">
+  <div class="nav-brand-container">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/logo%20eventra.png?v=2" alt="Eventra" style="width: 220px; height: auto; transform: translateY(4px); filter: brightness(0) invert(1); object-fit: contain;">
+    </a>
+  </div>
 
-      <div style="display: flex; align-items: center;">
-        <a href="profile.html">
-          <img src="https://i.pravatar.cc/150?u=1" alt="Profile" class="nav-avatar" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-        </a>
-      </div>
-    </nav>
+  <!-- Fluid Island Nav -->
+  <nav class="fluid-nav">
+    <div class="nav-links">
+      <a href="search.html" class="nav-link">Discover</a>
+      <a href="activity.html" class="nav-link">Activity</a>
+      <a href="index.html#calendar" class="nav-link">Calendar</a>
+    </div>
+  </nav>
+
+  <div class="nav-profile-container">
+    <a href="profile.html">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="nav-avatar"
+        alt="Profile">
+    </a>
+  </div>
   </header>
 
   <main class="container section" style="padding-top: 100px;">
@@ -190,10 +194,7 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Deskripsi Lengkap</label>
-            <textarea class="form-control" name="deskripsi" rows="6" placeholder="Ceritakan detail event Anda di sini..." required></textarea>
-          </div>
+
 
           <div style="text-align: right; margin-top: 32px;">
             <button type="submit" class="btn btn-primary magnetic" id="submitBtn">Publikasikan Event</button>
@@ -264,11 +265,6 @@
 
       try {
         const formData = new FormData(form);
-        
-        // Inject Auto Fields
-        const idEventGen = 'EV-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
-        formData.append('id_event', idEventGen);
-        formData.append('id_panitia', user.id);
 
         const response = await fetch(`${window.api.BASE_URL}/buat_event.php?aksi=tambah_event`, {
           method: 'POST',

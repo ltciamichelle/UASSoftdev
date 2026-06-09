@@ -101,7 +101,11 @@ a {
 
 @media (max-width: 768px) {
   .container { padding: 0 24px; }
-  .section { padding: 120px 0; }
+  .section { padding: 80px 0; }
+}
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .section { padding: 60px 0; }
 }
 
 .header-container {
@@ -143,8 +147,35 @@ a {
 }
 
 @media (max-width: 768px) {
-  .header-container { padding: 0 24px; top: 16px; }
-  .fluid-nav { top: auto; bottom: -80px; position: fixed; left: 50%; transform: translateX(-50%); } 
+  .header-container { 
+    padding: 0 24px; 
+    top: 0; 
+    height: 70px;
+    border-radius: 0;
+  }
+  .fluid-nav { 
+    top: auto; 
+    bottom: 24px; 
+    position: fixed; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    background: var(--primary-dark);
+    padding: 12px 24px;
+    border-radius: 100px;
+    box-shadow: 0 10px 30px rgba(102, 45, 145, 0.4);
+    width: auto;
+    z-index: 1000;
+  } 
+  .nav-links {
+    gap: 20px;
+  }
+  .nav-link {
+    font-size: 0.85rem;
+  }
+}
+@media (max-width: 480px) {
+  .nav-links { gap: 16px; }
+  .nav-link { font-size: 0.8rem; }
 }
 
 .nav-brand {
@@ -221,6 +252,10 @@ a {
 }
 
 @media (max-width: 768px) {
+  .doppelrand-card {
+    padding: 24px !important;
+    border-radius: 16px !important;
+  }
   .doppelrand-card.horizontal .card-inner {
     flex-direction: column;
   }

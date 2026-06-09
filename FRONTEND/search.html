@@ -82,6 +82,7 @@
     @media (max-width: 900px) {
       .editorial-split { grid-template-columns: 1fr; gap: 32px; }
       .list-card:hover { transform: translateY(-4px); }
+      .sidebar-filters { position: relative !important; top: 0 !important; margin-bottom: 32px; }
     }
   </style>
 </head>
@@ -122,8 +123,8 @@
 
     <div class="editorial-split">
       
-      <!-- Left: Massive Sticky Typography & Filters -->
-      <aside style="position: sticky; top: 120px;" class="gsap-reveal">
+      <!-- Left: Massive Typography & Filters -->
+      <aside class="sidebar-filters gsap-reveal" style="position: sticky; top: 120px;">
         <span class="eyebrow">Explore Directory</span>
         <h1 style="margin-bottom: 48px; font-size: clamp(3.5rem, 6vw, 6rem);">Temukan<br>Event<br>Terbaik.</h1>
         

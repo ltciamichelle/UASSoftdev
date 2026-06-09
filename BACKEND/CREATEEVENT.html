@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page_title">Management Event - EVENTRA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         :root {
             --primary: #ff7a00;
@@ -61,8 +63,15 @@
             text-align: center;
         }
 
-        .nav-menu { list-style: none; flex-grow: 1; }
-        .nav-item { margin-bottom: 8px; }
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
         .nav-link {
             display: flex;
             align-items: center;
@@ -75,18 +84,32 @@
             font-weight: 500;
             cursor: pointer;
         }
-        .nav-link:hover, .nav-link.active {
+
+        .nav-link:hover,
+        .nav-link.active {
             background: rgba(255, 122, 0, 0.1);
             color: var(--primary);
         }
 
         .btn-logout {
-            width: 100%; padding: 12px; background: #f43f5e; border: none;
-            border-radius: 12px; color: white; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%;
+            padding: 12px;
+            background: #f43f5e;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             transition: var(--transition);
         }
-        .btn-logout:hover { background: #e11d48; }
+
+        .btn-logout:hover {
+            background: #e11d48;
+        }
 
         /* --- MAIN CONTENT CONTAINER --- */
         main {
@@ -102,8 +125,16 @@
             align-items: center;
             margin-bottom: 35px;
         }
-        .header-title h2 { font-size: 1.8rem; font-weight: 800; }
-        .header-title p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .header-title h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
 
         .badge-role {
             background: rgba(255, 122, 0, 0.08);
@@ -146,9 +177,16 @@
             gap: 20px;
             margin-bottom: 35px;
         }
-        .full-width { grid-column: span 2; }
 
-        .input-group { display: flex; flex-direction: column; }
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
         .input-group label {
             font-size: 0.85rem;
             font-weight: 600;
@@ -156,20 +194,43 @@
             color: var(--text-main);
         }
 
-        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
         .input-wrapper i {
-            position: absolute; left: 14px; color: var(--text-muted); pointer-events: none;
+            position: absolute;
+            left: 14px;
+            color: var(--text-muted);
+            pointer-events: none;
         }
-        .input-wrapper input, .input-wrapper select, .input-wrapper textarea {
-            width: 100%; padding: 12px 14px 12px 42px; border: 1.5px solid rgba(15, 23, 42, 0.08);
-            border-radius: 12px; background: rgba(255, 255, 255, 0.7); outline: none;
-            font-size: 0.95rem; transition: var(--transition);
+
+        .input-wrapper input,
+        .input-wrapper select,
+        .input-wrapper textarea {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border: 1.5px solid rgba(15, 23, 42, 0.08);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.7);
+            outline: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
         }
-        .input-wrapper textarea { padding-left: 15px; resize: none; height: 100px; }
-        
-        .input-wrapper input:focus, .input-wrapper select:focus, .input-wrapper textarea:focus {
-            border-color: var(--primary); 
-            background: #fff; 
+
+        .input-wrapper textarea {
+            padding-left: 15px;
+            resize: none;
+            height: 100px;
+        }
+
+        .input-wrapper input:focus,
+        .input-wrapper select:focus,
+        .input-wrapper textarea:focus {
+            border-color: var(--primary);
+            background: #fff;
             box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.15);
         }
 
@@ -183,14 +244,29 @@
             cursor: pointer;
             transition: var(--transition);
         }
+
         .upload-box:hover {
             background: rgba(255, 122, 0, 0.05);
             border-color: var(--primary);
         }
-        .upload-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 12px; }
-        .upload-box p { font-size: 0.9rem; color: var(--text-muted); }
+
+        .upload-box i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .upload-box p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
         .file-info-preview {
-            margin-top: 15px; font-size: 0.85rem; color: var(--primary); font-weight: 600; display: none;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            display: none;
         }
 
         /* --- ACTION BUTTONS --- */
@@ -199,29 +275,46 @@
             justify-content: flex-end;
             gap: 15px;
         }
+
         .btn {
-            padding: 14px 28px; border: none; border-radius: 12px; font-weight: 700;
-            font-size: 0.95rem; cursor: pointer; transition: var(--transition);
-            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
-        .btn-secondary { background: rgba(15, 23, 42, 0.05); color: var(--text-main); }
-        .btn-secondary:hover { background: rgba(15, 23, 42, 0.1); }
-        
+
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.05);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(15, 23, 42, 0.1);
+        }
+
         .btn-primary {
             background: linear-gradient(to right, var(--primary), var(--primary-light));
-            color: white; 
+            color: white;
             box-shadow: 0 10px 20px -5px rgba(255, 122, 0, 0.3);
         }
-        .btn-primary:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 15px 25px -5px rgba(255, 122, 0, 0.4); 
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(255, 122, 0, 0.4);
         }
-        
+
         .btn-danger {
             background: linear-gradient(to right, var(--danger), #fda4af);
             color: white;
             box-shadow: 0 10px 20px -5px rgba(244, 63, 94, 0.3);
         }
+
         .btn-danger:hover {
             transform: translateY(-2px);
             box-shadow: 0 15px 25px -5px rgba(244, 63, 94, 0.4);
@@ -234,6 +327,7 @@
             gap: 25px;
             margin-top: 20px;
         }
+
         .event-card {
             background: white;
             border-radius: 16px;
@@ -244,47 +338,117 @@
             flex-direction: column;
             transition: var(--transition);
         }
-        .event-card:hover { transform: translateY(-5px); }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
         .event-card-img {
-            width: 100%; height: 160px; object-fit: cover; background: #e2e8f0;
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #e2e8f0;
         }
+
         .event-card-body {
-            padding: 20px; flex-grow: 1; display: flex; flex-direction: column; gap: 10px;
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        .event-card-title { font-size: 1.1rem; font-weight: 700; color: var(--dark); }
-        .event-card-meta { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
-        .event-card-actions { padding: 15px 20px; background: #f8fafc; border-top: 1px solid rgba(15, 23, 42, 0.05); }
+
+        .event-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .event-card-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-card-actions {
+            padding: 15px 20px;
+            background: #f8fafc;
+            border-top: 1px solid rgba(15, 23, 42, 0.05);
+        }
 
         @media (max-width: 768px) {
-            aside { display: none; }
-            main { margin-left: 0; width: 100%; padding: 20px; }
-            .inputs-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
+            aside {
+                width: 100%;
+                height: 70px;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                top: auto;
+                flex-direction: row;
+                padding: 0;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 1000;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            aside .logo { display: none; }
+            .nav-menu { display: flex; flex-direction: row; width: 100%; margin: 0; padding: 0; justify-content: space-around; align-items: center; }
+            .nav-item { margin-bottom: 0; }
+            .nav-link { padding: 8px 12px; flex-direction: column; gap: 4px; border-radius: 8px; font-size: 0.7rem; justify-content: center; }
+            .nav-link i { font-size: 1.2rem; }
+            .nav-link span { display: none; }
+            .btn-logout { width: auto; padding: 10px; background: transparent; color: #f43f5e; margin-right: 16px; border-radius: 50%; }
+            .btn-logout span { display: none; }
+            .btn-logout i { font-size: 1.2rem; margin: 0; }
+            
+            main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+                padding-bottom: 90px;
+            }
+
+            .inputs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <aside>
         <div class="logo">EVENTRA</div>
         <ul class="nav-menu">
             <li class="nav-item">
-                <a href="#" id="link_dashboard" class="nav-link"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+                <a href="#" id="link_dashboard" class="nav-link"><i
+                        class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
             </li>
             <li class="nav-item">
-                <a onclick="gantiMode('tambah')" id="menu_tambah" class="nav-link active"><i class="fa-solid fa-calendar-plus"></i><span>Buat Event Baru</span></a>
+                <a onclick="gantiMode('tambah')" id="menu_tambah" class="nav-link active"><i
+                        class="fa-solid fa-calendar-plus"></i><span>Buat Event Baru</span></a>
             </li>
             <li class="nav-item">
-                <a onclick="gantiMode('edit')" id="menu_edit" class="nav-link"><i class="fa-solid fa-calendar-days"></i><span>Edit Event</span></a>
+                <a onclick="gantiMode('edit')" id="menu_edit" class="nav-link"><i
+                        class="fa-solid fa-calendar-days"></i><span>Edit Event</span></a>
             </li>
             <li class="nav-item">
-                <a onclick="gantiMode('hapus')" id="menu_hapus" class="nav-link"><i class="fa-solid fa-calendar-xmark"></i><span>Hapus Event</span></a>
+                <a onclick="gantiMode('hapus')" id="menu_hapus" class="nav-link"><i
+                        class="fa-solid fa-calendar-xmark"></i><span>Hapus Event</span></a>
             </li>
             <li class="nav-item">
-                <a href="data-upload.html" class="nav-link"><i class="fa-solid fa-folder-open"></i><span>Data Upload</span></a>
+                <a href="data-upload.html" class="nav-link"><i class="fa-solid fa-folder-open"></i><span>Data
+                        Upload</span></a>
             </li>
         </ul>
-        <button class="btn-logout" onclick="location.href='Login.html'"><i class="fa-solid fa-power-off"></i><span>Keluar</span></button>
+        <button class="btn-logout" onclick="location.href='Login.html'"><i
+                class="fa-solid fa-power-off"></i><span>Keluar</span></button>
     </aside>
 
     <main>
@@ -301,7 +465,7 @@
 
         <div class="form-container" id="area_formulir">
             <form id="formBuatEvent" enctype="multipart/form-data">
-                
+
                 <input type="hidden" id="event_id_primary" name="event_id_primary">
 
                 <div class="form-section-title">
@@ -309,24 +473,11 @@
                 </div>
                 <div class="inputs-grid">
                     <div class="input-group">
-                        <label>ID Event (Custom Code)</label>
-                        <div class="input-wrapper">
-                            <i class="fa-solid fa-hashtag"></i>
-                            <input type="text" id="id_event" name="id_event" required placeholder="Contoh: EVT-2026-001">
-                        </div>
-                    </div>
-                    <div class="input-group">
                         <label>Nama Event</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-font"></i>
-                            <input type="text" id="nama_event" name="nama_event" required placeholder="Nama Kegiatan / Acara">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label id="label_pengupload">ID Panitia / NIM Pengupload</label>
-                        <div class="input-wrapper">
-                            <i class="fa-solid fa-user-check"></i>
-                            <input type="text" id="id_panitia" name="id_panitia" required placeholder="ID_Panitia atau NIM_Mahasiswa" readonly>
+                            <input type="text" id="nama_event" name="nama_event" required
+                                placeholder="Nama Kegiatan / Acara">
                         </div>
                     </div>
                     <div class="input-group">
@@ -346,20 +497,16 @@
                         <label>Kuota Peserta / Slot Kursi</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-users"></i>
-                            <input type="number" id="kuota_peserta" name="slot_kursi" required placeholder="Contoh: 150">
+                            <input type="number" id="kuota_peserta" name="slot_kursi" required
+                                placeholder="Contoh: 150">
                         </div>
                     </div>
                     <div class="input-group">
                         <label>Tipe Tiket</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-ticket"></i>
-                            <input type="text" id="tipe_tiket" name="tipe_tiket" required placeholder="Contoh: Gratis / Rp 50.000">
-                        </div>
-                    </div>
-                    <div class="input-group full-width">
-                        <label>Deskripsi Event</label>
-                        <div class="input-wrapper">
-                            <textarea id="deskripsi" name="deskripsi" placeholder="Tuliskan deskripsi lengkap jalannya event disini..."></textarea>
+                            <input type="text" id="tipe_tiket" name="tipe_tiket" required
+                                placeholder="Contoh: Gratis / Rp 50.000">
                         </div>
                     </div>
                 </div>
@@ -400,7 +547,8 @@
                         <label>Nama Lokasi / Ruangan</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-building"></i>
-                            <input type="text" id="nama_lokasi" name="lokasi" required placeholder="Contoh: Auditorium Utama lt.3, Kampus A">
+                            <input type="text" id="nama_lokasi" name="lokasi" required
+                                placeholder="Contoh: Auditorium Utama lt.3, Kampus A">
                         </div>
                     </div>
                 </div>
@@ -414,16 +562,20 @@
                         <div class="upload-box" onclick="document.getElementById('file_poster').click()">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                             <p>Klik disini untuk memilih file Poster Event</p>
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">Format: PNG, JPG (Maks. 5MB) | Biarkan kosong jika tidak ingin mengubah gambar</span>
-                            <input type="file" id="file_poster" name="banner_img" accept="image/*" style="display:none;">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Format: PNG, JPG (Maks. 5MB) |
+                                Biarkan kosong jika tidak ingin mengubah gambar</span>
+                            <input type="file" id="file_poster" name="banner_img" accept="image/*"
+                                style="display:none;">
                             <div class="file-info-preview" id="file_preview"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="action-flex">
-                    <button type="button" id="btn_cancel_edit" class="btn btn-secondary" onclick="gantiMode('edit')" style="display: none;">Batal Edit</button>
-                    <button type="button" id="btn_reset" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
+                    <button type="button" id="btn_cancel_edit" class="btn btn-secondary" onclick="gantiMode('edit')"
+                        style="display: none;">Batal Edit</button>
+                    <button type="button" id="btn_reset" class="btn btn-secondary" onclick="resetForm()">Reset
+                        Form</button>
                     <button type="submit" id="btn_submit" class="btn btn-primary">
                         <i class="fa-solid fa-paper-plane"></i> UPLOAD EVENT
                     </button>
@@ -433,16 +585,16 @@
 
         <div id="area_list_event" style="display: none;">
             <div class="event-grid" id="container_event_cards">
-                </div>
+            </div>
         </div>
 
     </main>
 
     <script>
-        let modeAktif = 'tambah'; 
+        let modeAktif = 'tambah';
         let globalUsername = '';
 
-        window.onload = function() {
+        window.onload = function () {
             proteksiRute();
         };
 
@@ -477,18 +629,16 @@
                 linkDashboard.href = "dashboard-panitia.html";
                 labelPengupload.innerText = "ID Panitia / NIM Pengupload";
             }
-            
-            document.getElementById('id_panitia').value = globalUsername;
         }
 
         // FUNGSI UTAMA PENGATUR INTERFACE JALUR MENU
         function gantiMode(mode) {
             modeAktif = mode;
-            
+
             document.getElementById('menu_tambah').classList.remove('active');
             document.getElementById('menu_edit').classList.remove('active');
             document.getElementById('menu_hapus').classList.remove('active');
-            
+
             const areaFormulir = document.getElementById('area_formulir');
             const areaListEvent = document.getElementById('area_list_event');
             const sectionTitle = document.getElementById('section_title');
@@ -505,26 +655,26 @@
                 areaListEvent.style.display = 'none';
                 btnCancelEdit.style.display = 'none';
                 btnReset.style.display = 'inline-flex';
-                
+
                 sectionTitle.innerText = "Buat & Publikasikan Event";
                 sectionDesc.innerText = "Isi formulir berbasis struktur data sistem untuk merilis event kampus.";
                 btnSubmit.className = "btn btn-primary";
                 btnSubmit.innerHTML = `<i class="fa-solid fa-paper-plane"></i> UPLOAD EVENT`;
-            } 
+            }
             else if (mode === 'edit') {
                 document.getElementById('menu_edit').classList.add('active');
                 areaFormulir.style.display = 'none';
                 areaListEvent.style.display = 'block';
-                
+
                 sectionTitle.innerText = "Dashboard Edit Event Saya";
                 sectionDesc.innerText = "Berikut daftar event yang Anda rilis. Pilih salah satu event untuk dimodifikasi.";
                 muatEventPanitia();
-            } 
+            }
             else if (mode === 'hapus') {
                 document.getElementById('menu_hapus').classList.add('active');
                 areaFormulir.style.display = 'none';
                 areaListEvent.style.display = 'block';
-                
+
                 sectionTitle.innerText = "Dashboard Eliminasi Event Saya";
                 sectionDesc.innerText = "Klik tombol hapus pada card event untuk menghapus secara permanen dari sistem.";
                 muatEventPanitia();
@@ -537,28 +687,28 @@
             container.innerHTML = `<p style="color:var(--text-muted);">Sedang memuat data event Anda...</p>`;
 
             fetch(`buat_event.php?aksi=ambil_event_panitia&id_panitia=${globalUsername}`)
-            .then(res => res.json())
-            .then(data => {
-                container.innerHTML = "";
-                if(data.status === 'error' || data.length === 0) {
-                    container.innerHTML = `<p style="grid-column: span 3; text-align:center; color: var(--text-muted); padding: 40px 0;">Anda belum pernah mempublikasikan event apa pun.</p>`;
-                    return;
-                }
-
-                data.forEach(event => {
-                    const card = document.createElement('div');
-                    card.className = "event-card";
-                    
-                    const srcGambar = event.banner_img ? `uploads/${event.banner_img}` : 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=400&q=80';
-                    
-                    let tombolAksi = '';
-                    if(modeAktif === 'edit') {
-                        tombolAksi = `<button type="button" class="btn btn-primary" style="width:100%; justify-content:center;" onclick="bukaFormEdit(${event.id})"><i class="fa-solid fa-pen-to-square"></i> Edit Event Ini</button>`;
-                    } else if(modeAktif === 'hapus') {
-                        tombolAksi = `<button type="button" class="btn btn-danger" style="width:100%; justify-content:center;" onclick="eksekusiHapus(${event.id})"><i class="fa-solid fa-trash-can"></i> Hapus Event Secara Permanen</button>`;
+                .then(res => res.json())
+                .then(data => {
+                    container.innerHTML = "";
+                    if (data.status === 'error' || data.length === 0) {
+                        container.innerHTML = `<p style="grid-column: span 3; text-align:center; color: var(--text-muted); padding: 40px 0;">Anda belum pernah mempublikasikan event apa pun.</p>`;
+                        return;
                     }
 
-                    card.innerHTML = `
+                    data.forEach(event => {
+                        const card = document.createElement('div');
+                        card.className = "event-card";
+
+                        const srcGambar = event.banner_img ? `uploads/${event.banner_img}` : 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=400&q=80';
+
+                        let tombolAksi = '';
+                        if (modeAktif === 'edit') {
+                            tombolAksi = `<button type="button" class="btn btn-primary" style="width:100%; justify-content:center;" onclick="bukaFormEdit(${event.id})"><i class="fa-solid fa-pen-to-square"></i> Edit Event Ini</button>`;
+                        } else if (modeAktif === 'hapus') {
+                            tombolAksi = `<button type="button" class="btn btn-danger" style="width:100%; justify-content:center;" onclick="eksekusiHapus(${event.id})"><i class="fa-solid fa-trash-can"></i> Hapus Event Secara Permanen</button>`;
+                        }
+
+                        card.innerHTML = `
                         <img src="${srcGambar}" class="event-card-img" alt="Poster Event">
                         <div class="event-card-body">
                             <span style="font-size:0.75rem; font-weight:700; color:var(--primary); text-transform:uppercase;">${event.kategori}</span>
@@ -571,56 +721,53 @@
                             ${tombolAksi}
                         </div>
                     `;
-                    container.appendChild(card);
+                        container.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    container.innerHTML = `<p style="color:var(--danger);">Gagal memuat interkoneksi database.</p>`;
                 });
-            })
-            .catch(err => {
-                container.innerHTML = `<p style="color:var(--danger);">Gagal memuat interkoneksi database.</p>`;
-            });
         }
 
         // MEMBUKA FORM EDIT SETELAH KLIK DARI DASHBOARD CARD CARD
         function bukaFormEdit(idPrimary) {
             fetch(`buat_event.php?aksi=cari_event_id&id=${idPrimary}`)
-            .then(res => res.json())
-            .then(res => {
-                if(res.status === 'success') {
-                    const data = res.data;
-                    
-                    // Isi seluruh field form edit
-                    document.getElementById('event_id_primary').value = data.id;
-                    document.getElementById('id_event').value = data.id_event || '';
-                    document.getElementById('nama_event').value = data.nama_event;
-                    document.getElementById('id_panitia').value = data.id_panitia || globalUsername;
-                    document.getElementById('kategori_event').value = data.kategori;
-                    document.getElementById('kuota_peserta').value = data.slot_kursi;
-                    document.getElementById('tipe_tiket').value = data.tipe_tiket;
-                    document.getElementById('deskripsi').value = data.deskripsi || '';
-                    document.getElementById('mulai_event').value = data.tanggal;
-                    document.getElementById('waktu_event').value = data.waktu;
-                    document.getElementById('selesai_event').value = data.tanggal_selesai;
-                    document.getElementById('waktu_selesai').value = data.waktu_selesai;
-                    document.getElementById('nama_lokasi').value = data.lokasi;
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status === 'success') {
+                        const data = res.data;
 
-                    // Tampilkan form dan sesuaikan tombolnya
-                    document.getElementById('area_formulir').style.display = 'block';
-                    document.getElementById('area_list_event').style.display = 'none';
-                    document.getElementById('btn_cancel_edit').style.display = 'inline-flex';
-                    document.getElementById('btn_reset').style.display = 'none';
-                    
-                    document.getElementById('section_title').innerText = "Formulir Modifikasi Data Event";
-                    document.getElementById('btn_submit').className = "btn btn-primary";
-                    document.getElementById('btn_submit').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan`;
-                    
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    alert(res.message);
-                }
-            });
+                        // Isi seluruh field form edit
+                        document.getElementById('event_id_primary').value = data.id;
+                        document.getElementById('nama_event').value = data.nama_event;
+                        document.getElementById('kategori_event').value = data.kategori;
+                        document.getElementById('kuota_peserta').value = data.slot_kursi;
+                        document.getElementById('tipe_tiket').value = data.tipe_tiket;
+                        document.getElementById('mulai_event').value = data.tanggal;
+                        document.getElementById('waktu_event').value = data.waktu;
+                        document.getElementById('selesai_event').value = data.tanggal_selesai;
+                        document.getElementById('waktu_selesai').value = data.waktu_selesai;
+                        document.getElementById('nama_lokasi').value = data.lokasi;
+
+                        // Tampilkan form dan sesuaikan tombolnya
+                        document.getElementById('area_formulir').style.display = 'block';
+                        document.getElementById('area_list_event').style.display = 'none';
+                        document.getElementById('btn_cancel_edit').style.display = 'inline-flex';
+                        document.getElementById('btn_reset').style.display = 'none';
+
+                        document.getElementById('section_title').innerText = "Formulir Modifikasi Data Event";
+                        document.getElementById('btn_submit').className = "btn btn-primary";
+                        document.getElementById('btn_submit').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan`;
+
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        alert(res.message);
+                    }
+                });
         }
 
         // Preview File Upload Handler
-        document.getElementById('file_poster').addEventListener('change', function() {
+        document.getElementById('file_poster').addEventListener('change', function () {
             const file = this.files[0];
             const preview = document.getElementById('file_preview');
             if (file) {
@@ -631,12 +778,12 @@
         });
 
         // Event listener Submit Form Router Multi-Aksi
-        document.getElementById('formBuatEvent').addEventListener('submit', function(e) {
+        document.getElementById('formBuatEvent').addEventListener('submit', function (e) {
             e.preventDefault();
 
             if (modeAktif === 'tambah') {
                 eksekusiTambah(new FormData(this));
-            } 
+            }
             else if (modeAktif === 'edit') {
                 eksekusiUpdate(new FormData(this));
             }
@@ -644,46 +791,46 @@
 
         function eksekusiTambah(formData) {
             fetch('buat_event.php?aksi=tambah_event', { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert(data.message);
-                    resetForm();
-                } else {
-                    alert('Gagal Menyimpan: ' + data.message);
-                }
-            }).catch(err => alert('Koneksi bermasalah ke server backend.'));
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        resetForm();
+                    } else {
+                        alert('Gagal Menyimpan: ' + data.message);
+                    }
+                }).catch(err => alert('Koneksi bermasalah ke server backend.'));
         }
 
         function eksekusiUpdate(formData) {
             fetch('buat_event.php?aksi=update_event', { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    alert(data.message);
-                    gantiMode('edit'); // Kembalikan ke dashboard list edit
-                } else {
-                    alert('Gagal Memperbarui: ' + data.message);
-                }
-            }).catch(err => alert('Gagal memperbarui data event ke backend.'));
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        gantiMode('edit'); // Kembalikan ke dashboard list edit
+                    } else {
+                        alert('Gagal Memperbarui: ' + data.message);
+                    }
+                }).catch(err => alert('Gagal memperbarui data event ke backend.'));
         }
 
         function eksekusiHapus(idEvent) {
-            if(confirm('Apakah Anda yakin 100% ingin menghapus total event ini?')) {
+            if (confirm('Apakah Anda yakin 100% ingin menghapus total event ini?')) {
                 fetch('buat_event.php?aksi=hapus_event', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ event_id: idEvent })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert(data.message);
-                        muatEventPanitia(); // Refresh data dashboard
-                    } else {
-                        alert('Gagal Menghapus: ' + data.message);
-                    }
-                }).catch(err => alert('Gagal memproses penghapusan data ke server.'));
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            muatEventPanitia(); // Refresh data dashboard
+                        } else {
+                            alert('Gagal Menghapus: ' + data.message);
+                        }
+                    }).catch(err => alert('Gagal memproses penghapusan data ke server.'));
             }
         }
 
@@ -695,4 +842,5 @@
         }
     </script>
 </body>
+
 </html>

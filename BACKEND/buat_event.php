@@ -12,9 +12,7 @@ $aksi = isset($_GET['aksi']) ? $_GET['aksi'] : '';
 if ($aksi === 'tambah_event') {
     header('Content-Type: application/json');
 
-    $id_event         = mysqli_real_escape_string($koneksi, $_POST['id_event']);
     $nama_event       = mysqli_real_escape_string($koneksi, $_POST['nama_event']);
-    $id_panitia       = mysqli_real_escape_string($koneksi, $_POST['id_panitia']);
     $kategori         = mysqli_real_escape_string($koneksi, $_POST['kategori']);
     $tanggal          = mysqli_real_escape_string($koneksi, $_POST['tanggal']);
     $waktu            = mysqli_real_escape_string($koneksi, $_POST['waktu']);
@@ -23,9 +21,8 @@ if ($aksi === 'tambah_event') {
     $lokasi           = mysqli_real_escape_string($koneksi, $_POST['lokasi']);
     $tipe_tiket       = mysqli_real_escape_string($koneksi, $_POST['tipe_tiket']);
     $slot_kursi       = isset($_POST['slot_kursi']) ? mysqli_real_escape_string($koneksi, $_POST['slot_kursi']) : 0;
-    $deskripsi        = mysqli_real_escape_string($koneksi, $_POST['deskripsi']);
 
-    if (empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket) || empty($id_panitia)) {
+    if (empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket)) {
         echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi!"]);
         exit;
     }
@@ -43,8 +40,8 @@ if ($aksi === 'tambah_event') {
         move_uploaded_file($_FILES["banner_img"]["tmp_name"], $target_file);
     }
 
-    $query_insert = "INSERT INTO events (id_event, nama_event, id_panitia, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, slot_kursi, deskripsi, banner_img) 
-                     VALUES ('$id_event', '$nama_event', '$id_panitia', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', '$slot_kursi', '$deskripsi', '$nama_file_gambar')";
+    $query_insert = "INSERT INTO events (nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, slot_kursi, banner_img) 
+                     VALUES ('$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', '$slot_kursi', '$nama_file_gambar')";
 
     if (mysqli_query($koneksi, $query_insert)) {
         echo json_encode(["status" => "success", "message" => "Event berhasil dibuat dan dipublikasikan!"]);
@@ -87,7 +84,8 @@ if ($aksi === 'ambil_event_panitia') {
         exit;
     }
 
-    $query_select = "SELECT * FROM events WHERE id_panitia = '$id_panitia' ORDER BY id DESC";
+    // Tanpa id_panitia di tabel, kita ambil semua event saja agar tidak error
+    $query_select = "SELECT * FROM events ORDER BY id DESC";
     $result = mysqli_query($koneksi, $query_select);
     $daftar_event = array();
 
@@ -133,7 +131,6 @@ if ($aksi === 'update_event') {
     header('Content-Type: application/json');
 
     $event_id         = mysqli_real_escape_string($koneksi, $_POST['event_id_primary']); 
-    $id_event         = mysqli_real_escape_string($koneksi, $_POST['id_event']);
     $nama_event       = mysqli_real_escape_string($koneksi, $_POST['nama_event']);
     $kategori         = mysqli_real_escape_string($koneksi, $_POST['kategori']);
     $tanggal          = mysqli_real_escape_string($koneksi, $_POST['tanggal']);
@@ -143,7 +140,6 @@ if ($aksi === 'update_event') {
     $lokasi           = mysqli_real_escape_string($koneksi, $_POST['lokasi']);
     $tipe_tiket       = mysqli_real_escape_string($koneksi, $_POST['tipe_tiket']);
     $slot_kursi       = isset($_POST['slot_kursi']) ? mysqli_real_escape_string($koneksi, $_POST['slot_kursi']) : 0;
-    $deskripsi        = mysqli_real_escape_string($koneksi, $_POST['deskripsi']);
 
     if (empty($event_id) || empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket)) {
         echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi untuk memperbarui data!"]);
@@ -166,7 +162,6 @@ if ($aksi === 'update_event') {
     }
 
     $query_update = "UPDATE events SET 
-                        id_event = '$id_event',
                         nama_event = '$nama_event', 
                         kategori = '$kategori', 
                         tanggal = '$tanggal', 
@@ -176,7 +171,6 @@ if ($aksi === 'update_event') {
                         lokasi = '$lokasi', 
                         tipe_tiket = '$tipe_tiket', 
                         slot_kursi = '$slot_kursi', 
-                        deskripsi = '$deskripsi',
                         banner_img = '$nama_file_gambar' 
                      WHERE id = '$event_id'";
 
