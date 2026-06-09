@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
   /* Core Palette */
@@ -28,12 +28,14 @@
 }
 
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Inter', sans-serif;
   color: var(--gray-700);
   background: var(--bg);
   min-height: 100vh;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.4;
+  font-weight: 300;
+  letter-spacing: -0.025em;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -43,27 +45,23 @@ body {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: 
-    radial-gradient(ellipse at 20% 20%, rgba(158, 103, 201, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(102, 45, 145, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 60% 10%, rgba(243, 232, 250, 0.25) 0%, transparent 40%),
-    var(--bg);
+  background: var(--bg);
   pointer-events: none;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5 {
   color: var(--gray-900);
-  font-weight: 900;
-  letter-spacing: -0.05em;
+  font-weight: 400;
+  letter-spacing: -0.025em;
   margin-bottom: 0.5em;
-  line-height: 0.95;
+  line-height: 1.1;
 }
 
-h1 { font-size: clamp(3rem, 8vw, 7rem); }
-h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); }
-h3 { font-size: clamp(1.75rem, 3vw, 2.5rem); letter-spacing: -0.03em; }
-h4 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+h1 { font-size: clamp(3rem, 8vw, 6rem); line-height: 1.0; }
+h2 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; }
+h3 { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.2; }
+h4 { font-size: 1.25rem; font-weight: 400; }
 
 .eyebrow {
   display: block;
@@ -125,7 +123,7 @@ a {
   align-items: center;
   gap: 8px;
   font-size: 1.5rem;
-  font-weight: 900;
+  font-weight: 400;
   color: var(--primary);
   letter-spacing: -0.05em;
 }
@@ -160,30 +158,28 @@ a {
   transform: scale(1.1);
 }
 
-/* --- Doppelrand (Double-Bezel) Card Architecture --- */
+/* --- Doppelrand (Double-Bezel) Card Architecture -> Flat Cards --- */
 .doppelrand-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 2rem;
-  padding: 6px; /* The outer shell thickness */
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0,0,0,0.02);
-  transition: transform 0.5s var(--ease-spring), box-shadow 0.5s var(--ease-spring);
+  background: var(--white) !important;
+  border: 1px solid var(--gray-200);
+  border-radius: 24px !important;
+  padding: 48px !important;
+  box-shadow: none !important;
+  transition: transform 0.4s var(--ease-spring);
 }
 
 .doppelrand-card:hover {
-  transform: translateY(-8px) scale(1.01);
-  box-shadow: 0 32px 64px rgba(102, 45, 145, 0.15), 0 2px 6px rgba(0,0,0,0.04);
+  transform: translateY(-4px);
 }
 
 .card-inner {
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: calc(2rem - 6px);
+  background: transparent !important;
+  border-radius: 0;
   height: 100%;
   width: 100%;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.8), 0 2px 12px rgba(102, 45, 145, 0.05);
+  box-shadow: none !important;
+  padding: 0 !important;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -202,32 +198,31 @@ a {
 }
 
 /* --- Buttons --- */
-/* Contrast Fix: Text is gray-900 on primary button */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-weight: 800;
+  font-weight: 400;
   border: none;
   cursor: pointer;
-  border-radius: 9999px;
+  border-radius: 100px;
   transition: all 0.5s var(--ease-spring);
   text-align: center;
   outline: none;
 }
 
 .btn-primary {
-  background: var(--primary);
-  color: var(--gray-900); /* Accessible contrast */
+  background: var(--primary-lighter);
+  color: var(--primary-dark);
   padding: 16px 32px;
-  font-size: 1.05rem;
-  box-shadow: 0 8px 24px rgba(102, 45, 145, 0.3);
+  font-size: 1rem;
+  box-shadow: 0 0 4px rgba(102, 45, 145, 0.2);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 16px 32px rgba(102, 45, 145, 0.45);
-  color: var(--gray-900);
+  box-shadow: 0 0 8px rgba(102, 45, 145, 0.3);
+  color: var(--primary-dark);
 }
 
 .btn-ghost {
