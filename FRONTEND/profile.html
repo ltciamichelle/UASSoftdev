@@ -147,7 +147,7 @@
     <div class="nav-links">
       <a href="search.html" class="nav-link">Discover</a>
       <a href="activity.html" class="nav-link">Activity</a>
-      <a href="index.html#calendar" class="nav-link">Calendar</a>
+      <a href="calendar.html" class="nav-link">Calendar</a>
     </div>
   </nav>
 
@@ -169,7 +169,6 @@
       <p style="font-weight: 600; color: var(--primary-dark); margin-bottom: 24px;" id="profileSubtitle">@username · Role</p>
       <div style="display: flex; gap: 16px; justify-content: center;">
         <button class="btn btn-primary" onclick="document.getElementById('editForm').scrollIntoView({behavior:'smooth'})"><i data-lucide="edit-2" class="icon-sm"></i> Edit Profil</button>
-        <button class="btn btn-ghost" onclick="window.api.logoutUser()"><i data-lucide="log-out" class="icon-sm"></i> Keluar</button>
       </div>
     </div>
 
@@ -227,12 +226,14 @@
       </div>
     </div>
 
-    <!-- Danger Zone -->
+    <!-- Logout Section -->
     <div class="doppelrand-card gsap-reveal" style="margin-top: 48px; border-color: #fee2e2;">
-      <div class="card-inner" style="padding: 48px; background: rgba(254, 226, 226, 0.1);">
-        <h3 style="margin-bottom: 16px; color: #ef4444;">Zona Berbahaya</h3>
-        <p style="color: var(--gray-700); margin-bottom: 24px;">Setelah Anda menghapus akun, tidak ada jalan kembali. Tolong pastikan keputusan Anda.</p>
-        <button class="btn" style="background: #ef4444; color: white;" onclick="hapusAkunPermanen()">Hapus Akun Permanen</button>
+      <div class="card-inner" style="padding: 32px; text-align: center; background: rgba(254, 226, 226, 0.1);">
+        <h3 style="margin-bottom: 16px;">Selesai menjelajah?</h3>
+        <p style="color: var(--gray-700); margin-bottom: 24px;">Anda bisa kembali login kapan saja untuk mengecek tiket event Anda.</p>
+        <button class="btn" style="background: #ef4444; color: white; padding: 12px 32px; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px;" onclick="window.api.logoutUser()">
+          <i data-lucide="log-out" class="icon-sm"></i> Keluar Akun
+        </button>
       </div>
     </div>
 
@@ -312,19 +313,7 @@
       });
     }
 
-    // Handle Delete
-    async function hapusAkunPermanen() {
-      if(confirm('PERINGATAN: Apakah Anda yakin ingin menghapus akun ini secara permanen? Data event dan profil Anda tidak bisa dikembalikan!')) {
-        const user = JSON.parse(localStorage.getItem('eventra_user'));
-        const res = await window.api.deleteUser(user.id, user.role);
-        if(res.status === 'sukses') {
-          alert('Akun telah musnah.');
-          window.api.logoutUser();
-        } else {
-          alert(res.pesan);
-        }
-      }
-    }
+
   </script>
 </body>
 </html>

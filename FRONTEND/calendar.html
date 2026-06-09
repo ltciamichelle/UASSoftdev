@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventra | Calendar</title>
+  
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="css/styles.css?v=9">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+  <style>
+    /* FullCalendar Customizations */
+    .fc-theme-standard .fc-scrollgrid {
+      border: none;
+    }
+    .fc-toolbar-title {
+      font-size: 2rem !important;
+      font-weight: 800 !important;
+      color: var(--primary-dark) !important;
+    }
+    .fc-button-primary {
+      background-color: var(--primary) !important;
+      border-color: var(--primary) !important;
+      border-radius: 12px !important;
+      text-transform: capitalize !important;
+      font-weight: 600 !important;
+      padding: 8px 16px !important;
+    }
+    .fc-button-primary:hover {
+      background-color: var(--primary-dark) !important;
+      border-color: var(--primary-dark) !important;
+    }
+    .fc-button-active {
+      background-color: var(--primary-dark) !important;
+      border-color: var(--primary-dark) !important;
+    }
+    .fc-daygrid-day-number {
+      font-weight: 700;
+      color: var(--gray-700);
+      padding: 8px !important;
+    }
+    .fc-event {
+      border-radius: 8px;
+      border: none;
+      padding: 4px 8px;
+      margin-bottom: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: transform 0.2s;
+    }
+    .fc-event:hover {
+      transform: scale(1.02);
+    }
+    .fc-day-today {
+      background: rgba(102, 45, 145, 0.05) !important;
+    }
+    
+    /* Calendar Wrapper */
+    #calendar-wrapper {
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+      border: 1px solid var(--gray-200);
+    }
+    
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+      z-index: 9999; display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show { opacity: 1; }
+    .modal-card {
+      background: white; border-radius: 24px; padding: 40px; width: 100%; max-width: 500px;
+      position: relative; transform: translateY(20px); transition: transform 0.3s ease;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+    .modal-overlay.show .modal-card { transform: translateY(0); }
+    .modal-close {
+      position: absolute; top: 24px; right: 24px; background: none; border: none; cursor: pointer; color: var(--gray-400);
+    }
+    .modal-close:hover { color: var(--gray-900); }
+  </style>
+</head>
+<body>
+
+  <div class="bg-mesh"></div>
+
+  <header class="header-container">
+  <div class="nav-brand-container">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/logo%20eventra.png?v=2" alt="Eventra" style="width: 220px; height: auto; transform: translateY(4px); filter: brightness(0) invert(1); object-fit: contain;">
+    </a>
+  </div>
+
+  <!-- Fluid Island Nav -->
+  <nav class="fluid-nav">
+    <div class="nav-links">
+      <a href="search.html" class="nav-link">Discover</a>
+      <a href="activity.html" class="nav-link">Activity</a>
+      <a href="calendar.html" class="nav-link active">Calendar</a>
+    </div>
+  </nav>
+
+  <div class="nav-profile-container">
+    <a href="profile.html">
+      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="nav-avatar" alt="Profile">
+    </a>
+  </div>
+  </header>
+
+  <main class="container section" style="padding-top: 160px; max-width: 1200px;">
+    
+    <header class="gsap-reveal" style="margin-bottom: 48px; text-align: center;">
+      <span class="eyebrow">Jadwal Pintar</span>
+      <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 16px;">Kalender Anda.</h1>
+      <p style="color: var(--gray-700); font-size: 1.1rem;">Semua event yang Anda ikuti tersimpan rapi di sini.</p>
+    </header>
+
+    <div class="gsap-reveal" id="calendar-wrapper">
+      <div id="calendar"></div>
+    </div>
+
+  </main>
+
+  <!-- Event Detail Modal -->
+  <div class="modal-overlay" id="eventModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeEventModal()"><i data-lucide="x"></i></button>
+      <div style="display: flex; gap: 12px; margin-bottom: 16px;" id="modalTags">
+        <!-- Tags will be injected here -->
+      </div>
+      <h2 style="margin-bottom: 24px; font-size: 2rem; line-height: 1.2;" id="modalTitle">Judul Event</h2>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px;">
+        <div style="display: flex; gap: 16px; align-items: flex-start;">
+          <div style="background: rgba(102, 45, 145, 0.1); color: var(--primary); padding: 12px; border-radius: 12px;">
+            <i data-lucide="calendar"></i>
+          </div>
+          <div>
+            <p style="font-size: 0.9rem; color: var(--gray-400); font-weight: 600;">Tanggal & Waktu</p>
+            <p style="font-weight: 700; color: var(--gray-900); font-size: 1.1rem;" id="modalDateTime">10 Jun 2026, 09:00</p>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 16px; align-items: flex-start;">
+          <div style="background: rgba(102, 45, 145, 0.1); color: var(--primary); padding: 12px; border-radius: 12px;">
+            <i data-lucide="map-pin"></i>
+          </div>
+          <div>
+            <p style="font-size: 0.9rem; color: var(--gray-400); font-weight: 600;">Lokasi</p>
+            <p style="font-weight: 700; color: var(--gray-900); font-size: 1.1rem;" id="modalLocation">Gedung M Universitas Tarumanagara</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="#" target="_blank" id="btnGoogleSync" class="btn btn-primary" style="width: 100%; display: flex; justify-content: center; gap: 8px;">
+        <i data-lucide="calendar-plus"></i> Tambahkan ke Google Calendar
+      </a>
+    </div>
+  </div>
+
+  <script src="js/api.js?v=5"></script>
+  <script src="js/gsap-animations.js?v=4"></script>
+  <script>
+    lucide.createIcons();
+    window.api.updateNavbarAuth();
+
+    function closeEventModal() {
+      const modal = document.getElementById('eventModal');
+      modal.classList.remove('show');
+      setTimeout(() => modal.style.display = 'none', 300);
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Check login
+      const userStr = localStorage.getItem('eventra_user');
+      if (!userStr) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const calendarEl = document.getElementById('calendar');
+      
+      // Init Calendar first with empty events
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,listWeek'
+        },
+        buttonText: {
+          today: 'Hari Ini',
+          month: 'Bulan',
+          week: 'Minggu',
+          list: 'Daftar'
+        },
+        locale: 'id',
+        height: 700,
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+          const evt = info.event;
+          
+          document.getElementById('modalTitle').innerText = evt.title;
+          
+          const startDate = evt.start;
+          // Format visually
+          const dateStr = startDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+          const timeStr = evt.extendedProps.waktu || 'All Day';
+          document.getElementById('modalDateTime').innerText = `${dateStr} · ${timeStr}`;
+          document.getElementById('modalLocation').innerText = evt.extendedProps.lokasi || 'Tidak ada info lokasi';
+          
+          // Badge
+          let tagsHtml = `<span class="badge badge-primary">${evt.extendedProps.kategori || 'Event'}</span>`;
+          if(evt.extendedProps.tipe === 'Gratis') {
+            tagsHtml += `<span class="badge" style="background:rgba(22, 163, 74, 0.1); color:#16A34A;">Gratis</span>`;
+          } else {
+            tagsHtml += `<span class="badge" style="background:rgba(245, 158, 11, 0.1); color:#D97706;">Berbayar</span>`;
+          }
+          document.getElementById('modalTags').innerHTML = tagsHtml;
+
+          // Generate Google Calendar Link
+          // Format: 20260610T090000Z
+          const getGCalDateString = (dateObj, timeStr) => {
+            const pad = (n) => n < 10 ? '0'+n : n;
+            let d = new Date(dateObj);
+            
+            // Extract time if exists (HH:MM or HH:MM:SS)
+            if(timeStr && timeStr.includes(':')) {
+              const parts = timeStr.split(':');
+              d.setHours(parseInt(parts[0]), parseInt(parts[1]), 0);
+            }
+            
+            return d.getUTCFullYear() + 
+                   pad(d.getUTCMonth()+1) + 
+                   pad(d.getUTCDate()) + 'T' + 
+                   pad(d.getUTCHours()) + 
+                   pad(d.getUTCMinutes()) + 
+                   pad(d.getUTCSeconds()) + 'Z';
+          };
+
+          const startGCal = getGCalDateString(startDate, evt.extendedProps.waktu);
+          // Just add 2 hours for end time as default since we don't have end_time
+          let endDate = new Date(startDate);
+          if(evt.extendedProps.waktu && evt.extendedProps.waktu.includes(':')) {
+             const parts = evt.extendedProps.waktu.split(':');
+             endDate.setHours(parseInt(parts[0])+2, parseInt(parts[1]), 0);
+          } else {
+             endDate.setHours(endDate.getHours() + 2);
+          }
+          const endGCal = getGCalDateString(endDate, null);
+
+          const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(evt.title)}&dates=${startGCal}/${endGCal}&details=${encodeURIComponent('Daftar di Eventra: ' + (evt.extendedProps.deskripsi || ''))}&location=${encodeURIComponent(evt.extendedProps.lokasi || '')}`;
+          
+          document.getElementById('btnGoogleSync').href = gcalUrl;
+
+          // Open Modal
+          const modal = document.getElementById('eventModal');
+          modal.style.display = 'flex';
+          setTimeout(() => modal.classList.add('show'), 10);
+        }
+      });
+      
+      calendar.render();
+
+      // Fetch user's registered events
+      try {
+        const eventsRes = await window.api.fetchEventUser();
+        if(eventsRes && eventsRes.length > 0) {
+          const calendarEvents = eventsRes.map(e => {
+            // Random color based on category
+            const colors = {
+              'Seminar': '#662D91',
+              'Workshop': '#F59E0B',
+              'Lomba': '#10B981',
+              'Konser': '#EF4444'
+            };
+            const color = colors[e.kategori] || '#3B82F6';
+
+            return {
+              id: e.id,
+              title: e.nama_event,
+              start: e.tanggal,
+              backgroundColor: color,
+              borderColor: color,
+              extendedProps: {
+                waktu: e.waktu,
+                lokasi: e.lokasi,
+                kategori: e.kategori,
+                tipe: e.tipe_tiket,
+                deskripsi: e.deskripsi
+              }
+            };
+          });
+          
+          calendar.addEventSource(calendarEvents);
+        }
+      } catch (err) {
+        console.error("Gagal memuat event untuk kalender:", err);
+      }
+    });
+  </script>
+</body>
+</html>
