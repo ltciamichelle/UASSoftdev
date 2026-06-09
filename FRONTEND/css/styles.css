@@ -102,7 +102,7 @@ a {
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: 900px;
+  width: max-content;
   max-width: 90vw;
   z-index: 1000;
   background: rgba(255, 255, 255, 0.6);
@@ -112,10 +112,30 @@ a {
   border-radius: 100px;
   padding: 12px 32px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 32px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: all 0.5s var(--ease-spring);
+}
+
+.nav-brand-container {
+  position: fixed;
+  top: 32px;
+  left: 48px;
+  z-index: 1000;
+}
+
+.nav-profile-container {
+  position: fixed;
+  top: 32px;
+  right: 48px;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .nav-brand-container { left: 24px; top: 24px; }
+  .nav-profile-container { right: 24px; top: 24px; }
+  .fluid-nav { top: auto; bottom: 24px; } /* Move pill to bottom on mobile so it doesn't overlap logo */
 }
 
 .nav-brand {
