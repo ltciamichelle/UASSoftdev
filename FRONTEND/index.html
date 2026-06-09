@@ -47,23 +47,23 @@
         <h1 class="hero-title">Temukan Event <br>Kampus Favoritmu 🎉</h1>
         <p class="hero-subtitle">Seminar, workshop, lomba, konser —
           semua ada di sini. Mulai eksplorasi dan jadilah bagian dari momen tak terlupakan.</p>
-        <button class="btn btn-primary magnetic" onclick="window.location.href='search.html'">
+        <button class="btn btn-primary" onclick="window.location.href='search.html'">
           Jelajahi Event Sekarang
           <span class="btn-icon-wrapper"><i data-lucide="arrow-right" class="icon-sm"></i></span>
         </button>
 
-        <div class="hero-stats">
-          <div class="doppelrand-card" style="padding: 16px 24px; border-radius: 1rem;">
-            <h4 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 0;">120+</h4>
-            <span style="font-size: 0.85rem; font-weight: 700;">Event Aktif</span>
+        <div class="hero-stats" style="display: flex; gap: 16px; margin-top: 32px;">
+          <div class="doppelrand-card" style="padding: 24px 32px; border-radius: 1.25rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 140px;">
+            <h4 style="color: var(--primary); font-size: 2.5rem; font-weight: 900; line-height: 1; margin-bottom: 8px;">120+</h4>
+            <span style="font-size: 1rem; font-weight: 700; color: var(--gray-700);">Event Aktif</span>
           </div>
-          <div class="doppelrand-card" style="padding: 16px 24px; border-radius: 1rem;">
-            <h4 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 0;">32</h4>
-            <span style="font-size: 0.85rem; font-weight: 700;">Organisasi</span>
+          <div class="doppelrand-card" style="padding: 24px 32px; border-radius: 1.25rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 140px;">
+            <h4 style="color: var(--primary); font-size: 2.5rem; font-weight: 900; line-height: 1; margin-bottom: 8px;">32</h4>
+            <span style="font-size: 1rem; font-weight: 700; color: var(--gray-700);">Organisasi</span>
           </div>
-          <div class="doppelrand-card" style="padding: 16px 24px; border-radius: 1rem;">
-            <h4 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 0;">5.4K</h4>
-            <span style="font-size: 0.85rem; font-weight: 700;">Peserta</span>
+          <div class="doppelrand-card" style="padding: 24px 32px; border-radius: 1.25rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 140px;">
+            <h4 style="color: var(--primary); font-size: 2.5rem; font-weight: 900; line-height: 1; margin-bottom: 8px;">5.4K</h4>
+            <span style="font-size: 1rem; font-weight: 700; color: var(--gray-700);">Peserta</span>
           </div>
         </div>
       </div>
@@ -79,11 +79,11 @@
           <span class="eyebrow">Highlights</span>
           <h2>Lagi Trending di Kampus!</h2>
         </div>
-        <button class="btn btn-ghost magnetic">Lihat Semua</button>
+        <button class="btn btn-primary" onclick="window.location.href='search.html'">Lihat Semua</button>
       </div>
 
       <style>
-        .hero-layout { display: flex; align-items: center; justify-content: space-between; min-height: 90vh; gap: 40px; }
+        .hero-layout { display: flex; align-items: center; justify-content: space-between; padding-top: 80px; padding-bottom: 40px; gap: 40px; }
         .hero-content { max-width: 600px; }
         .hero-title { font-size: clamp(3rem, 5vw, 4.5rem); line-height: 1; }
         .hero-subtitle { font-size: 1.25rem; margin-bottom: 40px; color: var(--gray-700); }
@@ -152,7 +152,7 @@
           <p class="cta-subtitle">
             Gapai ribuan mahasiswa di kampusmu. Publikasikan event, kelola peserta, dan pantau pendaftaran dengan mudah.
           </p>
-          <button class="btn btn-primary magnetic cta-btn" onclick="window.location.href='buat_event.html'">
+          <button class="btn btn-primary cta-btn" onclick="window.location.href='buat_event.html'">
             Buat Event Sekarang
             <span class="btn-icon-wrapper"><i data-lucide="arrow-right"></i></span>
           </button>
@@ -286,7 +286,7 @@
                 </p>
                 <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
                   ${ticketDisplay}
-                  <button class="btn btn-primary magnetic" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'")}')" style="padding: 12px 24px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
+                  <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'")}')" style="padding: 12px 24px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
                 </div>
               </div>
             </div>

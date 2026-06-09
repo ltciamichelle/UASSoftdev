@@ -26,58 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     start: "top 90%",
   });
 
-  // 2. Magnetic Buttons
-  const magneticButtons = document.querySelectorAll('.magnetic');
-  
-  magneticButtons.forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const h = rect.width / 2;
-      const v = rect.height / 2;
-      
-      const x = e.clientX - rect.left - h;
-      const y = e.clientY - rect.top - v;
-      
-      // Move button slightly
-      gsap.to(btn, {
-        x: x * 0.3,
-        y: y * 0.3,
-        duration: 0.4,
-        ease: "power2.out"
-      });
-      
-      // Move icon wrapper even more for parallax effect inside button
-      const iconWrapper = btn.querySelector('.btn-icon-wrapper');
-      if (iconWrapper) {
-        gsap.to(iconWrapper, {
-          x: x * 0.5,
-          y: y * 0.5,
-          duration: 0.4,
-          ease: "power2.out"
-        });
-      }
-    });
-
-    btn.addEventListener('mouseleave', () => {
-      // Reset position
-      gsap.to(btn, {
-        x: 0,
-        y: 0,
-        duration: 0.7,
-        ease: "elastic.out(1, 0.3)"
-      });
-      
-      const iconWrapper = btn.querySelector('.btn-icon-wrapper');
-      if (iconWrapper) {
-        gsap.to(iconWrapper, {
-          x: 0,
-          y: 0,
-          duration: 0.7,
-          ease: "elastic.out(1, 0.3)"
-        });
-      }
-    });
-  });
+  // 2. Magnetic Buttons Removed
 
   // Auto-append circular icon wrapper to all primary and ghost buttons
   const allBtns = document.querySelectorAll('.btn-primary, .btn-ghost');
