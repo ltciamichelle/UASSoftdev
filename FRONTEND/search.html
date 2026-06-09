@@ -158,12 +158,7 @@
       </div>
     </div>
     
-    <!-- Pagination / Load More -->
-    <div class="gsap-reveal" style="text-align: center; margin-top: 64px;">
-      <button class="btn btn-ghost">Muat Lebih Banyak <i data-lucide="chevron-down" class="icon-sm" style="margin-left: 8px;"></i></button>
-    </div>
-
-  </main>
+    <!-- Pagination Removed -->  </main>
 
   <script src="js/api.js?v=4"></script>
   <script src="js/gsap-animations.js?v=3"></script>
@@ -216,7 +211,7 @@
                   <span class="badge badge-primary">${event.kategori}</span>
                   ${ticketDisplay}
                 </div>
-                <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'")}')" style="padding: 10px 20px; font-size: 0.9rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
+                <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="padding: 10px 20px; font-size: 0.9rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
               </div>
             </div>
           </div>

@@ -286,7 +286,7 @@
                 </p>
                 <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
                   ${ticketDisplay}
-                  <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'")}')" style="padding: 12px 24px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
+                  <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="padding: 12px 24px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
                 </div>
               </div>
             </div>
