@@ -293,7 +293,7 @@
             alert(res.message);
           }
         } catch (err) {
-          alert('Terjadi kesalahan jaringan.');
+          alert('Terjadi kesalahan jaringan atau server: ' + err.message);
         } finally {
           btn.innerText = originalText;
           btn.disabled = false;
