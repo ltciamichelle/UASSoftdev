@@ -260,7 +260,7 @@
 
         if (index === 0) {
           // Card 1 (Large, span 2)
-          article.className = 'doppelrand-card gsap-reveal bento-hero';
+          article.className = 'doppelrand-card bento-hero';
           article.style.gridColumn = window.innerWidth <= 900 ? 'span 1' : 'span 2';
           article.style.display = 'flex';
           article.style.flexDirection = window.innerWidth <= 900 ? 'column' : 'row';
@@ -293,7 +293,7 @@
           `;
         } else {
           // Card 2 & 3 (Small)
-          article.className = 'doppelrand-card gsap-reveal';
+          article.className = 'doppelrand-card';
 
           let ticketDisplay = event.tipe_tiket === 'Gratis'
             ? '<span class="badge badge-primary">Gratis</span>'
@@ -317,6 +317,12 @@
       });
 
       lucide.createIcons();
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo(container.children, 
+          { y: 50, opacity: 0, filter: "blur(10px)" }, 
+          { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.2, stagger: 0.15, ease: "power3.out" }
+        );
+      }
       if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
     });
   </script>

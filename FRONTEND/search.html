@@ -199,7 +199,7 @@
             : `<span style="font-weight: 900; color: var(--gray-900); font-size: 1.2rem;">${event.tipe_tiket}</span>`;
 
         const article = document.createElement('article');
-        article.className = 'doppelrand-card list-card gsap-reveal';
+        article.className = 'doppelrand-card list-card';
         if (index === events.length - 1) article.style.marginBottom = '0';
 
         article.innerHTML = `
@@ -224,6 +224,14 @@
       // Refresh Lucide Icons for dynamically added content
       lucide.createIcons();
       
+      // Manually animate dynamic elements since gsap-animations.js already ran
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo(container.children, 
+          { y: 50, opacity: 0, filter: "blur(10px)" }, 
+          { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.2, stagger: 0.15, ease: "power3.out" }
+        );
+      }
+
       // Refresh GSAP ScrollTrigger
       if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
