@@ -76,7 +76,7 @@ async function updateUser(data) {
 
 async function submitPendaftaran(data) {
     data.aksi = 'daftar';
-    const res = await fetch(`${BASE_URL}/pendaftaran.php`, {
+    const res = await fetch(`${BASE_URL}/registrasi_event.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -86,7 +86,7 @@ async function submitPendaftaran(data) {
 
 async function fetchEventUser(userId) {
     try {
-        const response = await fetch(`${BASE_URL}/pendaftaran.php?aksi=ambil_event_user&user_id=${userId}`);
+        const response = await fetch(`${BASE_URL}/registrasi_event.php?aksi=ambil_event_user&user_id=${userId}`);
         if (!response.ok) throw new Error(`HTTP error!`);
         const data = await response.json();
         return data.status === 'success' ? data.data : [];
