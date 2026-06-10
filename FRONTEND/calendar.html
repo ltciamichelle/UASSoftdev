@@ -85,6 +85,7 @@
       background: white; border-radius: 24px; padding: 40px; width: 100%; max-width: 500px;
       position: relative; transform: translateY(20px); transition: transform 0.3s ease;
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+      max-height: 100%; overflow-y: auto;
     }
     .modal-overlay.show .modal-card { transform: translateY(0); }
     .modal-close {
@@ -136,7 +137,7 @@
 
   <!-- Event Detail Modal -->
   <div class="modal-overlay" id="eventModal">
-    <div class="modal-card" style="padding: 0; overflow: hidden; border: 1px solid var(--gray-200); background: var(--white); border-radius: 24px; box-shadow: none;">
+    <div class="modal-card" style="padding: 0; border: 1px solid var(--gray-200); background: var(--white); border-radius: 24px; box-shadow: none;">
       <button class="modal-close" onclick="closeEventModal()" style="background: rgba(0,0,0,0.5); color: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; z-index: 10;"><i data-lucide="x"></i></button>
       
       <!-- Image Header -->
@@ -177,7 +178,7 @@
 
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
           <button id="btnDaftarEvent" class="btn btn-primary" style="flex: 1; padding: 14px; font-size: 1rem; border-radius: 16px; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: none;">
-            Daftar Event <i data-lucide="arrow-right"></i>
+            Daftar Event
           </button>
           <a href="#" target="_blank" id="btnGoogleSync" class="btn btn-secondary" style="flex: 1; padding: 14px; font-size: 1rem; border-radius: 16px; display: flex; justify-content: center; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--gray-200); color: var(--gray-800);">
             <i data-lucide="calendar-plus"></i> Google Calendar
@@ -189,7 +190,7 @@
 
   <!-- Registration Modal -->
   <div class="modal-overlay" id="registrationModal">
-    <div class="modal-card" style="padding: 0; border: 1px solid var(--gray-200); background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: none;">
+    <div class="modal-card" style="padding: 0; border: 1px solid var(--gray-200); background: var(--white); border-radius: 24px; box-shadow: none;">
       <button class="modal-close" onclick="closeRegistrationModal()" style="z-index: 10; top: 24px; right: 24px; color: var(--gray-700); background: var(--gray-100); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i data-lucide="x"></i></button>
       
       <div style="background: var(--primary-lighter); padding: 40px 32px 32px; position: relative; overflow: hidden;">

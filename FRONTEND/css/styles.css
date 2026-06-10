@@ -96,16 +96,17 @@ a {
 }
 
 .section {
-  padding: 200px 0; /* Macro-whitespace */
+  padding-top: 200px;
+  padding-bottom: 200px;
 }
 
 @media (max-width: 768px) {
   .container { padding: 0 24px; }
-  .section { padding: 80px 0; }
+  .section { padding-top: 80px; padding-bottom: 80px; }
 }
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
-  .section { padding: 60px 0; }
+  .section { padding-top: 60px; padding-bottom: 60px; }
 }
 
 .header-container {
