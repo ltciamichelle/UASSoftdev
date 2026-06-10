@@ -37,6 +37,11 @@ try {
         mysqli_query($koneksi, "ALTER TABLE registrasi_event ADD COLUMN status_pendaftaran VARCHAR(50) DEFAULT 'Terdaftar'");
     }
 
+    $check_kehadiran = mysqli_query($koneksi, "SHOW COLUMNS FROM registrasi_event LIKE 'kehadiran'");
+    if (mysqli_num_rows($check_kehadiran) == 0) {
+        mysqli_query($koneksi, "ALTER TABLE registrasi_event ADD COLUMN kehadiran ENUM('Tidak Hadir', 'Hadir') DEFAULT 'Tidak Hadir'");
+    }
+
     // 3. Add harga_event to events table if missing
     $check_harga = mysqli_query($koneksi, "SHOW COLUMNS FROM events LIKE 'harga_event'");
     if (mysqli_num_rows($check_harga) == 0) {
