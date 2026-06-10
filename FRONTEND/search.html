@@ -176,6 +176,14 @@
       const container = document.getElementById('events-container');
       const events = await window.api.fetchEvents();
 
+      const userStr = localStorage.getItem('eventra_user');
+      let registeredEventIds = new Set();
+      if (userStr) {
+        const userObj = JSON.parse(userStr);
+        const userEvents = await window.api.fetchEventUser(userObj.user_id || userObj.id);
+        userEvents.forEach(e => registeredEventIds.add(parseInt(e.id)));
+      }
+
       if (events.length === 0) {
         container.innerHTML = `
           <div class="doppelrand-card list-card" style="text-align:center; padding: 64px;">
@@ -216,7 +224,10 @@
                   <span class="badge badge-primary">${event.kategori}</span>
                   ${ticketDisplay}
                 </div>
-                <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="padding: 10px 20px; font-size: 0.9rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
+                ${registeredEventIds.has(parseInt(event.id))
+                  ? `<button class="btn" disabled style="padding: 10px 20px; font-size: 0.9rem; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">Sudah Terdaftar <i data-lucide="check" class="icon-sm"></i></button>`
+                  : `<button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="padding: 10px 20px; font-size: 0.9rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>`
+                }
               </div>
             </div>
           </div>

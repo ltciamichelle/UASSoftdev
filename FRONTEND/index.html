@@ -221,6 +221,14 @@
       const container = document.getElementById('hero-events-container');
       const events = await window.api.fetchEvents();
 
+      const userStr = localStorage.getItem('eventra_user');
+      let registeredEventIds = new Set();
+      if (userStr) {
+        const userObj = JSON.parse(userStr);
+        const userEvents = await window.api.fetchEventUser(userObj.user_id || userObj.id);
+        userEvents.forEach(e => registeredEventIds.add(parseInt(e.id)));
+      }
+
       if (events.length === 0) {
         // Fallback to dummy data for local testing
         events.push(
@@ -291,7 +299,10 @@
                 </p>
                 <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
                   ${ticketDisplay}
-                  <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="width: 100%; padding: 12px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
+                  ${registeredEventIds.has(parseInt(event.id))
+                    ? `<button class="btn" disabled style="width: 100%; padding: 12px; font-size: 0.95rem; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">Sudah Terdaftar <i data-lucide="check" class="icon-sm"></i></button>`
+                    : `<button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="width: 100%; padding: 12px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>`
+                  }
                 </div>
               </div>
             </div>
@@ -426,7 +437,7 @@
 
         const form = document.getElementById('registrationForm');
         const formData = new FormData(form);
-        formData.append('user_id', user.id);
+        formData.append('user_id', user.user_id || user.id);
 
         try {
           const res = await window.api.submitPendaftaran(formData);
