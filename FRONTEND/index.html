@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" style="background-color: #662D91;">
 
 <head>
   <meta charset="UTF-8">
@@ -359,6 +359,33 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // --- CTA Role Logic ---
+      const userStr = localStorage.getItem('eventra_user');
+      const ctaBtn = document.querySelector('.cta-btn');
+      
+      if (ctaBtn) {
+        if (!userStr) {
+          ctaBtn.innerHTML = `Login untuk Membuat Event <span class="btn-icon-wrapper"><i data-lucide="log-in"></i></span>`;
+          ctaBtn.onclick = () => window.location.href = 'login.html';
+        } else {
+          const userObj = JSON.parse(userStr);
+          if (userObj.role === 'mahasiswa') {
+            ctaBtn.innerHTML = `Daftar Menjadi Penyelenggara <span class="btn-icon-wrapper"><i data-lucide="arrow-right"></i></span>`;
+            ctaBtn.onclick = () => window.location.href = 'profile.html';
+          } else if (userObj.role === 'non_mahasiswa') {
+            ctaBtn.innerHTML = `Hanya Mahasiswa yang bisa membuat Event <span class="btn-icon-wrapper"><i data-lucide="info"></i></span>`;
+            ctaBtn.onclick = () => window.location.href = 'profile.html';
+            ctaBtn.classList.remove('btn-primary');
+            ctaBtn.classList.add('btn-ghost');
+            ctaBtn.style.color = 'var(--gray-400)';
+            ctaBtn.style.background = 'var(--gray-100)';
+            ctaBtn.style.cursor = 'not-allowed';
+            ctaBtn.onclick = null;
+          }
+          // if role === 'panitia', default HTML "Buat Event Sekarang" will stay.
+        }
+      }
+
       document.getElementById('registrationForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = JSON.parse(localStorage.getItem('eventra_user'));
