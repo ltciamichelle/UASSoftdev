@@ -137,17 +137,17 @@
           <div class="card-inner" style="padding: 32px;">
             <div class="filter-group">
               <h4 style="margin-bottom: 16px;">Kategori</h4>
-              <label class="filter-option"><input type="checkbox" checked> Semua</label>
-              <label class="filter-option"><input type="checkbox"> Seminar</label>
-              <label class="filter-option"><input type="checkbox"> Workshop</label>
-              <label class="filter-option"><input type="checkbox"> Lomba</label>
+              <label class="filter-option"><input type="checkbox" class="category-filter" value="Semua" checked> Semua</label>
+              <label class="filter-option"><input type="checkbox" class="category-filter" value="Seminar"> Seminar</label>
+              <label class="filter-option"><input type="checkbox" class="category-filter" value="Workshop"> Workshop</label>
+              <label class="filter-option"><input type="checkbox" class="category-filter" value="Lomba"> Lomba</label>
             </div>
             
             <div class="filter-group">
               <h4 style="margin-bottom: 16px;">Biaya</h4>
-              <label class="filter-option"><input type="radio" name="fee" checked> Semua</label>
-              <label class="filter-option"><input type="radio" name="fee"> Gratis</label>
-              <label class="filter-option"><input type="radio" name="fee"> Berbayar</label>
+              <label class="filter-option"><input type="radio" name="fee" class="fee-filter" value="Semua" checked> Semua</label>
+              <label class="filter-option"><input type="radio" name="fee" class="fee-filter" value="Gratis"> Gratis</label>
+              <label class="filter-option"><input type="radio" name="fee" class="fee-filter" value="Berbayar"> Berbayar</label>
             </div>
           </div>
         </div>
@@ -171,44 +171,104 @@
     lucide.createIcons();
     window.api.updateNavbarAuth();
 
+    let allEvents = [];
+    let registeredEventIds = new Set();
+    const container = document.getElementById('events-container');
+
     // Render Events Dynamically
     document.addEventListener("DOMContentLoaded", async () => {
-      const container = document.getElementById('events-container');
-      const events = await window.api.fetchEvents();
+      allEvents = await window.api.fetchEvents();
 
       const userStr = localStorage.getItem('eventra_user');
-      let registeredEventIds = new Set();
       if (userStr) {
         const userObj = JSON.parse(userStr);
         const userEvents = await window.api.fetchEventUser(userObj.user_id || userObj.id);
         userEvents.forEach(e => registeredEventIds.add(parseInt(e.id)));
       }
 
-      if (events.length === 0) {
+      renderEvents(allEvents);
+
+      // Event Listeners for Filters
+      document.querySelector('.search-input').addEventListener('input', applyFilters);
+      
+      const categoryCheckboxes = document.querySelectorAll('.category-filter');
+      categoryCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+          // If "Semua" is checked, uncheck others, and vice versa
+          if (this.value === 'Semua' && this.checked) {
+            categoryCheckboxes.forEach(c => { if(c.value !== 'Semua') c.checked = false; });
+          } else if (this.value !== 'Semua' && this.checked) {
+            document.querySelector('.category-filter[value="Semua"]').checked = false;
+          }
+          // If everything is unchecked, default back to "Semua"
+          let anyChecked = Array.from(categoryCheckboxes).some(c => c.checked);
+          if(!anyChecked) document.querySelector('.category-filter[value="Semua"]').checked = true;
+          
+          applyFilters();
+        });
+      });
+
+      document.querySelectorAll('.fee-filter').forEach(radio => {
+        radio.addEventListener('change', applyFilters);
+      });
+    });
+
+    function applyFilters() {
+      const searchQuery = document.querySelector('.search-input').value.toLowerCase();
+      
+      const categoryCheckboxes = document.querySelectorAll('.category-filter:checked');
+      const selectedCategories = Array.from(categoryCheckboxes).map(cb => cb.value);
+      
+      const selectedFee = document.querySelector('.fee-filter:checked').value;
+
+      const filteredEvents = allEvents.filter(event => {
+        // 1. Search Query
+        const matchesSearch = event.nama_event.toLowerCase().includes(searchQuery) || 
+                              event.lokasi.toLowerCase().includes(searchQuery) ||
+                              event.kategori.toLowerCase().includes(searchQuery);
+        
+        // 2. Category
+        let matchesCategory = true;
+        if (!selectedCategories.includes('Semua')) {
+          matchesCategory = selectedCategories.includes(event.kategori);
+        }
+
+        // 3. Fee
+        let matchesFee = true;
+        if (selectedFee !== 'Semua') {
+          matchesFee = event.tipe_tiket === selectedFee;
+        }
+
+        return matchesSearch && matchesCategory && matchesFee;
+      });
+
+      renderEvents(filteredEvents);
+    }
+
+    function renderEvents(eventsToRender) {
+      if (eventsToRender.length === 0) {
         container.innerHTML = `
           <div class="doppelrand-card list-card" style="text-align:center; padding: 64px;">
-            <p style="font-size: 1.2rem; color: var(--gray-700);">Belum ada event yang dipublikasikan saat ini.</p>
+            <p style="font-size: 1.2rem; color: var(--gray-700);">Tidak ada event yang sesuai dengan filter.</p>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = ''; // Clear loader
+      container.innerHTML = ''; 
       
-      events.forEach((event, index) => {
-        // Build image URL
+      eventsToRender.forEach((event, index) => {
         const imageUrl = event.banner_img 
             ? `${window.api.BASE_URL}/uploads/${event.banner_img}` 
             : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600';
 
-        // Check if ticket is free
         let ticketDisplay = event.tipe_tiket === 'Gratis' 
             ? '<span style="font-weight: 900; color: var(--primary-dark); font-size: 1.2rem;">Gratis</span>'
             : `<span style="font-weight: 900; color: var(--gray-900); font-size: 1.2rem;">${event.tipe_tiket}</span>`;
 
         const article = document.createElement('article');
         article.className = 'doppelrand-card list-card';
-        if (index === events.length - 1) article.style.marginBottom = '0';
+        if (index === eventsToRender.length - 1) article.style.marginBottom = '0';
 
         article.innerHTML = `
           <div class="card-inner">
@@ -235,22 +295,12 @@
         container.appendChild(article);
       });
 
-      // Refresh Lucide Icons for dynamically added content
       lucide.createIcons();
       
-      // Manually animate dynamic elements since gsap-animations.js already ran
-      if (typeof gsap !== 'undefined') {
-        gsap.fromTo(container.children, 
-          { y: 50, opacity: 0, filter: "blur(10px)" }, 
-          { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.2, stagger: 0.15, ease: "power3.out" }
-        );
-      }
-
-      // Refresh GSAP ScrollTrigger
       if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
       }
-    });
+    }
 
     // Registration Modal Logic
     function openRegistrationModal(eventId, eventName, tipeTiket = 'Gratis', hargaEvent = 0, bankName = '', bankRekening = '', bankAtasNama = '') {
