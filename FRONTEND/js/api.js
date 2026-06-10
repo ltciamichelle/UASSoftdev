@@ -115,7 +115,7 @@ function logoutUser() {
  */
 function updateNavbarAuth() {
     const userStr = localStorage.getItem('eventra_user');
-    const avatarLink = document.querySelector('.fluid-nav > a[href="profile.html"]');
+    const avatarLink = document.querySelector('.nav-profile-container > a');
     
     // Jika tidak ada avatarLink (misal di halaman login), return.
     if (!avatarLink) return;
