@@ -55,10 +55,12 @@ if ($data['aksi'] === 'daftar') {
         exit;
     }
 
-    $stmt_count = $pdo->prepare("SELECT COUNT(*) FROM users WHERE role = ?");
-    $stmt_count->execute([$role]);
-    $next_number = $stmt_count->fetchColumn() + 1;
-    $loginId_otomatis = $prefix . sprintf('%03d', $next_number);
+    $stmt_max = $pdo->prepare("SELECT MAX(CAST(SUBSTRING(loginId, 5) AS UNSIGNED)) FROM users WHERE role = ?");
+    $stmt_max->execute([$role]);
+    $max_number = $stmt_max->fetchColumn();
+    $next_number = ($max_number ? $max_number : 0) + 1;
+    
+    $loginId_otomatis = $prefix . str_pad($next_number, 3, '0', STR_PAD_LEFT);
 
     $password_aman = password_hash($data['password'], PASSWORD_BCRYPT);
 
