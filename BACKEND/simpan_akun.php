@@ -116,7 +116,7 @@ if ($data['aksi'] === 'daftar') {
         $pdo->commit();
         echo json_encode([
             'status' => 'sukses', 
-            'pesan' => "Pendaftaran Berhasil! ID Login Anda: $loginId_otomatis"
+            'pesan' => "Pendaftaran Berhasil!"
         ]);
 
     } catch (PDOException $e) {

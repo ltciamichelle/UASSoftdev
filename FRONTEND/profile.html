@@ -170,8 +170,6 @@
       <div id="profileSubtitleContainer" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 32px; flex-wrap: wrap;">
         <span style="font-weight: 600; color: var(--gray-700);">@<span id="profileUsername">username</span></span>
         <span style="color: var(--gray-300);">•</span>
-        <span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: var(--gray-600); background: var(--gray-100); padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 500;" id="profileLoginId">ID</span>
-        <span style="color: var(--gray-300);">•</span>
         <span style="background: var(--primary-lighter); color: var(--primary-dark); padding: 4px 14px; border-radius: 100px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;" id="profileRole">Role</span>
       </div>
       
@@ -290,7 +288,6 @@
       document.getElementById('profileInitials').innerText = user.nama.charAt(0).toUpperCase();
       document.getElementById('profileName').innerText = user.nama;
       document.getElementById('profileUsername').innerText = user.username;
-      document.getElementById('profileLoginId').innerText = user.loginId;
       document.getElementById('profileRole').innerText = user.role;
 
       // Populate Edit Form
