@@ -354,7 +354,7 @@
           if (confirm('Anda yakin ingin mendaftar sebagai Panitia?')) {
             document.getElementById('btnRegisterPanitia').innerText = 'Memproses...';
             try {
-              const res = await window.api.registerPanitia(user.id);
+              const res = await window.api.registerPanitia(user.user_id);
               if (res.status === 'sukses') {
                 alert(res.pesan);
                 localStorage.setItem('eventra_user', JSON.stringify(res.user));
@@ -376,7 +376,7 @@
 
         // Fetch Panitia Events
         async function loadPanitiaDashboard() {
-          const events = await window.api.getEventPanitia(user.id);
+          const events = await window.api.getEventPanitia(user.user_id);
           if (events.length === 0) {
             eventContainer.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 24px;">Belum ada event yang diunggah.</p>';
             return;
