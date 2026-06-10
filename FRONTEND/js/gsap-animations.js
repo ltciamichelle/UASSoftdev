@@ -60,4 +60,40 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
+
+  // --- Page Transition Curtains ---
+  const cLeft = document.querySelector('.curtain-left');
+  const cRight = document.querySelector('.curtain-right');
+  const cLogo = document.querySelector('.curtain-logo');
+
+  if (cLeft && cRight && cLogo) {
+    // Opening animation (First load)
+    const tl = gsap.timeline();
+    tl.to(cLogo, { opacity: 0, scale: 0.8, duration: 0.4, ease: "power2.out", delay: 0.2 })
+      .to([cLeft, cRight], { scaleX: 0, duration: 0.7, ease: "power4.inOut" }, "-=0.2");
+  }
+
+  // Intercept links for closing animation
+  document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#') && !href.startsWith('javascript:') && link.target !== '_blank') {
+        const currentUrl = window.location.pathname.split('/').pop() || 'index.html';
+        const targetUrl = href.split('/').pop();
+
+        // Only animate if going to a different page
+        if (currentUrl !== targetUrl && cLeft && cRight && cLogo) {
+          e.preventDefault();
+          const tl = gsap.timeline({
+            onComplete: () => {
+              window.location.href = href;
+            }
+          });
+          tl.to([cLeft, cRight], { scaleX: 1, duration: 0.6, ease: "power4.inOut" })
+            .to(cLogo, { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }, "-=0.2");
+        }
+      }
+    });
+  });
+
 });
