@@ -299,7 +299,14 @@
           body: formData
         });
 
-        const result = await response.json();
+        const rawText = await response.text();
+        let result;
+        try {
+            result = JSON.parse(rawText);
+        } catch (err) {
+            console.error("RAW RESPONSE:", rawText);
+            throw new Error("Server Error: " + rawText.substring(0, 100));
+        }
         
         if (result.status === 'success') {
           // Success animation then redirect
@@ -317,7 +324,7 @@
 
       } catch (error) {
         console.error('Error submitting form:', error);
-        window.api.showToast('Terjadi kesalahan jaringan atau server. Pastikan backend berjalan.', 'error');
+        window.api.showToast(error.message || 'Terjadi kesalahan jaringan atau server. Pastikan backend berjalan.', 'error');
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
       }
