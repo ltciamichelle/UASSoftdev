@@ -78,10 +78,10 @@ if ($aksi === 'tambah_event') {
     $lokasi           = mysqli_real_escape_string($koneksi, $_POST['lokasi']);
     $tipe_tiket       = mysqli_real_escape_string($koneksi, $_POST['tipe_tiket']);
     $harga_event      = isset($_POST['harga_event']) ? (int)$_POST['harga_event'] : 0;
-    $slot_kursi       = isset($_POST['slot_kursi']) ? mysqli_real_escape_string($koneksi, $_POST['slot_kursi']) : 0;
-    $user_id          = isset($_POST['user_id']) ? mysqli_real_escape_string($koneksi, $_POST['user_id']) : 'NULL';
+    $slot_kursi       = isset($_POST['slot_kursi']) ? (int)$_POST['slot_kursi'] : 0;
+    $user_id          = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
 
-    if (empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket)) {
+    if (empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($lokasi)) {
         echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi!"]);
         exit;
     }
@@ -95,9 +95,17 @@ if ($aksi === 'tambah_event') {
         $ekstensi_file = strtolower(pathinfo($_FILES["banner_img"]["name"], PATHINFO_EXTENSION));
         
         $allowed_ext = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $_FILES["banner_img"]["tmp_name"]);
-        finfo_close($finfo);
+        
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $_FILES["banner_img"]["tmp_name"]);
+            finfo_close($finfo);
+        } elseif (function_exists('mime_content_type')) {
+            $mime = mime_content_type($_FILES["banner_img"]["tmp_name"]);
+        } else {
+            $mime = $_FILES["banner_img"]["type"];
+        }
+
         $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
         if (!in_array($ekstensi_file, $allowed_ext) || !in_array($mime, $allowed_mime)) {

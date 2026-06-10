@@ -73,9 +73,15 @@ if ($aksi === 'daftar') {
         $ekstensi_file = strtolower(pathinfo($_FILES["bukti_bayar"]["name"], PATHINFO_EXTENSION));
         $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $_FILES["bukti_bayar"]["tmp_name"]);
-        finfo_close($finfo);
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $_FILES["bukti_bayar"]["tmp_name"]);
+            finfo_close($finfo);
+        } elseif (function_exists('mime_content_type')) {
+            $mime = mime_content_type($_FILES["bukti_bayar"]["tmp_name"]);
+        } else {
+            $mime = $_FILES["bukti_bayar"]["type"];
+        }
 
         if (!in_array($mime, $allowed_mime)) {
             echo json_encode(["status" => "error", "message" => "Format file bukti pembayaran tidak valid."]);
