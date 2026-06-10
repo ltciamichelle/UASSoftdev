@@ -77,6 +77,7 @@ if ($aksi === 'tambah_event') {
     $waktu_selesai    = mysqli_real_escape_string($koneksi, $_POST['waktu_selesai']);
     $lokasi           = mysqli_real_escape_string($koneksi, $_POST['lokasi']);
     $tipe_tiket       = mysqli_real_escape_string($koneksi, $_POST['tipe_tiket']);
+    $harga_event      = isset($_POST['harga_event']) ? (int)$_POST['harga_event'] : 0;
     $slot_kursi       = isset($_POST['slot_kursi']) ? mysqli_real_escape_string($koneksi, $_POST['slot_kursi']) : 0;
     $user_id          = isset($_POST['user_id']) ? mysqli_real_escape_string($koneksi, $_POST['user_id']) : 'NULL';
 
@@ -116,8 +117,8 @@ if ($aksi === 'tambah_event') {
         }
     }
 
-    $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, slot_kursi, banner_img) 
-                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', '$slot_kursi', '$nama_file_gambar')";
+    $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, harga_event, slot_kursi, banner_img) 
+                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', $harga_event, '$slot_kursi', '$nama_file_gambar')";
 
     if (mysqli_query($koneksi, $query_insert)) {
         echo json_encode(["status" => "success", "message" => "Event berhasil dibuat dan dipublikasikan!"]);

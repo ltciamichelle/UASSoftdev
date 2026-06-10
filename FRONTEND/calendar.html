@@ -200,6 +200,7 @@
       
       <div style="background: var(--primary-lighter); padding: 40px 32px 32px; position: relative; overflow: hidden;">
          <span style="background: var(--primary); padding: 6px 14px; border-radius: 50px; color: white; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; position: relative; z-index: 2;">Pendaftaran Tiket</span>
+         <span id="reg_event_price_tag" style="display: none; margin-left: 8px; background: #16A34A; padding: 6px 14px; border-radius: 50px; color: white; font-size: 0.75rem; font-weight: 700; position: relative; z-index: 2;">Rp 0</span>
          <h3 style="color: var(--primary-dark); margin-top: 16px; font-size: 1.8rem; font-weight: 800; line-height: 1.2; position: relative; z-index: 2;" id="reg_event_name">Nama Event</h3>
       </div>
       
@@ -220,8 +221,14 @@
             </div>
             <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
               <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Instansi / Fakultas</label>
-              <input type="text" id="reg_instansi" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
+              <input type="text" id="reg_instansi" name="instansi" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
             </div>
+        </div>
+        <div class="input-group" id="buktiBayarGroup" style="display: none; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Upload Bukti Pembayaran</label>
+          <div style="padding: 16px; border: 2px dashed var(--gray-300); border-radius: 12px; text-align: center; background: var(--gray-50);">
+            <input type="file" id="reg_bukti_bayar" name="bukti_bayar" accept="image/*" style="width: 100%; font-size: 0.9rem;">
+          </div>
         </div>
         <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="margin-top: 12px; padding: 16px; font-size: 1.05rem; font-weight: 700; border-radius: 16px; box-shadow: none; display: flex; justify-content: center; align-items: center; gap: 10px;">
           Konfirmasi Pendaftaran <i data-lucide="check-circle"></i>
@@ -242,20 +249,33 @@
       setTimeout(() => modal.style.display = 'none', 300);
     }
 
-    function openRegistrationModal(eventId, eventName) {
+    function openRegistrationModal(eventId, eventName, tipeTiket = 'Gratis', hargaEvent = 0) {
       const userStr = localStorage.getItem('eventra_user');
       if (!userStr) {
         window.location.href = 'login.html';
         return;
       }
       
-      const user = JSON.parse(localStorage.getItem('eventra_user'));
+      const user = JSON.parse(userStr);
       document.getElementById('reg_event_id').value = eventId;
       document.getElementById('reg_event_name').innerText = eventName;
       document.getElementById('reg_nama').value = user.nama || '';
       document.getElementById('reg_email').value = user.email || '';
       document.getElementById('reg_wa').value = user.phone || '';
       document.getElementById('reg_instansi').value = user.fakultas || user.pekerjaan || '';
+
+      const buktiGroup = document.getElementById('buktiBayarGroup');
+      const buktiInput = document.getElementById('reg_bukti_bayar');
+      if (tipeTiket === 'Berbayar') {
+        buktiGroup.style.display = 'flex';
+        buktiInput.required = true;
+        document.getElementById('reg_event_price_tag').innerText = `Rp ${parseInt(hargaEvent).toLocaleString('id-ID')}`;
+        document.getElementById('reg_event_price_tag').style.display = 'inline-block';
+      } else {
+        buktiGroup.style.display = 'none';
+        buktiInput.required = false;
+        document.getElementById('reg_event_price_tag').style.display = 'none';
+      }
       
       closeEventModal();
       
@@ -283,17 +303,16 @@
           btn.innerText = 'Memproses...';
           btn.disabled = true;
 
-          const data = {
-            user_id: user.id,
-            event_id: document.getElementById('reg_event_id').value,
-            nama_lengkap: document.getElementById('reg_nama').value,
-            email: document.getElementById('reg_email').value,
-            no_wa: document.getElementById('reg_wa').value,
-            instansi: document.getElementById('reg_instansi').value
-          };
+          const form = document.getElementById('registrationForm');
+          const formData = new FormData(form);
+          formData.append('user_id', user.id);
+          // Ensure event_id is captured correctly if not in FormData
+          if(!formData.has('event_id')) {
+              formData.append('event_id', document.getElementById('reg_event_id').value);
+          }
 
           try {
-            const res = await window.api.submitPendaftaran(data);
+            const res = await window.api.submitPendaftaran(formData);
             if (res.status === 'success') {
               window.api.showToast('Pendaftaran Berhasil! Silakan cek menu Activity.', 'success');
               closeRegistrationModal();
@@ -366,7 +385,7 @@
           // Register Button
           const btnDaftar = document.getElementById('btnDaftarEvent');
           btnDaftar.onclick = function() {
-            openRegistrationModal(evt.id, evt.title);
+            openRegistrationModal(evt.id, evt.title, evt.extendedProps.tipe, evt.extendedProps.harga_event || 0);
           };
 
           // Generate Google Calendar Link

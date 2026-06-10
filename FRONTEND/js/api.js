@@ -75,13 +75,22 @@ async function updateUser(data) {
 }
 
 async function submitPendaftaran(data) {
-    data.aksi = 'daftar';
-    const res = await fetch(`${BASE_URL}/registrasi_event.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    return await res.json();
+    if (data instanceof FormData) {
+        data.append('aksi', 'daftar');
+        const res = await fetch(`${BASE_URL}/registrasi_event.php`, {
+            method: 'POST',
+            body: data
+        });
+        return await res.json();
+    } else {
+        data.aksi = 'daftar';
+        const res = await fetch(`${BASE_URL}/registrasi_event.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        return await res.json();
+    }
 }
 
 async function fetchEventUser(userId) {
@@ -227,6 +236,31 @@ function showToast(message, type = 'success') {
     }, 4000);
 }
 
+async function getPendaftarEvent(eventId) {
+    try {
+        const res = await fetch(`${BASE_URL}/dashboard_panitia.php?aksi=ambil_pendaftar&event_id=${eventId}`);
+        if (!res.ok) throw new Error("Network error");
+        const data = await res.json();
+        return data.status === 'success' ? data.data : [];
+    } catch (err) {
+        console.error("Gagal get pendaftar:", err);
+        return [];
+    }
+}
+
+async function verifikasiPembayaran(registrasiId, statusBaru) {
+    try {
+        const res = await fetch(`${BASE_URL}/dashboard_panitia.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ aksi: 'verifikasi_pembayaran', registrasi_id: registrasiId, status: statusBaru })
+        });
+        return await res.json();
+    } catch (err) {
+        return { status: 'error', message: 'Gagal jaringan' };
+    }
+}
+
 // Export fungsionalitas agar bisa digunakan di file lain jika module, 
 // atau bisa dipanggil langsung dari script HTML.
 window.api = {
@@ -244,6 +278,8 @@ window.api = {
     getEventPanitia,
     hitungPendaftar,
     incrementEventView,
+    getPendaftarEvent,
+    verifikasiPembayaran,
     BASE_URL,
     showToast
 };

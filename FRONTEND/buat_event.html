@@ -193,6 +193,13 @@
                 <option value="Berbayar">Berbayar</option>
               </select>
             </div>
+            <div class="form-group" id="hargaGroup" style="display: none;">
+              <label class="form-label">Harga Tiket (Rp)</label>
+              <input type="number" class="form-control" name="harga_event" id="harga_event" placeholder="Cth: 50000" min="0">
+            </div>
+          </div>
+
+          <div class="form-row">
             <div class="form-group">
               <label class="form-label">Kuota Peserta</label>
               <input type="number" class="form-control" name="slot_kursi" placeholder="Cth: 150" required>
@@ -237,6 +244,21 @@
         reader.readAsDataURL(this.files[0]);
       } else {
         imagePreview.style.display = 'none';
+      }
+    });
+
+    // Tipe Tiket Logic
+    const tipeTiket = document.querySelector('select[name="tipe_tiket"]');
+    const hargaGroup = document.getElementById('hargaGroup');
+    const hargaInput = document.getElementById('harga_event');
+    tipeTiket.addEventListener('change', function() {
+      if (this.value === 'Berbayar') {
+        hargaGroup.style.display = 'block';
+        hargaInput.required = true;
+      } else {
+        hargaGroup.style.display = 'none';
+        hargaInput.required = false;
+        hargaInput.value = '';
       }
     });
 

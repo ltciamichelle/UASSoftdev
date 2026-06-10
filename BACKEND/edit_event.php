@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Menangkap data dari form-data
 $event_id         = $_POST['event_id_primary'] ?? ''; 
-$id_event         = $_POST['id_event'] ?? '';
 $nama_event       = $_POST['nama_event'] ?? '';
 $kategori         = $_POST['kategori'] ?? '';
 $tanggal          = $_POST['tanggal'] ?? '';
@@ -19,8 +18,8 @@ $tanggal_selesai  = $_POST['tanggal_selesai'] ?? '';
 $waktu_selesai    = $_POST['waktu_selesai'] ?? '';
 $lokasi           = $_POST['lokasi'] ?? '';
 $tipe_tiket       = $_POST['tipe_tiket'] ?? '';
+$harga_event      = isset($_POST['harga_event']) ? (int)$_POST['harga_event'] : 0;
 $slot_kursi       = $_POST['slot_kursi'] ?? 0;
-$deskripsi        = $_POST['deskripsi'] ?? '';
 
 // Validasi field yang wajib diisi
 if (empty($event_id) || empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket)) {
@@ -55,13 +54,13 @@ if (isset($_FILES['banner_img']) && $_FILES['banner_img']['error'] === 0) {
 
 // 3. Jalankan query update menggunakan Prepared Statements (Aman dari SQL Injection)
 $query_update = "UPDATE events SET 
-                    id_event = ?, nama_event = ?, kategori = ?, tanggal = ?, waktu = ?, 
-                    tanggal_selesai = ?, waktu_selesai = ?, lokasi = ?, tipe_tiket = ?, 
-                    slot_kursi = ?, deskripsi = ?, banner_img = ? 
+                    nama_event = ?, kategori = ?, tanggal = ?, waktu = ?, 
+                    tanggal_selesai = ?, waktu_selesai = ?, lokasi = ?, tipe_tiket = ?, harga_event = ?, 
+                    slot_kursi = ?, banner_img = ? 
                  WHERE id = ?";
 
 $stmt_update = mysqli_prepare($koneksi, $query_update);
-mysqli_stmt_bind_param($stmt_update, "ssssssssssssi", $id_event, $nama_event, $kategori, $tanggal, $waktu, $tanggal_selesai, $waktu_selesai, $lokasi, $tipe_tiket, $slot_kursi, $deskripsi, $nama_file_gambar, $event_id);
+mysqli_stmt_bind_param($stmt_update, "ssssssssiisi", $nama_event, $kategori, $tanggal, $waktu, $tanggal_selesai, $waktu_selesai, $lokasi, $tipe_tiket, $harga_event, $slot_kursi, $nama_file_gambar, $event_id);
 
 if (mysqli_stmt_execute($stmt_update)) {
     echo json_encode(["status" => "success", "message" => "Event berhasil diperbarui!"]);

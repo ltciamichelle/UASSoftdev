@@ -14,6 +14,13 @@ include 'koneksi.php';
 $input_mentah = file_get_contents('php://input');
 $data = json_decode($input_mentah, true);
 
+// Support FormData ($_POST) if data is not JSON
+if (empty($data) && !empty($_POST)) {
+    $data = $_POST;
+} else if (empty($data)) {
+    $data = [];
+}
+
 // Fallback ke GET parameter jika bukan POST JSON
 $aksi = isset($data['aksi']) ? $data['aksi'] : (isset($_GET['aksi']) ? $_GET['aksi'] : '');
 
@@ -21,12 +28,12 @@ $aksi = isset($data['aksi']) ? $data['aksi'] : (isset($_GET['aksi']) ? $_GET['ak
 // 1. DAFTAR EVENT
 // ==========================================
 if ($aksi === 'daftar') {
-    $user_id = mysqli_real_escape_string($koneksi, $data['user_id']);
-    $event_id = mysqli_real_escape_string($koneksi, $data['event_id']);
-    $nama_lengkap = mysqli_real_escape_string($koneksi, $data['nama_lengkap']);
-    $email = mysqli_real_escape_string($koneksi, $data['email']);
-    $no_wa = mysqli_real_escape_string($koneksi, $data['no_wa']);
-    $instansi = mysqli_real_escape_string($koneksi, $data['instansi']);
+    $user_id = mysqli_real_escape_string($koneksi, $data['user_id'] ?? '');
+    $event_id = mysqli_real_escape_string($koneksi, $data['event_id'] ?? '');
+    $nama_lengkap = mysqli_real_escape_string($koneksi, $data['nama_lengkap'] ?? '');
+    $email = mysqli_real_escape_string($koneksi, $data['email'] ?? '');
+    $no_wa = mysqli_real_escape_string($koneksi, $data['no_wa'] ?? '');
+    $instansi = mysqli_real_escape_string($koneksi, $data['instansi'] ?? '');
 
     if (empty($user_id) || empty($event_id) || empty($nama_lengkap) || empty($email) || empty($no_wa)) {
         echo json_encode(['status' => 'error', 'message' => 'Semua kolom wajib diisi.']);
@@ -41,14 +48,78 @@ if ($aksi === 'daftar') {
         exit;
     }
 
-    $query_insert = "INSERT INTO registrasi_event (user_id, event_id, nama_lengkap, email, no_wa, instansi) 
-                     VALUES ('$user_id', '$event_id', '$nama_lengkap', '$email', '$no_wa', '$instansi')";
+    // Ambil info event (apakah berbayar?)
+    $event_query = "SELECT tipe_tiket FROM events WHERE id = '$event_id'";
+    $event_res = mysqli_query($koneksi, $event_query);
+    $event_data = mysqli_fetch_assoc($event_res);
+    $tipe_tiket = $event_data['tipe_tiket'] ?? 'Gratis';
 
-    if (mysqli_query($koneksi, $query_insert)) {
+    $nama_file_bukti = NULL;
+    $status_pendaftaran = 'Sukses'; // Default sukses untuk Gratis
+
+    if ($tipe_tiket === 'Berbayar') {
+        $status_pendaftaran = 'Menunggu Verifikasi';
+        
+        if (!isset($_FILES['bukti_bayar']) || $_FILES['bukti_bayar']['error'] !== 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Bukti pembayaran wajib diunggah untuk event berbayar.']);
+            exit;
+        }
+
+        $target_dir = "uploads/bukti_bayar/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0755, true);
+        }
+        
+        $ekstensi_file = strtolower(pathinfo($_FILES["bukti_bayar"]["name"], PATHINFO_EXTENSION));
+        $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $_FILES["bukti_bayar"]["tmp_name"]);
+        finfo_close($finfo);
+
+        if (!in_array($mime, $allowed_mime)) {
+            echo json_encode(["status" => "error", "message" => "Format file bukti pembayaran tidak valid."]);
+            exit;
+        }
+
+        $nama_file_bukti = time() . '_bukti_' . uniqid() . '.webp';
+        $target_file = $target_dir . $nama_file_bukti;
+
+        // Compress to WebP
+        $image = null;
+        if ($mime == 'image/jpeg') $image = imagecreatefromjpeg($_FILES["bukti_bayar"]["tmp_name"]);
+        elseif ($mime == 'image/png') $image = imagecreatefrompng($_FILES["bukti_bayar"]["tmp_name"]);
+        elseif ($mime == 'image/webp') $image = imagecreatefromwebp($_FILES["bukti_bayar"]["tmp_name"]);
+        elseif ($mime == 'image/gif') $image = imagecreatefromgif($_FILES["bukti_bayar"]["tmp_name"]);
+
+        if ($image !== false) {
+            if (function_exists('imagewebp')) {
+                imagewebp($image, $target_file, 80);
+            } else {
+                $target_file = str_replace('.webp', '.jpg', $target_file);
+                $nama_file_bukti = str_replace('.webp', '.jpg', $nama_file_bukti);
+                imagejpeg($image, $target_file, 80);
+            }
+            imagedestroy($image);
+        } else {
+            move_uploaded_file($_FILES["bukti_bayar"]["tmp_name"], $target_file);
+        }
+    }
+
+    // $nama_file_bukti = ($nama_file_bukti) ? "'$nama_file_bukti'" : "NULL";
+
+    $query_insert = "INSERT INTO registrasi_event (user_id, event_id, nama_lengkap, email, no_wa, instansi, status_pendaftaran, bukti_bayar) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    $stmt = mysqli_prepare($koneksi, $query_insert);
+    mysqli_stmt_bind_param($stmt, "iissssss", $user_id, $event_id, $nama_lengkap, $email, $no_wa, $instansi, $status_pendaftaran, $nama_file_bukti);
+
+    if (mysqli_stmt_execute($stmt)) {
         echo json_encode(['status' => 'success', 'message' => 'Pendaftaran berhasil!']);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal mendaftar: ' . mysqli_error($koneksi)]);
     }
+    mysqli_stmt_close($stmt);
     exit;
 }
 
