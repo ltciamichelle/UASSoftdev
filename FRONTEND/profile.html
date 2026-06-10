@@ -626,9 +626,22 @@
             // Berhenti scan agar tidak menembak API berkali-kali
             stopScanner();
             
+            let qrData;
             try {
-                const qrData = JSON.parse(decodedText);
-                if (!qrData.registrasi_id || !qrData.event_id) throw new Error("Format QR Tidak Dikenali");
+                // Bersihkan spasi atau karakter aneh yang mungkin terbaca scanner
+                const cleanText = decodedText.trim();
+                qrData = JSON.parse(cleanText);
+            } catch (e) {
+                window.api.showToast("Bukan QR Tiket Eventra! Isi QR: " + decodedText.substring(0, 30), "error");
+                console.error("Gagal parse JSON:", e, decodedText);
+                return;
+            }
+
+            try {
+                if (!qrData.registrasi_id || !qrData.event_id) {
+                    window.api.showToast("Format QR salah. Isi: " + JSON.stringify(qrData), "error");
+                    return;
+                }
                 
                 if (qrData.event_id != currentEventId) {
                     window.api.showToast("Tiket ini BUKAN untuk event ini!", "error");
@@ -660,7 +673,7 @@
                 }
 
             } catch (err) {
-                window.api.showToast("QR Code tidak valid atau rusak.", "error");
+                window.api.showToast("Terjadi kesalahan sistem saat memproses QR.", "error");
                 console.error(err);
             }
         }
