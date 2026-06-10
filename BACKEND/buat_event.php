@@ -3,7 +3,8 @@ error_reporting(0);
 // ==========================================
 // 1. KONEKSI DATABASE & PENGATURAN AWAL
 // ==========================================
-include 'koneksi.php';
+try {
+    include 'koneksi.php';
 
 // Fungsi kompresi gambar dan konversi ke WebP
 function compressAndConvertToWebP($source, $destination, $quality = 80, $max_width = 1200) {
@@ -127,15 +128,20 @@ if ($aksi === 'tambah_event') {
     }
 
     $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, harga_event, slot_kursi, banner_img) 
-                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', $harga_event, '$slot_kursi', '$nama_file_gambar')";
+                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', $harga_event, $slot_kursi, '$nama_file_gambar')";
 
-    if (mysqli_query($koneksi, $query_insert)) {
-        echo json_encode(["status" => "success", "message" => "Event berhasil dibuat dan dipublikasikan!"]);
-    } else {
-        echo json_encode(["status" => "error", "message" => "Gagal menyimpan ke database: " . mysqli_error($koneksi)]);
+    try {
+        if (mysqli_query($koneksi, $query_insert)) {
+            echo json_encode(["status" => "success", "message" => "Event berhasil dibuat dan dipublikasikan!"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Gagal menyimpan ke database: " . mysqli_error($koneksi)]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "message" => "Exception database: " . $e->getMessage()]);
     }
     exit;
 }
+
 
 // ==========================================
 // 3. PROSES AMBIL DATA EVENT (UMUM)
@@ -331,4 +337,8 @@ if ($aksi === 'tambah_view') {
     }
     exit;
 }
-?>
+
+} catch (Throwable $t) {
+    echo json_encode(["status" => "error", "message" => "Fatal Error di Server: " . $t->getMessage() . " di baris " . $t->getLine() . " file " . basename($t->getFile())]);
+    exit;
+}

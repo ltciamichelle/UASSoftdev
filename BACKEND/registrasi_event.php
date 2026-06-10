@@ -121,10 +121,14 @@ if ($aksi === 'daftar') {
     $stmt = mysqli_prepare($koneksi, $query_insert);
     mysqli_stmt_bind_param($stmt, "iissssss", $user_id, $event_id, $nama_lengkap, $email, $no_wa, $instansi, $status_pendaftaran, $nama_file_bukti);
 
-    if (mysqli_stmt_execute($stmt)) {
-        echo json_encode(['status' => 'success', 'message' => 'Pendaftaran berhasil!']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Gagal mendaftar: ' . mysqli_error($koneksi)]);
+    try {
+        if (mysqli_stmt_execute($stmt)) {
+            echo json_encode(["status" => "success", "message" => "Pendaftaran event berhasil!"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Terjadi kesalahan: " . mysqli_error($koneksi)]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(["status" => "error", "message" => "Exception database: " . $e->getMessage()]);
     }
     mysqli_stmt_close($stmt);
     exit;

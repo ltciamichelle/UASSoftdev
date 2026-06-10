@@ -43,6 +43,12 @@ try {
         mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN harga_event INT(11) DEFAULT 0");
     }
 
+    // 4. Add user_id to events table if missing
+    $check_user_id = mysqli_query($koneksi, "SHOW COLUMNS FROM events LIKE 'user_id'");
+    if (mysqli_num_rows($check_user_id) == 0) {
+        mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN user_id INT(11) DEFAULT NULL AFTER id");
+    }
+
     echo json_encode(['status' => 'success', 'message' => 'Database migration completed successfully!']);
 } catch (Exception $e) {
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
