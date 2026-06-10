@@ -55,8 +55,8 @@ if ($data['aksi'] === 'daftar') {
         exit;
     }
 
-    $stmt_max = $pdo->prepare("SELECT MAX(CAST(SUBSTRING(loginId, 5) AS UNSIGNED)) FROM users WHERE role = ?");
-    $stmt_max->execute([$role]);
+    $stmt_max = $pdo->prepare("SELECT MAX(CAST(SUBSTRING(loginId, 5) AS UNSIGNED)) FROM users WHERE loginId LIKE ?");
+    $stmt_max->execute([$prefix . '%']);
     $max_number = $stmt_max->fetchColumn();
     $next_number = ($max_number ? $max_number : 0) + 1;
     
