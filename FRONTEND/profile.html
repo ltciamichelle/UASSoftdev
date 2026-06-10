@@ -226,11 +226,21 @@
       </div>
     </div>
 
+    <!-- Penyelenggara Section -->
+    <div id="orgPanel" class="doppelrand-card gsap-reveal" style="display: none; text-align: center; padding: 80px 24px; margin-bottom: 48px;">
+      <div class="card-inner" style="background: transparent; box-shadow: none; display: flex; flex-direction: column; align-items: center;">
+        <img src="assets/mascot_megaphone.png" alt="Megaphone" style="width: 140px; margin-bottom: 32px;">
+        <h2 style="margin-bottom: 16px; font-size: clamp(2rem, 4vw, 3rem);">Dashboard<br>Penyelenggara.</h2>
+        <p style="color: var(--gray-700); font-size: 1.2rem; max-width: 500px; margin-bottom: 40px; line-height: 1.6;">Kelola eventmu, kelola tiket, dan analisis feedback secara langsung dari satu dashboard intuitif.</p>
+        <button class="btn btn-primary magnetic" style="padding: 16px 32px; font-size: 1.1rem;" onclick="alert('Dashboard Penyelenggara akan segera hadir!')">
+          Akses Dashboard <span class="btn-icon-wrapper"><i data-lucide="arrow-right" class="icon-sm"></i></span>
+        </button>
+      </div>
+    </div>
+
     <!-- Logout Section -->
     <div class="doppelrand-card gsap-reveal" style="margin-top: 48px; border-color: #fee2e2;">
       <div class="card-inner" style="padding: 32px; text-align: center; background: rgba(254, 226, 226, 0.1);">
-        <h3 style="margin-bottom: 16px;">Selesai menjelajah?</h3>
-        <p style="color: var(--gray-700); margin-bottom: 24px;">Anda bisa kembali login kapan saja untuk mengecek tiket event Anda.</p>
         <button class="btn" style="background: #ef4444; color: white; padding: 12px 32px; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 8px;" onclick="window.api.logoutUser()">
           <i data-lucide="log-out" class="icon-sm"></i> Keluar Akun
         </button>
@@ -273,6 +283,7 @@
         `;
       } else if (user.role === 'panitia') {
         dynFields.innerHTML = `<div class="form-group"><label>NIM Panitia</label><input type="text" class="form-control" id="editNim" value="${user.nim || ''}"></div>`;
+        document.getElementById('orgPanel').style.display = 'block';
       } else {
         dynFields.innerHTML = `<div class="form-group"><label>Pekerjaan</label><input type="text" class="form-control" id="editKerja" value="${user.pekerjaan || ''}"></div>`;
       }

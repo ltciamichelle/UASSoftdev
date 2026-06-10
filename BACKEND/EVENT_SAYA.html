@@ -1,45 +1,46 @@
 <div class="content">
-        <div class="hero-section">
-            <div class="hero-title">
-                <h1 id="welcomeUser">Event Saya</h1>
-                <p>Kelola tiket digital dan lacak status keikutsertaan event kampus Anda.</p>
-            </div>
-            <span class="badge-upcoming"><i class="fa-solid fa-ticket"></i> <span id="totalTiket">0</span> Tiket Aktif</span>
+    <div class="hero-section">
+        <div class="hero-title">
+            <h1 id="welcomeUser">Event Saya</h1>
+            <p>Kelola tiket digital dan lacak status keikutsertaan event kampus Anda.</p>
         </div>
-
-        <div class="tabs">
-            <a href="EVENT.html" class="tab-item">Jelajahi Event Lain</a>
-            <a href="EVENT_SAYA.html" class="tab-item active">Tiket Saya</a>
-        </div>
-
-        <div id="ticketContainer">
-            <div style="text-align:center; padding: 40px; color:#64748b;">Memuat riwayat tiket...</div>
-        </div>
+        <span class="badge-upcoming"><i class="fa-solid fa-ticket"></i> <span id="totalTiket">0</span> Tiket
+            Aktif</span>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const userData = localStorage.getItem('user_eventra');
-            if(!userData){
-                alert("Silakan login terlebih dahulu untuk mengakses menu Event Saya.");
-                window.location.href = 'Login.html';
-                return;
-            }
+    <div class="tabs">
+        <a href="EVENT.html" class="tab-item">Jelajahi Event Lain</a>
+        <a href="EVENT_SAYA.html" class="tab-item active">Tiket Saya</a>
+    </div>
 
-            const user = JSON.parse(userData);
-            document.getElementById('welcomeUser').innerText = `Tiket ${user.nama || user.username}`;
+    <div id="ticketContainer">
+        <div style="text-align:center; padding: 40px; color:#64748b;">Memuat riwayat tiket...</div>
+    </div>
+</div>
 
-            // Ambil data event dari pendaftaran yang dilakukan user tersebut
-            muatTiketEventSaya(user.id);
-        });
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const userData = localStorage.getItem('user_eventra');
+        if (!userData) {
+            alert("Silakan login terlebih dahulu untuk mengakses menu Event Saya.");
+            window.location.href = 'Login.html';
+            return;
+        }
 
-        function muatTiketEventSaya(userId) {
-            const ticketContainer = document.getElementById('ticketContainer');
+        const user = JSON.parse(userData);
+        document.getElementById('welcomeUser').innerText = `Tiket ${user.nama || user.username}`;
 
-            fetch(`buat_event.php?aksi=ambil_event_saya&user_id=${userId}`)
+        // Ambil data event dari pendaftaran yang dilakukan user tersebut
+        muatTiketEventSaya(user.id);
+    });
+
+    function muatTiketEventSaya(userId) {
+        const ticketContainer = document.getElementById('ticketContainer');
+
+        fetch(`buat_event.php?aksi=ambil_event_saya&user_id=${userId}`)
             .then(response => response.json())
             .then(data => {
-                if(!data || data.length === 0 || data.status === 'error') {
+                if (!data || data.length === 0 || data.status === 'error') {
                     document.getElementById('totalTiket').innerText = '0';
                     ticketContainer.innerHTML = `
                         <div style="text-align: center; padding: 60px 20px; background: #f8fafc; border-radius:16px; border: 2px dashed #e2e8f0;">
@@ -57,7 +58,7 @@
                 // Loop data hasil pendaftaran untuk dirender menjadi layout tiket horizontal
                 data.forEach(item => {
                     const posterSrc = item.banner_img ? `uploads/${item.banner_img}` : 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500';
-                    
+
                     const ticketHtml = `
                         <div class="ticket-card">
                             <div class="ticket-img-wrapper">
@@ -102,10 +103,10 @@
                 console.error("Error fetching my events:", error);
                 ticketContainer.innerHTML = `<div style="text-align:center; color:red; padding:20px;">Gagal memuat tiket dari database.</div>`;
             });
-        }
+    }
 
-        function formatTanggal(stringTanggal) {
-            const opsi = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(stringTanggal).toLocaleDateString('id-ID', opsi);
-        }
-    </script>
+    function formatTanggal(stringTanggal) {
+        const opsi = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(stringTanggal).toLocaleDateString('id-ID', opsi);
+    }
+</script>

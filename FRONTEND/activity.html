@@ -105,15 +105,10 @@
     <header class="gsap-reveal" style="margin-bottom: 64px;">
       <span class="eyebrow">My Tickets & Events</span>
       <h1 style="font-size: clamp(3rem, 6vw, 5rem); margin-bottom: 32px;">Aktivitas<br>Anda.</h1>
-      
-      <div class="tab-buttons">
-        <button class="tab-btn active" data-tab="eventku">Eventku</button>
-        <button class="tab-btn" data-tab="org">Untuk Penyelenggara</button>
-      </div>
     </header>
 
-    <!-- TAB A: Eventku -->
-    <div id="eventku" class="tab-content active">
+    <!-- Eventku -->
+    <div id="eventku">
       
       <div id="eventku-container">
         <!-- Loader -->
@@ -132,21 +127,35 @@
       </style>
     </div>
 
-    <!-- TAB B: Organizer -->
-    <div id="org" class="tab-content">
-      <div class="doppelrand-card gsap-reveal" style="text-align: center; padding: 80px 24px;">
-        <div class="card-inner" style="background: transparent; box-shadow: none; display: flex; flex-direction: column; align-items: center;">
-          <img src="assets/mascot_megaphone.png" alt="Megaphone" style="width: 140px; margin-bottom: 32px;">
-          <h2 style="margin-bottom: 16px; font-size: clamp(2rem, 4vw, 3rem);">Jangkau Ribuan<br>Mahasiswa.</h2>
-          <p style="color: var(--gray-700); font-size: 1.2rem; max-width: 500px; margin-bottom: 40px; line-height: 1.6;">Buat eventmu sendiri, kelola tiket, dan analisis feedback secara langsung dari satu dashboard intuitif.</p>
-          <button class="btn btn-primary magnetic" style="padding: 16px 32px; font-size: 1.1rem;">
-            Daftar Sebagai Penyelenggara <span class="btn-icon-wrapper"><i data-lucide="arrow-right" class="icon-sm"></i></span>
-          </button>
-        </div>
-      </div>
-    </div>
+
 
   </main>
+
+  <!-- Certificate Modal -->
+  <div id="certModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 24px; opacity: 0; transition: opacity 0.3s ease;">
+    <div style="background: white; width: 100%; max-width: 800px; aspect-ratio: 1.414; border-radius: 16px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 48px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); overflow: hidden;">
+      <!-- Elegant Background elements -->
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 16px solid var(--primary); opacity: 0.1; pointer-events: none; margin: 16px; border-radius: 8px;"></div>
+      <div style="position: absolute; top: 0; left: 0; width: 150px; height: 150px; background: var(--primary); opacity: 0.05; border-radius: 0 0 100% 0;"></div>
+      <div style="position: absolute; bottom: 0; right: 0; width: 150px; height: 150px; background: var(--primary); opacity: 0.05; border-radius: 100% 0 0 0;"></div>
+      
+      <button onclick="closeCertificate()" style="position: absolute; top: 24px; right: 24px; background: rgba(0,0,0,0.05); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.3s; z-index: 10;">
+        <i data-lucide="x" class="icon-sm"></i>
+      </button>
+      
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--primary-dark); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em; position: relative; z-index: 1;">Sertifikat Partisipasi</h2>
+      <p style="color: var(--gray-700); font-size: 1.2rem; margin-bottom: 32px; position: relative; z-index: 1;">Diberikan dengan bangga kepada</p>
+      
+      <h1 id="certUserName" style="font-size: clamp(2.5rem, 6vw, 4rem); font-family: 'Georgia', serif; color: var(--gray-900); margin-bottom: 32px; font-weight: 400; border-bottom: 2px solid var(--primary); padding-bottom: 8px; width: 80%; display: inline-block; position: relative; z-index: 1;">Nama Peserta</h1>
+      
+      <p style="color: var(--gray-700); font-size: 1.2rem; margin-bottom: 16px; position: relative; z-index: 1;">atas partisipasinya dalam acara</p>
+      <h3 id="certEventName" style="font-size: clamp(1.4rem, 3vw, 2rem); color: var(--primary); font-weight: 800; max-width: 80%; position: relative; z-index: 1;">Nama Event</h3>
+      
+      <div style="position: absolute; bottom: 40px; left: 48px; text-align: left;">
+        <img src="assets/logo%20eventra.png" alt="Eventra" style="height: 30px; opacity: 0.5; filter: grayscale(1);">
+      </div>
+    </div>
+  </div>
 
   <!-- Load API first for auth -->
   <script src="js/api.js?v=4"></script>
@@ -155,27 +164,23 @@
     lucide.createIcons();
     window.api.updateNavbarAuth();
 
-    // Tab Logic
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
+    function showCertificate(eventName, userName) {
+      document.getElementById('certEventName').innerText = eventName;
+      document.getElementById('certUserName').innerText = userName;
+      const modal = document.getElementById('certModal');
+      modal.style.display = 'flex';
+      // Trigger reflow
+      void modal.offsetWidth;
+      modal.style.opacity = '1';
+    }
 
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Reset
-        tabBtns.forEach(b => b.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
-        
-        // Set Active
-        btn.classList.add('active');
-        const targetId = btn.getAttribute('data-tab');
-        document.getElementById(targetId).classList.add('active');
-
-        // Refresh ScrollTrigger to recalculate positions
-        if(typeof ScrollTrigger !== 'undefined') {
-          ScrollTrigger.refresh();
-        }
-      });
-    });
+    function closeCertificate() {
+      const modal = document.getElementById('certModal');
+      modal.style.opacity = '0';
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
 
     // Fetch and render registered events
     document.addEventListener("DOMContentLoaded", async () => {
@@ -243,7 +248,7 @@
               </div>
 
               <div style="display: flex; gap: 16px; margin-top: auto; flex-wrap: wrap;">
-                <button class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; justify-content: center;">Lihat Detail E-Tiket</button>
+                <button onclick="showCertificate('${event.nama_event.replace(/'/g, "\\'")}', '${user.nama.replace(/'/g, "\\'")}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; justify-content: center;"><i data-lucide="award" class="icon-sm" style="margin-right: 8px;"></i> Lihat E-Certificate</button>
               </div>
             </div>
           </div>
