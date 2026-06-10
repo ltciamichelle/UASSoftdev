@@ -125,7 +125,7 @@
     <header class="gsap-reveal" style="margin-bottom: 48px; text-align: center;">
       <span class="eyebrow">Jadwal Pintar</span>
       <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 16px;">Kalender Anda.</h1>
-      <p style="color: var(--gray-700); font-size: 1.1rem;">Semua event yang Anda ikuti tersimpan rapi di sini.</p>
+      <p style="color: var(--gray-700); font-size: 1.1rem;">Semua event tersimpan rapi di sini.</p>
     </header>
 
     <div class="gsap-reveal" id="calendar-wrapper">
@@ -275,9 +275,9 @@
       
       calendar.render();
 
-      // Fetch user's registered events
+      // Fetch all events from database
       try {
-        const eventsRes = await window.api.fetchEventUser();
+        const eventsRes = await window.api.fetchEvents();
         if(eventsRes && eventsRes.length > 0) {
           const calendarEvents = eventsRes.map(e => {
             // Random color based on category
