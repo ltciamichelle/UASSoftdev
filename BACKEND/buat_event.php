@@ -131,8 +131,17 @@ if ($aksi === 'tambah_event') {
         }
     }
 
-    $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, harga_event, slot_kursi, banner_img, bank_name, bank_rekening, bank_atas_nama) 
-                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', $harga_event, $slot_kursi, '$nama_file_gambar', '$bank_name', '$bank_rekening', '$bank_atas_nama')";
+    $nama_file_sertifikat = "";
+    if (isset($_FILES['template_sertifikat']) && $_FILES['template_sertifikat']['error'] === 0) {
+        $target_dir = "uploads/";
+        $ekstensi_sert = strtolower(pathinfo($_FILES["template_sertifikat"]["name"], PATHINFO_EXTENSION));
+        $nama_file_sertifikat = 'cert_' . time() . '_' . uniqid() . '.' . $ekstensi_sert;
+        $target_file_sertifikat = $target_dir . $nama_file_sertifikat;
+        move_uploaded_file($_FILES["template_sertifikat"]["tmp_name"], $target_file_sertifikat);
+    }
+
+    $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, harga_event, slot_kursi, banner_img, bank_name, bank_rekening, bank_atas_nama, template_sertifikat) 
+                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', $harga_event, $slot_kursi, '$nama_file_gambar', '$bank_name', '$bank_rekening', '$bank_atas_nama', '$nama_file_sertifikat')";
 
     try {
         if (mysqli_query($koneksi, $query_insert)) {
@@ -247,7 +256,7 @@ if ($aksi === 'update_event') {
         exit;
     }
 
-    $query_lama = mysqli_query($koneksi, "SELECT banner_img, user_id FROM events WHERE id = '$event_id'");
+    $query_lama = mysqli_query($koneksi, "SELECT banner_img, template_sertifikat, user_id FROM events WHERE id = '$event_id'");
     if (mysqli_num_rows($query_lama) === 0) {
         echo json_encode(["status" => "error", "message" => "Event tidak ditemukan."]);
         exit;
@@ -289,6 +298,17 @@ if ($aksi === 'update_event') {
         }
     }
 
+    $nama_file_sertifikat = $data_lama['template_sertifikat'];
+    if (isset($_FILES['template_sertifikat']) && $_FILES['template_sertifikat']['error'] === 0) {
+        $target_dir = "uploads/";
+        if (!empty($nama_file_sertifikat) && file_exists($target_dir . $nama_file_sertifikat)) {
+            unlink($target_dir . $nama_file_sertifikat);
+        }
+        $ekstensi_sert = strtolower(pathinfo($_FILES["template_sertifikat"]["name"], PATHINFO_EXTENSION));
+        $nama_file_sertifikat = 'cert_' . time() . '_' . uniqid() . '.' . $ekstensi_sert;
+        move_uploaded_file($_FILES["template_sertifikat"]["tmp_name"], $target_dir . $nama_file_sertifikat);
+    }
+
     $query_update = "UPDATE events SET 
                         nama_event = '$nama_event', 
                         kategori = '$kategori', 
@@ -303,7 +323,8 @@ if ($aksi === 'update_event') {
                         bank_name = '$bank_name',
                         bank_rekening = '$bank_rekening',
                         bank_atas_nama = '$bank_atas_nama',
-                        banner_img = '$nama_file_gambar' 
+                        banner_img = '$nama_file_gambar',
+                        template_sertifikat = '$nama_file_sertifikat'
                      WHERE id = '$event_id'";
 
     if (mysqli_query($koneksi, $query_update)) {
@@ -329,7 +350,7 @@ if ($aksi === 'hapus_event') {
         exit;
     }
 
-    $query_event = mysqli_query($koneksi, "SELECT banner_img, user_id FROM events WHERE id = '$event_id'");
+    $query_event = mysqli_query($koneksi, "SELECT banner_img, template_sertifikat, user_id FROM events WHERE id = '$event_id'");
     if (mysqli_num_rows($query_event) > 0) {
         $data = mysqli_fetch_assoc($query_event);
         if ((int)$data['user_id'] !== $user_id) {
@@ -338,6 +359,9 @@ if ($aksi === 'hapus_event') {
         }
         if (!empty($data['banner_img']) && file_exists("uploads/" . $data['banner_img'])) {
             unlink("uploads/" . $data['banner_img']); 
+        }
+        if (!empty($data['template_sertifikat']) && file_exists("uploads/" . $data['template_sertifikat'])) {
+            unlink("uploads/" . $data['template_sertifikat']); 
         }
     } else {
         echo json_encode(["status" => "error", "message" => "Event tidak ditemukan."]);
@@ -366,6 +390,38 @@ if ($aksi === 'tambah_view') {
         echo json_encode(["status" => "success"]);
     } else {
         echo json_encode(["status" => "error", "message" => "ID tidak valid."]);
+    }
+    exit;
+}
+
+// ==========================================
+// 8. AMBIL FEEDBACK EVENT
+// ==========================================
+if ($aksi === 'ambil_feedback_event') {
+    header('Content-Type: application/json');
+    $event_id = isset($_GET['event_id']) ? mysqli_real_escape_string($koneksi, $_GET['event_id']) : '';
+    
+    if (empty($event_id)) {
+        echo json_encode(["status" => "error", "message" => "ID Event tidak valid."]);
+        exit;
+    }
+
+    $query = "SELECT f.rating, f.ulasan, f.created_at, u.nama 
+              FROM feedbacks f 
+              JOIN users u ON f.user_id = u.id 
+              WHERE f.event_id = '$event_id' 
+              ORDER BY f.created_at DESC";
+              
+    $result = mysqli_query($koneksi, $query);
+    $feedbacks = [];
+    
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $feedbacks[] = $row;
+        }
+        echo json_encode(["status" => "success", "data" => $feedbacks]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Gagal mengambil ulasan: " . mysqli_error($koneksi)]);
     }
     exit;
 }

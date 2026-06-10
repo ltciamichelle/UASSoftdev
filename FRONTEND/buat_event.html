@@ -228,8 +228,18 @@
             </div>
           </div>
 
-
-
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Template Sertifikat (Opsional)</label>
+              <div style="border: 2px dashed var(--gray-300); padding: 32px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s;" id="certUploadBox">
+                <i data-lucide="award" style="width: 48px; height: 48px; color: var(--gray-400); margin-bottom: 16px;"></i>
+                <p style="margin-bottom: 8px; color: var(--gray-700);">Klik atau seret file gambar (.jpg, .png)</p>
+                <p style="font-size: 0.85rem; color: var(--gray-500);">Nama peserta akan ditempatkan otomatis di TENGAH gambar. Kosongkan untuk desain *default*.</p>
+                <input type="file" name="template_sertifikat" id="template_sertifikat" accept="image/*" style="display: none;">
+              </div>
+              <p id="certFileName" style="margin-top: 8px; font-size: 0.9rem; color: var(--primary-dark); font-weight: 600;"></p>
+            </div>
+          </div>
 
           <div style="text-align: right; margin-top: 32px;">
             <button type="submit" class="btn btn-primary" id="submitBtn">Publikasikan Event</button>
@@ -283,6 +293,46 @@
         imagePreview.style.display = 'none';
       }
     });
+
+    // Cert Upload Logic
+    const certUploadBox = document.getElementById('certUploadBox');
+    const certInput = document.getElementById('template_sertifikat');
+    const certFileName = document.getElementById('certFileName');
+
+    certUploadBox.addEventListener('click', () => certInput.click());
+    
+    certUploadBox.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      certUploadBox.style.borderColor = 'var(--primary)';
+      certUploadBox.style.background = 'rgba(102, 45, 145, 0.05)';
+    });
+    
+    certUploadBox.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      certUploadBox.style.borderColor = 'var(--gray-300)';
+      certUploadBox.style.background = 'transparent';
+    });
+    
+    certUploadBox.addEventListener('drop', (e) => {
+      e.preventDefault();
+      certUploadBox.style.borderColor = 'var(--gray-300)';
+      certUploadBox.style.background = 'transparent';
+      
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        certInput.files = e.dataTransfer.files;
+        updateCertFileName();
+      }
+    });
+
+    certInput.addEventListener('change', updateCertFileName);
+
+    function updateCertFileName() {
+      if (certInput.files && certInput.files[0]) {
+        certFileName.textContent = "File terpilih: " + certInput.files[0].name;
+      } else {
+        certFileName.textContent = "";
+      }
+    }
 
     // Tipe Tiket Logic
     const tipeTiket = document.querySelector('select[name="tipe_tiket"]');
@@ -378,6 +428,10 @@
                     imagePreview.src = `http://eventra-api.infinityfree.me/BACKEND/uploads/${ev.banner_img}`;
                     imagePreview.style.display = 'block';
                     document.getElementById('banner_img').required = false; // Not required if already has image
+                }
+                
+                if (ev.template_sertifikat) {
+                    certFileName.textContent = "File saat ini: " + ev.template_sertifikat;
                 }
             } else {
                 window.api.showToast(data.message, 'error');

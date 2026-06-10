@@ -189,6 +189,40 @@ if ($aksi === 'hitung_pendaftar') {
     exit;
 }
 
+// ==========================================
+// 4. SIMPAN FEEDBACK EVENT
+// ==========================================
+if ($aksi === 'simpan_feedback') {
+    $event_id = isset($data['event_id']) ? mysqli_real_escape_string($koneksi, $data['event_id']) : '';
+    $user_id = isset($data['user_id']) ? mysqli_real_escape_string($koneksi, $data['user_id']) : '';
+    $rating = isset($data['rating']) ? (int)$data['rating'] : 5;
+    $ulasan = isset($data['ulasan']) ? mysqli_real_escape_string($koneksi, $data['ulasan']) : '';
+
+    if (empty($event_id) || empty($user_id) || empty($ulasan)) {
+        echo json_encode(['status' => 'error', 'message' => 'Data ulasan tidak lengkap.']);
+        exit;
+    }
+
+    // Check if user already submitted feedback
+    $check_fb = mysqli_query($koneksi, "SELECT id FROM feedbacks WHERE event_id = '$event_id' AND user_id = '$user_id'");
+    if (mysqli_num_rows($check_fb) > 0) {
+        $update = "UPDATE feedbacks SET rating = $rating, ulasan = '$ulasan', created_at = CURRENT_TIMESTAMP WHERE event_id = '$event_id' AND user_id = '$user_id'";
+        if (mysqli_query($koneksi, $update)) {
+            echo json_encode(['status' => 'success', 'message' => 'Ulasan Anda berhasil diperbarui!']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui ulasan.']);
+        }
+    } else {
+        $insert = "INSERT INTO feedbacks (event_id, user_id, rating, ulasan) VALUES ('$event_id', '$user_id', $rating, '$ulasan')";
+        if (mysqli_query($koneksi, $insert)) {
+            echo json_encode(['status' => 'success', 'message' => 'Terima kasih! Ulasan Anda berhasil disimpan.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan ulasan.']);
+        }
+    }
+    exit;
+}
+
 echo json_encode(['status' => 'error', 'message' => 'Aksi tidak valid.']);
 exit;
 ?>

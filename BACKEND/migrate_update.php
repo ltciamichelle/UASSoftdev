@@ -62,6 +62,24 @@ try {
         mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN bank_rekening VARCHAR(100) DEFAULT NULL");
         mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN bank_atas_nama VARCHAR(255) DEFAULT NULL");
     }
+    // 6. Create feedbacks table
+    $check_feedbacks = mysqli_query($koneksi, "SHOW TABLES LIKE 'feedbacks'");
+    if (mysqli_num_rows($check_feedbacks) == 0) {
+        mysqli_query($koneksi, "CREATE TABLE feedbacks (
+            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            event_id INT(11) NOT NULL,
+            user_id INT(11) NOT NULL,
+            rating INT(11) NOT NULL DEFAULT 5,
+            ulasan TEXT NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )");
+    }
+
+    // 7. Add template_sertifikat to events table if missing
+    $check_template = mysqli_query($koneksi, "SHOW COLUMNS FROM events LIKE 'template_sertifikat'");
+    if (mysqli_num_rows($check_template) == 0) {
+        mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN template_sertifikat VARCHAR(255) DEFAULT NULL");
+    }
 
     echo json_encode(['status' => 'success', 'message' => 'Database migration completed successfully!']);
 } catch (Exception $e) {

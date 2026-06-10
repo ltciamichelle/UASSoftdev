@@ -149,15 +149,17 @@
         <i data-lucide="x" class="icon-sm"></i>
       </button>
       
-      <h2 style="font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--primary-dark); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em; position: relative; z-index: 1;">Sertifikat Partisipasi</h2>
-      <p style="color: var(--gray-700); font-size: 1.2rem; margin-bottom: 32px; position: relative; z-index: 1;">Diberikan dengan bangga kepada</p>
+      <div id="certContent" style="position: relative; z-index: 1;">
+        <h2 id="certTitle" style="font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--primary-dark); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em;">Sertifikat Partisipasi</h2>
+        <p id="certSub1" style="color: var(--gray-700); font-size: 1.2rem; margin-bottom: 32px;">Diberikan dengan bangga kepada</p>
+        
+        <h1 id="certUserName" style="font-size: clamp(2.5rem, 6vw, 4rem); font-family: 'Georgia', serif; color: var(--gray-900); margin-bottom: 32px; font-weight: 400; border-bottom: 2px solid var(--primary); padding-bottom: 8px; width: 80%; display: inline-block;">Nama Peserta</h1>
+        
+        <p id="certSub2" style="color: var(--gray-700); font-size: 1.2rem; margin-bottom: 16px;">atas partisipasinya dalam acara</p>
+        <h3 id="certEventName" style="font-size: clamp(1.4rem, 3vw, 2rem); color: var(--primary); font-weight: 800; max-width: 80%; margin: 0 auto;">Nama Event</h3>
+      </div>
       
-      <h1 id="certUserName" style="font-size: clamp(2.5rem, 6vw, 4rem); font-family: 'Georgia', serif; color: var(--gray-900); margin-bottom: 32px; font-weight: 400; border-bottom: 2px solid var(--primary); padding-bottom: 8px; width: 80%; display: inline-block; position: relative; z-index: 1;">Nama Peserta</h1>
-      
-      <p style="color: var(--gray-700); font-size: 1.2rem; margin-bottom: 16px; position: relative; z-index: 1;">atas partisipasinya dalam acara</p>
-      <h3 id="certEventName" style="font-size: clamp(1.4rem, 3vw, 2rem); color: var(--primary); font-weight: 800; max-width: 80%; position: relative; z-index: 1;">Nama Event</h3>
-      
-      <div style="position: absolute; bottom: 40px; left: 48px; text-align: left;">
+      <div id="certLogo" style="position: absolute; bottom: 40px; left: 48px; text-align: left; z-index: 1;">
         <img src="assets/logo%20eventra.png" alt="Eventra" style="height: 30px; opacity: 0.5; filter: grayscale(1);">
       </div>
     </div>
@@ -180,6 +182,38 @@
     </div>
   </div>
 
+  <!-- Feedback Modal -->
+  <div id="feedbackModal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 500px; padding: 40px;">
+      <button onclick="closeFeedbackModal()" class="modal-close"><i data-lucide="x" class="icon-md"></i></button>
+      
+      <h2 style="font-size: 1.8rem; color: var(--primary-dark); margin-bottom: 8px;">Beri Ulasan</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem; margin-bottom: 24px;" id="feedbackEventName">Nama Event</p>
+      
+      <form id="feedbackForm">
+        <input type="hidden" id="feedbackEventId">
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label">Penilaian (Bintang)</label>
+          <div style="display: flex; gap: 8px; font-size: 2rem; color: var(--gray-300); cursor: pointer;" id="starRating">
+            <i data-lucide="star" data-val="1"></i>
+            <i data-lucide="star" data-val="2"></i>
+            <i data-lucide="star" data-val="3"></i>
+            <i data-lucide="star" data-val="4"></i>
+            <i data-lucide="star" data-val="5"></i>
+          </div>
+          <input type="hidden" id="feedbackRating" value="5" required>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label class="form-label">Komentar / Saran</label>
+          <textarea id="feedbackText" class="form-control" rows="4" placeholder="Bagaimana pendapat Anda tentang event ini?" required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Kirim Ulasan</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Load API first for auth -->
   <script src="js/api.js?v=6"></script>
   <script src="js/gsap-animations.js?v=5"></script>
@@ -187,10 +221,54 @@
     lucide.createIcons();
     window.api.updateNavbarAuth();
 
-    function showCertificate(eventName, userName) {
+    function showCertificate(eventName, userName, templateSertifikat) {
       document.getElementById('certEventName').innerText = eventName;
       document.getElementById('certUserName').innerText = userName;
       const modal = document.getElementById('certModal');
+      const container = modal.querySelector('.modal-container');
+      
+      if (templateSertifikat && templateSertifikat !== 'null' && templateSertifikat !== '') {
+        // Custom Template logic
+        container.style.background = `url('${window.api.BASE_URL}/uploads/${templateSertifikat}') center/cover no-repeat`;
+        container.style.border = 'none';
+        
+        // Hide default texts except the name
+        document.getElementById('certTitle').style.display = 'none';
+        document.getElementById('certSub1').style.display = 'none';
+        document.getElementById('certSub2').style.display = 'none';
+        document.getElementById('certEventName').style.display = 'none';
+        document.getElementById('certLogo').style.display = 'none';
+        
+        // Style the name to float in the middle without border
+        const userNameEl = document.getElementById('certUserName');
+        userNameEl.style.borderBottom = 'none';
+        userNameEl.style.margin = '0';
+        userNameEl.style.position = 'absolute';
+        userNameEl.style.top = '50%';
+        userNameEl.style.left = '50%';
+        userNameEl.style.transform = 'translate(-50%, -50%)';
+        userNameEl.style.width = '100%';
+      } else {
+        // Default Template logic
+        container.style.background = `linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)`;
+        container.style.border = '12px solid var(--white)';
+        
+        document.getElementById('certTitle').style.display = 'block';
+        document.getElementById('certSub1').style.display = 'block';
+        document.getElementById('certSub2').style.display = 'block';
+        document.getElementById('certEventName').style.display = 'block';
+        document.getElementById('certLogo').style.display = 'block';
+        
+        const userNameEl = document.getElementById('certUserName');
+        userNameEl.style.borderBottom = '2px solid var(--primary)';
+        userNameEl.style.margin = '0 0 32px 0';
+        userNameEl.style.position = 'relative';
+        userNameEl.style.top = 'auto';
+        userNameEl.style.left = 'auto';
+        userNameEl.style.transform = 'none';
+        userNameEl.style.width = '80%';
+      }
+      
       modal.style.display = 'flex';
       // Trigger reflow
       void modal.offsetWidth;
@@ -237,6 +315,77 @@
         modal.style.display = 'none';
       }, 300);
     }
+
+    function showFeedbackModal(eventId, eventName) {
+      document.getElementById('feedbackEventName').innerText = eventName;
+      document.getElementById('feedbackEventId').value = eventId;
+      const modal = document.getElementById('feedbackModal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('active'), 10);
+      
+      // Initialize stars to 5
+      const stars = document.querySelectorAll('#starRating i');
+      stars.forEach((s, idx) => {
+        if(idx < 5) s.style.color = '#F59E0B';
+        else s.style.color = 'var(--gray-300)';
+      });
+      document.getElementById('feedbackRating').value = 5;
+    }
+
+    function closeFeedbackModal() {
+      const modal = document.getElementById('feedbackModal');
+      modal.classList.remove('active');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+
+    // Star Rating Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const stars = document.querySelectorAll('#starRating i');
+      stars.forEach(star => {
+        star.addEventListener('click', (e) => {
+          const val = parseInt(e.currentTarget.getAttribute('data-val'));
+          document.getElementById('feedbackRating').value = val;
+          stars.forEach((s, idx) => {
+            if (idx < val) s.style.color = '#F59E0B';
+            else s.style.color = 'var(--gray-300)';
+          });
+        });
+      });
+
+      document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const eventId = document.getElementById('feedbackEventId').value;
+        const rating = document.getElementById('feedbackRating').value;
+        const ulasan = document.getElementById('feedbackText').value;
+        const user = JSON.parse(localStorage.getItem('eventra_user'));
+        
+        try {
+          const response = await fetch(`${window.api.BASE_URL}/registrasi_event.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              aksi: 'simpan_feedback',
+              event_id: eventId,
+              user_id: user.user_id || user.id,
+              rating: rating,
+              ulasan: ulasan
+            })
+          });
+          const res = await response.json();
+          if (res.status === 'success') {
+            window.api.showToast(res.message, 'success');
+            closeFeedbackModal();
+            document.getElementById('feedbackText').value = '';
+          } else {
+            window.api.showToast(res.message, 'error');
+          }
+        } catch(err) {
+          window.api.showToast('Gagal mengirim ulasan', 'error');
+        }
+      });
+    });
 
     // Fetch and render registered events
     document.addEventListener("DOMContentLoaded", async () => {
@@ -288,8 +437,11 @@
           statusHtml = `<div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); color: #3B82F6; padding: 16px 24px; border-radius: 16px; font-weight: 900; font-size: 1rem; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; letter-spacing: 0.05em;">
             <i data-lucide="check-circle" class="icon-md"></i> STATUS: SELESAI
           </div>`;
-          certBtnHtml = `<button onclick="showCertificate('${event.nama_event.replace(/'/g, "\\'")}', '${user.nama.replace(/'/g, "\\'")}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px;">
+          certBtnHtml = `<button onclick="showCertificate('${event.nama_event.replace(/'/g, "\\'")}', '${user.nama.replace(/'/g, "\\'")}', '${event.template_sertifikat || ''}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px;">
             <i data-lucide="award" class="icon-md"></i> Lihat E-Certificate
+          </button>
+          <button onclick="showFeedbackModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'")}')" class="btn" style="padding: 16px 32px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 12px; background: transparent; border: 2px solid var(--gray-300); color: var(--gray-700);">
+            <i data-lucide="message-square" class="icon-md"></i> Beri Ulasan
           </button>`;
         } else {
           statusHtml = `<div style="background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.2); color: #16A34A; padding: 16px 24px; border-radius: 16px; font-weight: 900; font-size: 1rem; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; letter-spacing: 0.05em;">
