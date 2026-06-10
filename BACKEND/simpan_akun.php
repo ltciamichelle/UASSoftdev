@@ -232,6 +232,7 @@ if ($data['aksi'] === 'hapus_akun') {
     } catch (PDOException $e) {
         $pdo->rollBack();
         echo json_encode(['status' => 'gagal', 'pesan' => 'Gagal menghapus: ' . $e->getMessage()]);
+    }
     exit;
 }
 
