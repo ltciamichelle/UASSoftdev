@@ -15,12 +15,14 @@ jobs:
       with:
         fetch-depth: 2
 
-    - name: Prepare Deployment Folder
+    - name: Prepare Deployment Folder & Cache Busting
       run: |
         mkdir deploy_build
         cp -R BACKEND/* deploy_build/
         cp -R FRONTEND/* deploy_build/
-      
+        VERSION=$(date +%s)
+        find deploy_build/ -type f -name "*.html" -exec sed -i "s/?v=[0-9]*/?v=$VERSION/g" {} +
+
     - name: Sync Merged Files via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
