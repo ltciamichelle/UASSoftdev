@@ -291,7 +291,7 @@
                 </p>
                 <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
                   ${ticketDisplay}
-                  <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0})" style="width: 100%; padding: 12px; font-size: 0.95rem;">Daftar Sekarang <i data-lucide="arrow-right" class="icon-sm"></i></button>
+                  <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="width: 100%; padding: 12px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
                 </div>
               </div>
             </div>
@@ -332,7 +332,7 @@
     });
 
     // Registration Modal Logic
-    function openRegistrationModal(eventId, eventName, tipeTiket = 'Gratis', hargaEvent = 0) {
+    function openRegistrationModal(eventId, eventName, tipeTiket = 'Gratis', hargaEvent = 0, bankName = '', bankRekening = '', bankAtasNama = '') {
       const userStr = localStorage.getItem('eventra_user');
       if (!userStr) {
         window.location.href = 'login.html';
@@ -349,15 +349,31 @@
       
       const buktiGroup = document.getElementById('buktiBayarGroup');
       const buktiInput = document.getElementById('reg_bukti_bayar');
+      const infoRekening = document.getElementById('infoRekening');
+
       if (tipeTiket === 'Berbayar') {
         buktiGroup.style.display = 'flex';
         buktiInput.required = true;
         document.getElementById('reg_event_price_tag').innerText = `Rp ${parseInt(hargaEvent).toLocaleString('id-ID')}`;
         document.getElementById('reg_event_price_tag').style.display = 'inline-block';
+        
+        if (bankName || bankRekening) {
+            infoRekening.innerHTML = `
+                <div style="background: rgba(102,45,145,0.05); border: 1px solid var(--primary-lighter); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+                    <p style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 8px;">Transfer pembayaran ke:</p>
+                    <h4 style="color: var(--primary-dark); font-weight: 800; margin-bottom: 4px;">${bankName} - ${bankRekening}</h4>
+                    <p style="font-size: 0.9rem; font-weight: 600; color: var(--gray-700);">a.n. ${bankAtasNama}</p>
+                </div>
+            `;
+            infoRekening.style.display = 'block';
+        } else {
+            infoRekening.style.display = 'none';
+        }
       } else {
         buktiGroup.style.display = 'none';
         buktiInput.required = false;
         document.getElementById('reg_event_price_tag').style.display = 'none';
+        infoRekening.style.display = 'none';
       }
 
       const modal = document.getElementById('registrationModal');
@@ -461,7 +477,10 @@
               <input type="text" id="reg_instansi" name="instansi" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
             </div>
         </div>
-        <div class="input-group" id="buktiBayarGroup" style="display: none; flex-direction: column; gap: 8px;">
+
+        <div id="infoRekening" style="display: none;"></div>
+
+        <div id="buktiBayarGroup" class="input-group" style="display: none; flex-direction: column; gap: 8px;">
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Upload Bukti Pembayaran</label>
           <div style="padding: 16px; border: 2px dashed var(--gray-300); border-radius: 12px; text-align: center; background: var(--gray-50);">
             <input type="file" id="reg_bukti_bayar" name="bukti_bayar" accept="image/*" style="width: 100%; font-size: 0.9rem;">

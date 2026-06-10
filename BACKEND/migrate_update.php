@@ -49,6 +49,15 @@ try {
         mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN user_id INT(11) DEFAULT NULL AFTER id");
     }
 
+
+    // 5. Add Rekening info for paid events
+    $check_bank = mysqli_query($koneksi, "SHOW COLUMNS FROM events LIKE 'bank_name'");
+    if (mysqli_num_rows($check_bank) == 0) {
+        mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN bank_name VARCHAR(100) DEFAULT NULL");
+        mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN bank_rekening VARCHAR(100) DEFAULT NULL");
+        mysqli_query($koneksi, "ALTER TABLE events ADD COLUMN bank_atas_nama VARCHAR(255) DEFAULT NULL");
+    }
+
     echo json_encode(['status' => 'success', 'message' => 'Database migration completed successfully!']);
 } catch (Exception $e) {
     echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

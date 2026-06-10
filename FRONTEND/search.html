@@ -216,7 +216,7 @@
                   <span class="badge badge-primary">${event.kategori}</span>
                   ${ticketDisplay}
                 </div>
-                <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="padding: 10px 20px; font-size: 0.9rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
+                <button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="padding: 10px 20px; font-size: 0.9rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>
               </div>
             </div>
           </div>
@@ -242,7 +242,7 @@
     });
 
     // Registration Modal Logic
-    function openRegistrationModal(eventId, eventName) {
+    function openRegistrationModal(eventId, eventName, tipeTiket = 'Gratis', hargaEvent = 0, bankName = '', bankRekening = '', bankAtasNama = '') {
       const userStr = localStorage.getItem('eventra_user');
       if (!userStr) {
         window.location.href = 'login.html';
@@ -257,6 +257,41 @@
       document.getElementById('reg_wa').value = user.phone || '';
       document.getElementById('reg_instansi').value = user.fakultas || user.pekerjaan || '';
       
+      const buktiGroup = document.getElementById('buktiBayarGroup');
+      const buktiInput = document.getElementById('reg_bukti_bayar');
+      const infoRekening = document.getElementById('infoRekening');
+
+      if (tipeTiket === 'Berbayar') {
+        if(buktiGroup) buktiGroup.style.display = 'flex';
+        if(buktiInput) buktiInput.required = true;
+        const priceTag = document.getElementById('reg_event_price_tag');
+        if(priceTag) {
+          priceTag.innerText = `Rp ${parseInt(hargaEvent).toLocaleString('id-ID')}`;
+          priceTag.style.display = 'inline-block';
+        }
+        
+        if (bankName || bankRekening) {
+            if(infoRekening) {
+              infoRekening.innerHTML = `
+                  <div style="background: rgba(102,45,145,0.05); border: 1px solid var(--primary-lighter); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+                      <p style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 8px;">Transfer pembayaran ke:</p>
+                      <h4 style="color: var(--primary-dark); font-weight: 800; margin-bottom: 4px;">${bankName} - ${bankRekening}</h4>
+                      <p style="font-size: 0.9rem; font-weight: 600; color: var(--gray-700);">a.n. ${bankAtasNama}</p>
+                  </div>
+              `;
+              infoRekening.style.display = 'block';
+            }
+        } else {
+            if(infoRekening) infoRekening.style.display = 'none';
+        }
+      } else {
+        if(buktiGroup) buktiGroup.style.display = 'none';
+        if(buktiInput) buktiInput.required = false;
+        const priceTag = document.getElementById('reg_event_price_tag');
+        if(priceTag) priceTag.style.display = 'none';
+        if(infoRekening) infoRekening.style.display = 'none';
+      }
+
       const modal = document.getElementById('registrationModal');
       modal.style.display = 'flex';
       setTimeout(() => modal.classList.add('show'), 10);
@@ -281,17 +316,12 @@
         btn.innerText = 'Memproses...';
         btn.disabled = true;
 
-        const data = {
-          user_id: user.user_id,
-          event_id: document.getElementById('reg_event_id').value,
-          nama_lengkap: document.getElementById('reg_nama').value,
-          email: document.getElementById('reg_email').value,
-          no_wa: document.getElementById('reg_wa').value,
-          instansi: document.getElementById('reg_instansi').value
-        };
+        const form = document.getElementById('registrationForm');
+        const formData = new FormData(form);
+        formData.append('user_id', user.user_id);
 
         try {
-          const res = await window.api.submitPendaftaran(data);
+          const res = await window.api.submitPendaftaran(formData);
           if (res.status === 'success') {
             window.api.showToast('Pendaftaran Berhasil! Silakan cek menu Activity.', 'success');
             closeRegistrationModal();
@@ -315,14 +345,15 @@
       
       <div style="background: var(--primary-lighter); padding: 40px 32px 32px; position: relative; overflow: hidden;">
          <span style="background: var(--primary); padding: 6px 14px; border-radius: 50px; color: white; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; position: relative; z-index: 2;">Pendaftaran Tiket</span>
+         <span id="reg_event_price_tag" style="display: none; margin-left: 8px; background: #16A34A; padding: 6px 14px; border-radius: 50px; color: white; font-size: 0.75rem; font-weight: 700; position: relative; z-index: 2;">Rp 0</span>
          <h3 style="color: var(--primary-dark); margin-top: 16px; font-size: 1.8rem; font-weight: 800; line-height: 1.2; position: relative; z-index: 2;" id="reg_event_name">Nama Event</h3>
       </div>
       
       <form id="registrationForm" style="padding: 32px; display: flex; flex-direction: column; gap: 20px;">
-        <input type="hidden" id="reg_event_id">
+        <input type="hidden" id="reg_event_id" name="event_id">
         <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Nama Lengkap</label>
-          <input type="text" id="reg_nama" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
+          <input type="text" id="reg_nama" name="nama_lengkap" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
         </div>
         <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Email Aktif</label>
@@ -335,9 +366,20 @@
             </div>
             <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
               <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Instansi / Fakultas</label>
-              <input type="text" id="reg_instansi" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
+              <input type="text" id="reg_instansi" name="instansi" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
             </div>
         </div>
+        
+        <div id="infoRekening" style="display: none;"></div>
+        
+        <div id="buktiBayarGroup" class="input-group" style="display: none; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Upload Bukti Pembayaran</label>
+          <div style="padding: 16px; border: 2px dashed var(--gray-300); border-radius: 12px; text-align: center; background: var(--gray-50);">
+            <input type="file" id="reg_bukti_bayar" name="bukti_bayar" accept="image/*" style="width: 100%; font-size: 0.9rem;">
+            <p style="font-size: 0.8rem; color: var(--gray-400); margin-top: 8px;">Format didukung: JPG, PNG, WEBP (Max 2MB)</p>
+          </div>
+        </div>
+
         <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="margin-top: 12px; padding: 16px; font-size: 1.05rem; font-weight: 700; border-radius: 16px; box-shadow: none; display: flex; justify-content: center; align-items: center; gap: 10px;">
           Konfirmasi Pendaftaran <i data-lucide="check-circle"></i>
         </button>

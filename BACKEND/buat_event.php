@@ -82,6 +82,10 @@ if ($aksi === 'tambah_event') {
     $harga_event      = isset($_POST['harga_event']) ? (int)$_POST['harga_event'] : 0;
     $slot_kursi       = isset($_POST['slot_kursi']) ? (int)$_POST['slot_kursi'] : 0;
     $user_id          = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
+    
+    $bank_name        = isset($_POST['bank_name']) ? mysqli_real_escape_string($koneksi, $_POST['bank_name']) : '';
+    $bank_rekening    = isset($_POST['bank_rekening']) ? mysqli_real_escape_string($koneksi, $_POST['bank_rekening']) : '';
+    $bank_atas_nama   = isset($_POST['bank_atas_nama']) ? mysqli_real_escape_string($koneksi, $_POST['bank_atas_nama']) : '';
 
     if (empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($lokasi)) {
         echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi!"]);
@@ -127,8 +131,8 @@ if ($aksi === 'tambah_event') {
         }
     }
 
-    $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, harga_event, slot_kursi, banner_img) 
-                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', $harga_event, $slot_kursi, '$nama_file_gambar')";
+    $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, harga_event, slot_kursi, banner_img, bank_name, bank_rekening, bank_atas_nama) 
+                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', $harga_event, $slot_kursi, '$nama_file_gambar', '$bank_name', '$bank_rekening', '$bank_atas_nama')";
 
     try {
         if (mysqli_query($koneksi, $query_insert)) {
@@ -231,6 +235,11 @@ if ($aksi === 'update_event') {
     $lokasi           = mysqli_real_escape_string($koneksi, $_POST['lokasi']);
     $tipe_tiket       = mysqli_real_escape_string($koneksi, $_POST['tipe_tiket']);
     $slot_kursi       = isset($_POST['slot_kursi']) ? mysqli_real_escape_string($koneksi, $_POST['slot_kursi']) : 0;
+    $harga_event      = isset($_POST['harga_event']) ? (int)$_POST['harga_event'] : 0;
+
+    $bank_name        = isset($_POST['bank_name']) ? mysqli_real_escape_string($koneksi, $_POST['bank_name']) : '';
+    $bank_rekening    = isset($_POST['bank_rekening']) ? mysqli_real_escape_string($koneksi, $_POST['bank_rekening']) : '';
+    $bank_atas_nama   = isset($_POST['bank_atas_nama']) ? mysqli_real_escape_string($koneksi, $_POST['bank_atas_nama']) : '';
 
     if (empty($event_id) || empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket)) {
         echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi untuk memperbarui data!"]);
@@ -278,7 +287,11 @@ if ($aksi === 'update_event') {
                         waktu_selesai = '$waktu_selesai', 
                         lokasi = '$lokasi', 
                         tipe_tiket = '$tipe_tiket', 
+                        harga_event = $harga_event,
                         slot_kursi = '$slot_kursi', 
+                        bank_name = '$bank_name',
+                        bank_rekening = '$bank_rekening',
+                        bank_atas_nama = '$bank_atas_nama',
                         banner_img = '$nama_file_gambar' 
                      WHERE id = '$event_id'";
 

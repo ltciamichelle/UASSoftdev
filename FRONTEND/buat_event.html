@@ -206,6 +206,25 @@
             </div>
           </div>
 
+          <div id="rekeningGroup" class="doppelrand-card" style="display: none; padding: 24px !important; margin-bottom: 24px; border-color: var(--primary-lighter); background: rgba(102, 45, 145, 0.02);">
+            <h4 style="margin-bottom: 16px; color: var(--primary-dark);"><i data-lucide="credit-card" class="icon-sm"></i> Informasi Rekening Pembayaran</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nama Bank / E-Wallet</label>
+                <input type="text" class="form-control" name="bank_name" id="bank_name" placeholder="Cth: BCA, Mandiri, GoPay">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nomor Rekening</label>
+                <input type="text" class="form-control" name="bank_rekening" id="bank_rekening" placeholder="Cth: 1234567890">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Atas Nama</label>
+              <input type="text" class="form-control" name="bank_atas_nama" id="bank_atas_nama" placeholder="Cth: BEM FTI UNTAR">
+            </div>
+          </div>
+
+
 
 
           <div style="text-align: right; margin-top: 32px;">
@@ -251,14 +270,30 @@
     const tipeTiket = document.querySelector('select[name="tipe_tiket"]');
     const hargaGroup = document.getElementById('hargaGroup');
     const hargaInput = document.getElementById('harga_event');
+    const rekeningGroup = document.getElementById('rekeningGroup');
+    const bankNameInput = document.getElementById('bank_name');
+    const bankRekeningInput = document.getElementById('bank_rekening');
+    const bankAtasNamaInput = document.getElementById('bank_atas_nama');
+
     tipeTiket.addEventListener('change', function() {
       if (this.value === 'Berbayar') {
         hargaGroup.style.display = 'block';
         hargaInput.required = true;
+        rekeningGroup.style.display = 'block';
+        bankNameInput.required = true;
+        bankRekeningInput.required = true;
+        bankAtasNamaInput.required = true;
       } else {
         hargaGroup.style.display = 'none';
         hargaInput.required = false;
         hargaInput.value = '';
+        rekeningGroup.style.display = 'none';
+        bankNameInput.required = false;
+        bankRekeningInput.required = false;
+        bankAtasNamaInput.required = false;
+        bankNameInput.value = '';
+        bankRekeningInput.value = '';
+        bankAtasNamaInput.value = '';
       }
     });
 
