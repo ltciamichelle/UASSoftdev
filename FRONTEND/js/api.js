@@ -11,7 +11,7 @@ const BASE_URL = window.location.hostname === 'localhost' || window.location.hos
  */
 async function fetchEvents() {
     try {
-        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=ambil_event`);
+        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=ambil_event&t=${Date.now()}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -94,7 +94,7 @@ async function submitPendaftaran(data) {
 
 async function fetchEventUser(userId) {
     try {
-        const response = await fetch(`${BASE_URL}/registrasi_event.php?aksi=ambil_event_user&user_id=${userId}`);
+        const response = await fetch(`${BASE_URL}/registrasi_event.php?aksi=ambil_event_user&user_id=${userId}&t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error!`);
         const data = await response.json();
         return data.status === 'success' ? data.data : [];
@@ -161,7 +161,7 @@ async function registerPanitia(userId) {
 
 async function getEventPanitia(userId) {
     try {
-        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=ambil_event_panitia&id_panitia=${userId}`);
+        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=ambil_event_panitia&id_panitia=${userId}&t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error!`);
         const data = await response.json();
         return Array.isArray(data) ? data : [];
@@ -173,7 +173,7 @@ async function getEventPanitia(userId) {
 
 async function hitungPendaftar(eventId) {
     try {
-        const response = await fetch(`${BASE_URL}/registrasi_event.php?aksi=hitung_pendaftar&event_id=${eventId}`);
+        const response = await fetch(`${BASE_URL}/registrasi_event.php?aksi=hitung_pendaftar&event_id=${eventId}&t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error!`);
         const data = await response.json();
         return data.status === 'success' ? data.total : 0;
@@ -237,7 +237,7 @@ function showToast(message, type = 'success') {
 
 async function getPendaftarEvent(eventId) {
     try {
-        const res = await fetch(`${BASE_URL}/dashboard_panitia.php?aksi=ambil_pendaftar&event_id=${eventId}`);
+        const res = await fetch(`${BASE_URL}/dashboard_panitia.php?aksi=ambil_pendaftar&event_id=${eventId}&t=${Date.now()}`);
         if (!res.ok) throw new Error("Network error");
         const data = await res.json();
         return data.status === 'success' ? data.data : [];
@@ -264,7 +264,7 @@ async function deleteEvent(eventId, userId) {
 
 async function getEventById(eventId) {
     try {
-        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=cari_event_id&id=${eventId}`);
+        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=cari_event_id&id=${eventId}&t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error!`);
         const data = await response.json();
         return data;
