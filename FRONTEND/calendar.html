@@ -72,6 +72,40 @@
       padding: 32px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.05);
       border: 1px solid var(--gray-200);
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+      #calendar-wrapper {
+        padding: 12px;
+        border-radius: 16px;
+      }
+      .fc .fc-toolbar {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch !important;
+      }
+      .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+      }
+      .fc-toolbar-title {
+        font-size: 1.25rem !important;
+      }
+      .fc .fc-button {
+        padding: 6px 10px !important;
+        font-size: 0.75rem !important;
+      }
+      .fc-daygrid-day-number {
+        padding: 4px !important;
+        font-size: 0.8rem;
+      }
+      .fc-event {
+        font-size: 0.7rem;
+        padding: 2px 4px;
+      }
     }
     
     /* Modal Styles */
@@ -86,7 +120,7 @@
       background: white; border-radius: 24px; padding: 40px; width: 100%; max-width: 500px;
       position: relative; transform: translateY(20px); transition: transform 0.3s ease;
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-      max-height: 100%; overflow-y: auto;
+      max-height: 100%; overflow-y: auto; box-sizing: border-box;
     }
     .modal-overlay.show .modal-card { transform: translateY(0); }
     .modal-close {
