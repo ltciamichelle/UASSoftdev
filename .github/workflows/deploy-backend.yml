@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'BACKEND/**' # Action berjalan jika ada file BACKEND yang berubah
-      - 'FRONTEND/**' # Action berjalan jika ada file FRONTEND yang berubah
 
 jobs:
   web-deploy:

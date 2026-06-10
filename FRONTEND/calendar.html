@@ -350,9 +350,15 @@
       }
       // Check login
       const userStr = localStorage.getItem('eventra_user');
+      let userObj = null;
+      let registeredEventIds = new Set();
       if (!userStr) {
         window.location.href = 'login.html';
         return;
+      } else {
+        userObj = JSON.parse(userStr);
+        const userEvents = await window.api.fetchEventUser(userObj.user_id || userObj.id);
+        userEvents.forEach(e => registeredEventIds.add(parseInt(e.id)));
       }
 
       const calendarEl = document.getElementById('calendar');
@@ -404,9 +410,25 @@
           }
 
           // Register Button
-          document.getElementById('btnDaftarEvent').onclick = () => {
-            openRegistrationModal(evt.id, evt.title, evt.extendedProps.tipe, evt.extendedProps.harga_event || 0, evt.extendedProps.bank_name || '', evt.extendedProps.bank_rekening || '', evt.extendedProps.bank_atas_nama || '');
-          };
+          const btnDaftar = document.getElementById('btnDaftarEvent');
+          if (registeredEventIds.has(parseInt(evt.id))) {
+            btnDaftar.disabled = true;
+            btnDaftar.innerHTML = 'Sudah Terdaftar <i data-lucide="check" class="icon-sm"></i>';
+            btnDaftar.style.background = 'var(--gray-200)';
+            btnDaftar.style.color = 'var(--gray-400)';
+            btnDaftar.style.cursor = 'not-allowed';
+            btnDaftar.onclick = null;
+          } else {
+            btnDaftar.disabled = false;
+            btnDaftar.innerHTML = 'Daftar Sekarang <i data-lucide="arrow-right" class="icon-sm"></i>';
+            btnDaftar.style.background = '';
+            btnDaftar.style.color = '';
+            btnDaftar.style.cursor = '';
+            btnDaftar.onclick = () => {
+              openRegistrationModal(evt.id, evt.title, evt.extendedProps.tipe, evt.extendedProps.harga_event || 0, evt.extendedProps.bank_name || '', evt.extendedProps.bank_rekening || '', evt.extendedProps.bank_atas_nama || '');
+            };
+          }
+          lucide.createIcons();
 
           // Generate Google Calendar Link
           // Format: 20260610T090000Z

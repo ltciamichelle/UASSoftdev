@@ -448,3 +448,38 @@ span.flatpickr-weekday {
 .flatpickr-time input:hover, .flatpickr-time .flatpickr-am-pm:hover, .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:focus {
   background: var(--primary-lighter) !important;
 }
+
+/* Bento Hero Card */
+.bento-hero {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: row;
+  padding: 0 !important;
+}
+.bento-hero .hero-img {
+  flex: 0 0 300px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 1.5rem 0 0 1.5rem;
+}
+.bento-hero .hero-content {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 900px) {
+  .bento-hero {
+    grid-column: span 1;
+    flex-direction: column;
+  }
+  .bento-hero .hero-img {
+    flex: 0 0 200px;
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+}
+@media (max-width: 768px) {
+  .bento-hero .hero-content {
+    padding: 24px;
+  }
+}
