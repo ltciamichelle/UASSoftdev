@@ -78,7 +78,7 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
       z-index: 9999; display: none; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.3s ease;
+      opacity: 0; transition: opacity 0.3s ease; padding: 24px; box-sizing: border-box;
     }
     .modal-overlay.show { opacity: 1; }
     .modal-card {
@@ -136,38 +136,91 @@
 
   <!-- Event Detail Modal -->
   <div class="modal-overlay" id="eventModal">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeEventModal()"><i data-lucide="x"></i></button>
-      <div style="display: flex; gap: 12px; margin-bottom: 16px;" id="modalTags">
-        <!-- Tags will be injected here -->
-      </div>
-      <h2 style="margin-bottom: 24px; font-size: 2rem; line-height: 1.2;" id="modalTitle">Judul Event</h2>
+    <div class="modal-card" style="padding: 0; overflow: hidden; border: 1px solid var(--gray-200); background: var(--white); border-radius: 24px; box-shadow: none;">
+      <button class="modal-close" onclick="closeEventModal()" style="background: rgba(0,0,0,0.5); color: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; z-index: 10;"><i data-lucide="x"></i></button>
       
-      <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px;">
-        <div style="display: flex; gap: 16px; align-items: flex-start;">
-          <div style="background: rgba(102, 45, 145, 0.1); color: var(--primary); padding: 12px; border-radius: 12px;">
-            <i data-lucide="calendar"></i>
-          </div>
-          <div>
-            <p style="font-size: 0.9rem; color: var(--gray-400); font-weight: 600;">Tanggal & Waktu</p>
-            <p style="font-weight: 700; color: var(--gray-900); font-size: 1.1rem;" id="modalDateTime">10 Jun 2026, 09:00</p>
-          </div>
+      <!-- Image Header -->
+      <div id="modalImageContainer" style="height: 200px; width: 100%; background-color: var(--gray-100); background-position: center; background-size: cover; position: relative;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);"></div>
+      </div>
+      
+      <div style="padding: 32px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 12px; margin-top: -16px; position: relative; z-index: 2;" id="modalTags">
+          <!-- Tags -->
         </div>
         
-        <div style="display: flex; gap: 16px; align-items: flex-start;">
-          <div style="background: rgba(102, 45, 145, 0.1); color: var(--primary); padding: 12px; border-radius: 12px;">
-            <i data-lucide="map-pin"></i>
+        <h2 style="margin-bottom: 24px; font-size: 1.8rem; line-height: 1.2; font-weight: 800; color: var(--gray-900);" id="modalTitle">Judul Event</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px;">
+          <!-- Date -->
+          <div style="display: flex; gap: 16px; align-items: flex-start; background: var(--bg); padding: 16px; border-radius: 16px; border: 1px solid var(--gray-200);">
+            <div style="color: var(--primary);">
+              <i data-lucide="calendar"></i>
+            </div>
+            <div>
+              <p style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Waktu Pelaksanaan</p>
+              <p style="font-weight: 700; color: var(--gray-900); font-size: 1.1rem; margin-top: 4px;" id="modalDateTime">10 Jun 2026, 09:00</p>
+            </div>
           </div>
-          <div>
-            <p style="font-size: 0.9rem; color: var(--gray-400); font-weight: 600;">Lokasi</p>
-            <p style="font-weight: 700; color: var(--gray-900); font-size: 1.1rem;" id="modalLocation">Gedung M Universitas Tarumanagara</p>
+          
+          <!-- Location -->
+          <div style="display: flex; gap: 16px; align-items: flex-start; background: var(--bg); padding: 16px; border-radius: 16px; border: 1px solid var(--gray-200);">
+            <div style="color: var(--primary);">
+              <i data-lucide="map-pin"></i>
+            </div>
+            <div>
+              <p style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Lokasi</p>
+              <p style="font-weight: 700; color: var(--gray-900); font-size: 1.1rem; margin-top: 4px;" id="modalLocation">Gedung M Universitas Tarumanagara</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <a href="#" target="_blank" id="btnGoogleSync" class="btn btn-primary" style="width: 100%; display: flex; justify-content: center; gap: 8px;">
-        <i data-lucide="calendar-plus"></i> Tambahkan ke Google Calendar
-      </a>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button id="btnDaftarEvent" class="btn btn-primary" style="flex: 1; padding: 14px; font-size: 1rem; border-radius: 16px; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: none;">
+            Daftar Event <i data-lucide="arrow-right"></i>
+          </button>
+          <a href="#" target="_blank" id="btnGoogleSync" class="btn btn-secondary" style="flex: 1; padding: 14px; font-size: 1rem; border-radius: 16px; display: flex; justify-content: center; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--gray-200); color: var(--gray-800);">
+            <i data-lucide="calendar-plus"></i> Google Calendar
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registration Modal -->
+  <div class="modal-overlay" id="registrationModal">
+    <div class="modal-card" style="padding: 0; border: 1px solid var(--gray-200); background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: none;">
+      <button class="modal-close" onclick="closeRegistrationModal()" style="z-index: 10; top: 24px; right: 24px; color: var(--gray-700); background: var(--gray-100); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i data-lucide="x"></i></button>
+      
+      <div style="background: var(--primary-lighter); padding: 40px 32px 32px; position: relative; overflow: hidden;">
+         <span style="background: var(--primary); padding: 6px 14px; border-radius: 50px; color: white; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; position: relative; z-index: 2;">Pendaftaran Tiket</span>
+         <h3 style="color: var(--primary-dark); margin-top: 16px; font-size: 1.8rem; font-weight: 800; line-height: 1.2; position: relative; z-index: 2;" id="reg_event_name">Nama Event</h3>
+      </div>
+      
+      <form id="registrationForm" style="padding: 32px; display: flex; flex-direction: column; gap: 20px;">
+        <input type="hidden" id="reg_event_id">
+        <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Nama Lengkap</label>
+          <input type="text" id="reg_nama" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
+        </div>
+        <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Email Aktif</label>
+          <input type="email" id="reg_email" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">No. WhatsApp</label>
+              <input type="text" id="reg_wa" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
+            </div>
+            <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Instansi / Fakultas</label>
+              <input type="text" id="reg_instansi" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="margin-top: 12px; padding: 16px; font-size: 1.05rem; font-weight: 700; border-radius: 16px; box-shadow: none; display: flex; justify-content: center; align-items: center; gap: 10px;">
+          Konfirmasi Pendaftaran <i data-lucide="check-circle"></i>
+        </button>
+      </form>
     </div>
   </div>
 
@@ -183,7 +236,69 @@
       setTimeout(() => modal.style.display = 'none', 300);
     }
 
+    function openRegistrationModal(eventId, eventName) {
+      const userStr = localStorage.getItem('eventra_user');
+      if (!userStr) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      const user = JSON.parse(userStr);
+      document.getElementById('reg_event_id').value = eventId;
+      document.getElementById('reg_event_name').innerText = eventName;
+      document.getElementById('reg_nama').value = user.nama || '';
+      
+      closeEventModal();
+      
+      const modal = document.getElementById('registrationModal');
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('show'), 10);
+    }
+
+    function closeRegistrationModal() {
+      const modal = document.getElementById('registrationModal');
+      modal.classList.remove('show');
+      setTimeout(() => modal.style.display = 'none', 300);
+    }
+
     document.addEventListener('DOMContentLoaded', async function() {
+      // Registration form handler
+      const regForm = document.getElementById('registrationForm');
+      if (regForm) {
+        regForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const user = JSON.parse(localStorage.getItem('eventra_user'));
+          const btn = document.getElementById('regSubmitBtn');
+          const originalText = btn.innerHTML;
+          
+          btn.innerText = 'Memproses...';
+          btn.disabled = true;
+
+          const data = {
+            user_id: user.id,
+            event_id: document.getElementById('reg_event_id').value,
+            nama_lengkap: document.getElementById('reg_nama').value,
+            email: document.getElementById('reg_email').value,
+            no_wa: document.getElementById('reg_wa').value,
+            instansi: document.getElementById('reg_instansi').value
+          };
+
+          try {
+            const res = await window.api.submitPendaftaran(data);
+            if (res.status === 'success') {
+              alert('Pendaftaran Berhasil! Silakan cek menu Activity.');
+              closeRegistrationModal();
+            } else {
+              alert(res.message);
+            }
+          } catch (err) {
+            alert('Terjadi kesalahan jaringan atau server: ' + err.message);
+          } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }
+        });
+      }
       // Check login
       const userStr = localStorage.getItem('eventra_user');
       if (!userStr) {
@@ -223,13 +338,27 @@
           document.getElementById('modalLocation').innerText = evt.extendedProps.lokasi || 'Tidak ada info lokasi';
           
           // Badge
-          let tagsHtml = `<span class="badge badge-primary">${evt.extendedProps.kategori || 'Event'}</span>`;
+          let tagsHtml = `<span class="badge badge-primary" style="font-weight: 800;">${evt.extendedProps.kategori || 'Event'}</span>`;
           if(evt.extendedProps.tipe === 'Gratis') {
-            tagsHtml += `<span class="badge" style="background:rgba(22, 163, 74, 0.1); color:#16A34A;">Gratis</span>`;
+            tagsHtml += `<span class="badge" style="background:rgba(22, 163, 74, 0.1); color:#16A34A; font-weight: 800;">Gratis</span>`;
           } else {
-            tagsHtml += `<span class="badge" style="background:rgba(245, 158, 11, 0.1); color:#D97706;">Berbayar</span>`;
+            tagsHtml += `<span class="badge" style="background:rgba(245, 158, 11, 0.1); color:#D97706; font-weight: 800;">Berbayar</span>`;
           }
           document.getElementById('modalTags').innerHTML = tagsHtml;
+
+          // Image
+          const imgContainer = document.getElementById('modalImageContainer');
+          if (evt.extendedProps.banner_img) {
+            imgContainer.style.backgroundImage = `url('${window.api.BASE_URL}/uploads/${evt.extendedProps.banner_img}')`;
+          } else {
+            imgContainer.style.backgroundImage = `url('https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800')`;
+          }
+
+          // Register Button
+          const btnDaftar = document.getElementById('btnDaftarEvent');
+          btnDaftar.onclick = function() {
+            openRegistrationModal(evt.id, evt.title);
+          };
 
           // Generate Google Calendar Link
           // Format: 20260610T090000Z
@@ -300,7 +429,8 @@
                 lokasi: e.lokasi,
                 kategori: e.kategori,
                 tipe: e.tipe_tiket,
-                deskripsi: e.deskripsi
+                deskripsi: e.deskripsi,
+                banner_img: e.banner_img
               }
             };
           });

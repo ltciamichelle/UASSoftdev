@@ -34,7 +34,19 @@ if ($aksi === 'tambah_event') {
         if (!is_dir($target_dir)) {
             mkdir($target_dir, 0755, true);
         }
-        $ekstensi_file = pathinfo($_FILES["banner_img"]["name"], PATHINFO_EXTENSION);
+        $ekstensi_file = strtolower(pathinfo($_FILES["banner_img"]["name"], PATHINFO_EXTENSION));
+        
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $_FILES["banner_img"]["tmp_name"]);
+        finfo_close($finfo);
+        $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+        if (!in_array($ekstensi_file, $allowed_ext) || !in_array($mime, $allowed_mime)) {
+            echo json_encode(["status" => "error", "message" => "Format file tidak didukung! Hanya gambar yang diizinkan."]);
+            exit;
+        }
+
         $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
         $target_file = $target_dir . $nama_file_gambar;
         
@@ -156,7 +168,19 @@ if ($aksi === 'update_event') {
             unlink($target_dir . $nama_file_gambar);
         }
 
-        $ekstensi_file = pathinfo($_FILES["banner_img"]["name"], PATHINFO_EXTENSION);
+        $ekstensi_file = strtolower(pathinfo($_FILES["banner_img"]["name"], PATHINFO_EXTENSION));
+        
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $_FILES["banner_img"]["tmp_name"]);
+        finfo_close($finfo);
+        $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+        if (!in_array($ekstensi_file, $allowed_ext) || !in_array($mime, $allowed_mime)) {
+            echo json_encode(["status" => "error", "message" => "Format file tidak didukung! Hanya gambar yang diizinkan."]);
+            exit;
+        }
+
         $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
         move_uploaded_file($_FILES["banner_img"]["tmp_name"], $target_dir . $nama_file_gambar);
     }
