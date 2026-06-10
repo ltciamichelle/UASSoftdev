@@ -124,11 +124,11 @@ function updateNavbarAuth() {
         // Sudah Login
         const user = JSON.parse(userStr);
         avatarLink.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.05); padding: 6px 16px 6px 6px; border-radius: 40px; cursor: pointer;">
-                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1rem;">
+            <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.15); padding: 6px 16px 6px 6px; border-radius: 40px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--white); display: flex; align-items: center; justify-content: center; color: var(--primary-dark); font-weight: bold; font-size: 1rem;">
                     ${user.nama.charAt(0).toUpperCase()}
                 </div>
-                <span style="font-weight: 700; font-size: 0.95rem;">${user.nama.split(' ')[0]}</span>
+                <span style="font-weight: 700; font-size: 0.95rem; color: white;">${user.nama.split(' ')[0]}</span>
             </div>
         `;
     } else {
