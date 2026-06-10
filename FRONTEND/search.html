@@ -248,6 +248,9 @@
       document.getElementById('reg_event_id').value = eventId;
       document.getElementById('reg_event_name').innerText = eventName;
       document.getElementById('reg_nama').value = user.nama || '';
+      document.getElementById('reg_email').value = user.email || '';
+      document.getElementById('reg_wa').value = user.phone || '';
+      document.getElementById('reg_instansi').value = user.fakultas || user.pekerjaan || '';
       
       const modal = document.getElementById('registrationModal');
       modal.style.display = 'flex';
