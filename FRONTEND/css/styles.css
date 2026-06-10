@@ -387,3 +387,64 @@ a {
 .curtain-left { left: 0; transform-origin: left; }
 .curtain-right { right: 0; transform-origin: right; }
 .curtain-logo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 999999; pointer-events: none; width: 240px; opacity: 1; }
+/* ==========================================================
+   Enhanced Form Styling & Flatpickr Overrides
+   ========================================================== */
+
+/* Styling for select/dropdowns */
+select.form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23662D91%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+  padding-right: 48px;
+  cursor: pointer;
+}
+
+select.form-control:hover {
+  background-color: var(--white);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(102, 45, 145, 0.08);
+}
+
+/* Enhanced focus for all inputs */
+.form-control:focus {
+  border-color: var(--primary);
+  background-color: var(--white);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(102, 45, 145, 0.15);
+}
+
+/* Flatpickr Custom Theme (Eventra Purple) */
+.flatpickr-calendar {
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  padding: 8px !important;
+}
+
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.flatpickr-months .flatpickr-month {
+  background: transparent !important;
+  color: var(--primary-dark) !important;
+}
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  font-weight: 800 !important;
+}
+.flatpickr-weekdays {
+  background: transparent !important;
+}
+span.flatpickr-weekday {
+  color: var(--gray-400) !important;
+  font-weight: 700 !important;
+}
+.flatpickr-time input:hover, .flatpickr-time .flatpickr-am-pm:hover, .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:focus {
+  background: var(--primary-lighter) !important;
+}
