@@ -10,7 +10,15 @@ echo "<h1>Migrasi Database Eventra</h1>";
 
 $queries = [
     "ALTER TABLE events ADD COLUMN user_id INT NULL;",
-    "ALTER TABLE events ADD COLUMN views INT DEFAULT 0;"
+    "ALTER TABLE events ADD COLUMN views INT DEFAULT 0;",
+    "CREATE TABLE IF NOT EXISTS panitia (
+        id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        user_id int(11) NOT NULL,
+        nama varchar(100) NOT NULL,
+        email varchar(100) NOT NULL,
+        phone varchar(20) NOT NULL,
+        nim varchar(20) NOT NULL
+    )"
 ];
 
 foreach ($queries as $query) {

@@ -240,7 +240,12 @@ if ($data['aksi'] === 'hapus_akun') {
 // 5. DAFTAR PANITIA (UPGRADE ROLE)
 // ==========================================
 if ($data['aksi'] === 'daftar_panitia') {
-    $user_id = $data['user_id'];
+    $user_id = isset($data['user_id']) ? $data['user_id'] : null;
+
+    if (!$user_id) {
+        echo json_encode(['status' => 'gagal', 'pesan' => 'ID User tidak valid. Pastikan Anda telah me-refresh halaman atau coba logout lalu login kembali.']);
+        exit;
+    }
 
     // Cek apakah user mahasiswa
     $stmt_cek = $pdo->prepare("SELECT * FROM mahasiswa WHERE user_id = ?");
@@ -248,7 +253,7 @@ if ($data['aksi'] === 'daftar_panitia') {
     $mahasiswa = $stmt_cek->fetch(PDO::FETCH_ASSOC);
 
     if (!$mahasiswa) {
-        echo json_encode(['status' => 'gagal', 'pesan' => 'Hanya mahasiswa yang dapat mendaftar sebagai panitia.']);
+        echo json_encode(['status' => 'gagal', 'pesan' => 'Hanya mahasiswa yang dapat mendaftar sebagai panitia. Jika Anda yakin mahasiswa, silakan logout dan login kembali.']);
         exit;
     }
 
@@ -278,12 +283,12 @@ if ($data['aksi'] === 'daftar_panitia') {
         $stmt_profil->execute([$user_id]);
         $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
         
-        unset($user_updated['password']);
+        if ($user_updated) unset($user_updated['password']);
         
         echo json_encode([
             'status' => 'sukses', 
             'pesan' => 'Pendaftaran Panitia Berhasil! Halaman akan dimuat ulang.',
-            'user' => array_merge($user_updated, $profil)
+            'user' => array_merge($user_updated ?: [], $profil ?: [])
         ]);
     } catch (PDOException $e) {
         $pdo->rollBack();
