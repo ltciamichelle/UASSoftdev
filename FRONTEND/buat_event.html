@@ -122,9 +122,10 @@
 
   <main class="container section" style="padding-top: 100px;">
     <div style="max-width: 800px; margin: 0 auto;">
-      <h1 class="gsap-reveal" style="text-align: center; margin-bottom: 16px;">Buat Event Baru</h1>
-      <p class="gsap-reveal" style="text-align: center; color: var(--gray-500); margin-bottom: 48px;">Bagikan momen terbaik dengan ribuan mahasiswa lainnya di kampus.</p>
-
+      <div class="header-banner">
+        <h1 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 16px; color: var(--primary-dark);" id="pageTitle">Buat Event Baru</h1>
+        <p style="font-size: 1.1rem; color: var(--gray-600); max-width: 600px; margin: 0 auto;" id="pageSubtitle">Wujudkan ide cemerlang Anda menjadi event spektakuler. Isi detail event Anda di bawah ini.</p>
+      </div>
       <div class="doppelrand-card gsap-reveal" style="padding: 40px !important;">
         <form id="buatEventForm">
           
@@ -301,6 +302,73 @@
     const form = document.getElementById('buatEventForm');
     const submitBtn = document.getElementById('submitBtn');
 
+    // Edit Mode Logic
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit_id');
+    let isEditMode = false;
+
+    if (editId) {
+        isEditMode = true;
+        document.getElementById('pageTitle').innerText = 'Edit Event';
+        document.getElementById('pageSubtitle').innerText = 'Perbarui informasi event Anda agar tetap akurat.';
+        submitBtn.innerText = 'Simpan Perubahan';
+        
+        // Add hidden input for event_id
+        const hiddenIdInput = document.createElement('input');
+        hiddenIdInput.type = 'hidden';
+        hiddenIdInput.name = 'event_id_primary';
+        hiddenIdInput.value = editId;
+        form.appendChild(hiddenIdInput);
+
+        // Fetch Event Data
+        async function loadEventData() {
+            const data = await window.api.getEventById(editId);
+            if (data.status === 'success') {
+                const ev = data.data;
+                // Check authorization
+                const user = JSON.parse(localStorage.getItem('eventra_user'));
+                if(parseInt(ev.user_id) !== parseInt(user.user_id)) {
+                    window.api.showToast('Akses ditolak. Anda bukan pemilik event ini.', 'error');
+                    setTimeout(() => window.location.href = 'profile.html', 1500);
+                    return;
+                }
+
+                form.nama_event.value = ev.nama_event;
+                form.kategori.value = ev.kategori;
+                form.lokasi.value = ev.lokasi;
+                form.tanggal.value = ev.tanggal;
+                form.waktu.value = ev.waktu;
+                form.tanggal_selesai.value = ev.tanggal_selesai;
+                form.waktu_selesai.value = ev.waktu_selesai;
+                form.tipe_tiket.value = ev.tipe_tiket;
+                form.slot_kursi.value = ev.slot_kursi;
+
+                if (ev.tipe_tiket === 'Berbayar') {
+                    hargaGroup.style.display = 'block';
+                    hargaInput.required = true;
+                    hargaInput.value = ev.harga_event;
+                    
+                    rekeningGroup.style.display = 'block';
+                    bankNameInput.required = true;
+                    bankRekeningInput.required = true;
+                    bankAtasNamaInput.required = true;
+                    bankNameInput.value = ev.bank_name;
+                    bankRekeningInput.value = ev.bank_rekening;
+                    bankAtasNamaInput.value = ev.bank_atas_nama;
+                }
+
+                if (ev.banner_img) {
+                    imagePreview.src = `http://eventra-api.infinityfree.me/BACKEND/uploads/${ev.banner_img}`;
+                    imagePreview.style.display = 'block';
+                    document.getElementById('banner_img').required = false; // Not required if already has image
+                }
+            } else {
+                window.api.showToast(data.message, 'error');
+            }
+        }
+        loadEventData();
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -329,7 +397,11 @@
         const formData = new FormData(form);
         formData.append('user_id', user.user_id || user.id); 
 
-        const response = await fetch(`${window.api.BASE_URL}/buat_event.php?aksi=tambah_event`, {
+        const actionUrl = isEditMode 
+            ? `${window.api.BASE_URL}/buat_event.php?aksi=update_event` 
+            : `${window.api.BASE_URL}/buat_event.php?aksi=tambah_event`;
+
+        const response = await fetch(actionUrl, {
           method: 'POST',
           body: formData
         });

@@ -240,14 +240,25 @@ if ($aksi === 'update_event') {
     $bank_name        = isset($_POST['bank_name']) ? mysqli_real_escape_string($koneksi, $_POST['bank_name']) : '';
     $bank_rekening    = isset($_POST['bank_rekening']) ? mysqli_real_escape_string($koneksi, $_POST['bank_rekening']) : '';
     $bank_atas_nama   = isset($_POST['bank_atas_nama']) ? mysqli_real_escape_string($koneksi, $_POST['bank_atas_nama']) : '';
+    $user_id          = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
 
-    if (empty($event_id) || empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket)) {
+    if (empty($event_id) || empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket) || empty($user_id)) {
         echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi untuk memperbarui data!"]);
         exit;
     }
 
-    $query_lama = mysqli_query($koneksi, "SELECT banner_img FROM events WHERE id = '$event_id'");
+    $query_lama = mysqli_query($koneksi, "SELECT banner_img, user_id FROM events WHERE id = '$event_id'");
+    if (mysqli_num_rows($query_lama) === 0) {
+        echo json_encode(["status" => "error", "message" => "Event tidak ditemukan."]);
+        exit;
+    }
     $data_lama = mysqli_fetch_assoc($query_lama);
+    
+    if ((int)$data_lama['user_id'] !== $user_id) {
+        echo json_encode(["status" => "error", "message" => "Akses ditolak. Anda bukan pemilik event ini."]);
+        exit;
+    }
+
     $nama_file_gambar = $data_lama['banner_img'];
 
     if (isset($_FILES['banner_img']) && $_FILES['banner_img']['error'] === 0) {
@@ -311,18 +322,26 @@ if ($aksi === 'hapus_event') {
     
     $input_data = json_decode(file_get_contents('php://input'), true);
     $event_id = isset($input_data['event_id']) ? mysqli_real_escape_string($koneksi, $input_data['event_id']) : '';
+    $user_id = isset($input_data['user_id']) ? (int)$input_data['user_id'] : 0;
 
-    if (empty($event_id)) {
-        echo json_encode(["status" => "error", "message" => "ID Event tidak terdeteksi."]);
+    if (empty($event_id) || empty($user_id)) {
+        echo json_encode(["status" => "error", "message" => "Data tidak lengkap."]);
         exit;
     }
 
-    $query_gambar = mysqli_query($koneksi, "SELECT banner_img FROM events WHERE id = '$event_id'");
-    if (mysqli_num_rows($query_gambar) > 0) {
-        $data = mysqli_fetch_assoc($query_gambar);
+    $query_event = mysqli_query($koneksi, "SELECT banner_img, user_id FROM events WHERE id = '$event_id'");
+    if (mysqli_num_rows($query_event) > 0) {
+        $data = mysqli_fetch_assoc($query_event);
+        if ((int)$data['user_id'] !== $user_id) {
+            echo json_encode(["status" => "error", "message" => "Akses ditolak. Anda bukan pemilik event ini."]);
+            exit;
+        }
         if (!empty($data['banner_img']) && file_exists("uploads/" . $data['banner_img'])) {
             unlink("uploads/" . $data['banner_img']); 
         }
+    } else {
+        echo json_encode(["status" => "error", "message" => "Event tidak ditemukan."]);
+        exit;
     }
 
     $query_delete = "DELETE FROM events WHERE id = '$event_id'";
