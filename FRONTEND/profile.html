@@ -227,14 +227,31 @@
     </div>
 
     <!-- Penyelenggara Section -->
-    <div id="orgPanel" class="doppelrand-card gsap-reveal" style="display: none; text-align: center; padding: 80px 24px; margin-bottom: 48px;">
-      <div class="card-inner" style="background: transparent; box-shadow: none; display: flex; flex-direction: column; align-items: center;">
-        <img src="assets/mascot_megaphone.png" alt="Megaphone" style="width: 140px; margin-bottom: 32px;">
-        <h2 style="margin-bottom: 16px; font-size: clamp(2rem, 4vw, 3rem);">Dashboard<br>Penyelenggara.</h2>
-        <p style="color: var(--gray-700); font-size: 1.2rem; max-width: 500px; margin-bottom: 40px; line-height: 1.6;">Kelola eventmu, kelola tiket, dan analisis feedback secara langsung dari satu dashboard intuitif.</p>
-        <button class="btn btn-primary magnetic" style="padding: 16px 32px; font-size: 1.1rem;" onclick="alert('Dashboard Penyelenggara akan segera hadir!')">
-          Akses Dashboard <span class="btn-icon-wrapper"><i data-lucide="arrow-right" class="icon-sm"></i></span>
-        </button>
+    <div id="orgPanel" class="doppelrand-card gsap-reveal" style="display: none; padding: 48px; margin-bottom: 48px;">
+      <div class="card-inner" style="display: flex; flex-direction: column;">
+        <h3 style="margin-bottom: 24px; text-align: center;">Dashboard Penyelenggara</h3>
+        
+        <div id="orgRegistration" style="display: none; text-align: center; padding: 24px;">
+          <img src="assets/mascot_megaphone.png" alt="Megaphone" style="width: 140px; margin-bottom: 24px;">
+          <h2 style="margin-bottom: 16px;">Jadilah Penyelenggara.</h2>
+          <p style="color: var(--gray-700); margin-bottom: 32px;">Hanya Mahasiswa yang dapat mendaftar sebagai panitia untuk membuat event dan mengelola pendaftar.</p>
+          <button class="btn btn-primary" id="btnRegisterPanitia" style="padding: 12px 32px;">
+            Daftar sebagai Panitia
+          </button>
+        </div>
+
+        <div id="orgDashboard" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h4>Event Anda</h4>
+            <a href="buat_event.html" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">+ Buat Event</a>
+          </div>
+          
+          <div id="eventListContainer" style="display: grid; gap: 16px;">
+            <!-- Events will be populated here via JS -->
+            <p style="text-align: center; color: var(--gray-500); padding: 24px;">Memuat dashboard...</p>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -283,7 +300,6 @@
         `;
       } else if (user.role === 'panitia') {
         dynFields.innerHTML = `<div class="form-group"><label>NIM Panitia</label><input type="text" class="form-control" id="editNim" value="${user.nim || ''}"></div>`;
-        document.getElementById('orgPanel').style.display = 'block';
       } else {
         dynFields.innerHTML = `<div class="form-group"><label>Pekerjaan</label><input type="text" class="form-control" id="editKerja" value="${user.pekerjaan || ''}"></div>`;
       }
@@ -322,6 +338,77 @@
           alert("Gagal menghubungi server.");
         }
       });
+
+      // Handle Panitia Logic
+      const orgPanel = document.getElementById('orgPanel');
+      const orgReg = document.getElementById('orgRegistration');
+      const orgDash = document.getElementById('orgDashboard');
+      const eventContainer = document.getElementById('eventListContainer');
+
+      if (user.role === 'mahasiswa') {
+        orgPanel.style.display = 'block';
+        orgReg.style.display = 'block';
+        orgDash.style.display = 'none';
+
+        document.getElementById('btnRegisterPanitia').addEventListener('click', async () => {
+          if (confirm('Anda yakin ingin mendaftar sebagai Panitia?')) {
+            document.getElementById('btnRegisterPanitia').innerText = 'Memproses...';
+            try {
+              const res = await window.api.registerPanitia(user.id);
+              if (res.status === 'sukses') {
+                alert(res.pesan);
+                localStorage.setItem('eventra_user', JSON.stringify(res.user));
+                window.location.reload();
+              } else {
+                alert(res.pesan);
+                document.getElementById('btnRegisterPanitia').innerText = 'Daftar sebagai Panitia';
+              }
+            } catch (err) {
+              alert('Terjadi kesalahan.');
+              document.getElementById('btnRegisterPanitia').innerText = 'Daftar sebagai Panitia';
+            }
+          }
+        });
+      } else if (user.role === 'panitia') {
+        orgPanel.style.display = 'block';
+        orgReg.style.display = 'none';
+        orgDash.style.display = 'block';
+
+        // Fetch Panitia Events
+        async function loadPanitiaDashboard() {
+          const events = await window.api.getEventPanitia(user.id);
+          if (events.length === 0) {
+            eventContainer.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 24px;">Belum ada event yang diunggah.</p>';
+            return;
+          }
+
+          eventContainer.innerHTML = '';
+          for (const ev of events) {
+            const pendaftar = await window.api.hitungPendaftar(ev.id);
+            const views = ev.views || 0;
+            
+            eventContainer.innerHTML += `
+              <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; background: white;">
+                <div>
+                  <h5 style="margin-bottom: 4px; font-size: 1.1rem; color: var(--primary-dark);">${ev.nama_event}</h5>
+                  <span style="font-size: 0.85rem; color: var(--gray-500);">${window.api.formatTanggal(ev.tanggal)} · ${ev.kategori}</span>
+                </div>
+                <div style="display: flex; gap: 16px; text-align: center;">
+                  <div>
+                    <div style="font-weight: 700; color: var(--primary); font-size: 1.2rem;">${views}</div>
+                    <div style="font-size: 0.7rem; color: var(--gray-500); text-transform: uppercase;">Views</div>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; color: #22c55e; font-size: 1.2rem;">${pendaftar}</div>
+                    <div style="font-size: 0.7rem; color: var(--gray-500); text-transform: uppercase;">Pendaftar</div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+        }
+        loadPanitiaDashboard();
+      }
     }
 
 

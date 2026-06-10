@@ -232,6 +232,61 @@ if ($data['aksi'] === 'hapus_akun') {
     } catch (PDOException $e) {
         $pdo->rollBack();
         echo json_encode(['status' => 'gagal', 'pesan' => 'Gagal menghapus: ' . $e->getMessage()]);
+    exit;
+}
+
+// ==========================================
+// 5. DAFTAR PANITIA (UPGRADE ROLE)
+// ==========================================
+if ($data['aksi'] === 'daftar_panitia') {
+    $user_id = $data['user_id'];
+
+    // Cek apakah user mahasiswa
+    $stmt_cek = $pdo->prepare("SELECT * FROM mahasiswa WHERE user_id = ?");
+    $stmt_cek->execute([$user_id]);
+    $mahasiswa = $stmt_cek->fetch(PDO::FETCH_ASSOC);
+
+    if (!$mahasiswa) {
+        echo json_encode(['status' => 'gagal', 'pesan' => 'Hanya mahasiswa yang dapat mendaftar sebagai panitia.']);
+        exit;
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        // Pindahkan data ke tabel panitia
+        $sql_panitia = "INSERT INTO panitia (user_id, nama, email, phone, nim) VALUES (?, ?, ?, ?, ?)";
+        $pdo->prepare($sql_panitia)->execute([
+            $user_id, $mahasiswa['nama'], $mahasiswa['email'], $mahasiswa['phone'], $mahasiswa['nim']
+        ]);
+
+        // Hapus dari mahasiswa karena role berubah
+        $pdo->prepare("DELETE FROM mahasiswa WHERE user_id = ?")->execute([$user_id]);
+
+        // Update role di tabel users
+        $pdo->prepare("UPDATE users SET role = 'panitia' WHERE id = ?")->execute([$user_id]);
+
+        $pdo->commit();
+        
+        // Ambil data user terbaru untuk di-return
+        $stmt_user = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt_user->execute([$user_id]);
+        $user_updated = $stmt_user->fetch(PDO::FETCH_ASSOC);
+        
+        $stmt_profil = $pdo->prepare("SELECT * FROM panitia WHERE user_id = ?");
+        $stmt_profil->execute([$user_id]);
+        $profil = $stmt_profil->fetch(PDO::FETCH_ASSOC);
+        
+        unset($user_updated['password']);
+        
+        echo json_encode([
+            'status' => 'sukses', 
+            'pesan' => 'Pendaftaran Panitia Berhasil! Halaman akan dimuat ulang.',
+            'user' => array_merge($user_updated, $profil)
+        ]);
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        echo json_encode(['status' => 'gagal', 'pesan' => 'Gagal mendaftar panitia: ' . $e->getMessage()]);
     }
     exit;
 }

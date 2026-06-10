@@ -84,6 +84,29 @@ if ($aksi === 'ambil_event_user') {
     exit;
 }
 
+// ==========================================
+// 3. HITUNG PENDAFTAR EVENT
+// ==========================================
+if ($aksi === 'hitung_pendaftar') {
+    $event_id = isset($_GET['event_id']) ? mysqli_real_escape_string($koneksi, $_GET['event_id']) : '';
+
+    if (empty($event_id)) {
+        echo json_encode(['status' => 'error', 'message' => 'ID Event tidak valid.']);
+        exit;
+    }
+
+    $query = "SELECT COUNT(id) as total FROM registrasi_event WHERE event_id = '$event_id'";
+    $result = mysqli_query($koneksi, $query);
+    
+    if ($result) {
+        $row = mysqli_fetch_assoc($result);
+        echo json_encode(['status' => 'success', 'total' => $row['total']]);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Gagal menghitung pendaftar.']);
+    }
+    exit;
+}
+
 echo json_encode(['status' => 'error', 'message' => 'Aksi tidak valid.']);
 exit;
 ?>

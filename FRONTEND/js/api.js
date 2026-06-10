@@ -142,6 +142,47 @@ function updateNavbarAuth() {
     }
 }
 
+async function registerPanitia(userId) {
+    const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ aksi: 'daftar_panitia', user_id: userId })
+    });
+    return await res.json();
+}
+
+async function getEventPanitia(userId) {
+    try {
+        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=ambil_event_panitia&id_panitia=${userId}`);
+        if (!response.ok) throw new Error(`HTTP error!`);
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error("Gagal mengambil event panitia:", error);
+        return [];
+    }
+}
+
+async function hitungPendaftar(eventId) {
+    try {
+        const response = await fetch(`${BASE_URL}/registrasi_event.php?aksi=hitung_pendaftar&event_id=${eventId}`);
+        if (!response.ok) throw new Error(`HTTP error!`);
+        const data = await response.json();
+        return data.status === 'success' ? data.total : 0;
+    } catch (error) {
+        console.error("Gagal menghitung pendaftar:", error);
+        return 0;
+    }
+}
+
+async function incrementEventView(eventId) {
+    try {
+        await fetch(`${BASE_URL}/buat_event.php?aksi=tambah_view&id=${eventId}`);
+    } catch (error) {
+        console.error("Gagal menambah view:", error);
+    }
+}
+
 // Export fungsionalitas agar bisa digunakan di file lain jika module, 
 // atau bisa dipanggil langsung dari script HTML.
 window.api = {
@@ -155,5 +196,9 @@ window.api = {
     updateNavbarAuth,
     submitPendaftaran,
     fetchEventUser,
+    registerPanitia,
+    getEventPanitia,
+    hitungPendaftar,
+    incrementEventView,
     BASE_URL
 };

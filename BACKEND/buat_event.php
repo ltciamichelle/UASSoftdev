@@ -21,6 +21,7 @@ if ($aksi === 'tambah_event') {
     $lokasi           = mysqli_real_escape_string($koneksi, $_POST['lokasi']);
     $tipe_tiket       = mysqli_real_escape_string($koneksi, $_POST['tipe_tiket']);
     $slot_kursi       = isset($_POST['slot_kursi']) ? mysqli_real_escape_string($koneksi, $_POST['slot_kursi']) : 0;
+    $user_id          = isset($_POST['user_id']) ? mysqli_real_escape_string($koneksi, $_POST['user_id']) : 'NULL';
 
     if (empty($nama_event) || empty($kategori) || empty($tanggal) || empty($waktu) || empty($tanggal_selesai) || empty($waktu_selesai) || empty($lokasi) || empty($tipe_tiket)) {
         echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi!"]);
@@ -40,8 +41,8 @@ if ($aksi === 'tambah_event') {
         move_uploaded_file($_FILES["banner_img"]["tmp_name"], $target_file);
     }
 
-    $query_insert = "INSERT INTO events (nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, slot_kursi, banner_img) 
-                     VALUES ('$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', '$slot_kursi', '$nama_file_gambar')";
+    $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, slot_kursi, banner_img) 
+                     VALUES ($user_id, '$nama_event', '$kategori', '$tanggal', '$waktu', '$tanggal_selesai', '$waktu_selesai', '$lokasi', '$tipe_tiket', '$slot_kursi', '$nama_file_gambar')";
 
     if (mysqli_query($koneksi, $query_insert)) {
         echo json_encode(["status" => "success", "message" => "Event berhasil dibuat dan dipublikasikan!"]);
@@ -84,8 +85,7 @@ if ($aksi === 'ambil_event_panitia') {
         exit;
     }
 
-    // Tanpa id_panitia di tabel, kita ambil semua event saja agar tidak error
-    $query_select = "SELECT * FROM events ORDER BY id DESC";
+    $query_select = "SELECT * FROM events WHERE user_id = '$id_panitia' ORDER BY id DESC";
     $result = mysqli_query($koneksi, $query_select);
     $daftar_event = array();
 
@@ -209,6 +209,23 @@ if ($aksi === 'hapus_event') {
         echo json_encode(["status" => "success", "message" => "Event berhasil dihapus dari sistem!"]);
     } else {
         echo json_encode(["status" => "error", "message" => "Gagal menghapus event: " . mysqli_error($koneksi)]);
+    }
+    exit;
+}
+
+// ==========================================
+// 7. PROSES TAMBAH VIEW EVENT
+// ==========================================
+if ($aksi === 'tambah_view') {
+    header('Content-Type: application/json');
+    $event_id = isset($_GET['id']) ? mysqli_real_escape_string($koneksi, $_GET['id']) : '';
+
+    if (!empty($event_id)) {
+        $query = "UPDATE events SET views = views + 1 WHERE id = '$event_id'";
+        mysqli_query($koneksi, $query);
+        echo json_encode(["status" => "success"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "ID tidak valid."]);
     }
     exit;
 }

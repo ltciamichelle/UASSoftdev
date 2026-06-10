@@ -252,6 +252,9 @@
       const modal = document.getElementById('registrationModal');
       modal.style.display = 'flex';
       setTimeout(() => modal.classList.add('show'), 10);
+
+      // Increment View Event
+      window.api.incrementEventView(eventId);
     }
 
     function closeRegistrationModal() {

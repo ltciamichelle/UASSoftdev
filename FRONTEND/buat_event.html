@@ -265,6 +265,7 @@
 
       try {
         const formData = new FormData(form);
+        formData.append('user_id', user.id); // Asumsi user.id adalah ID unik di tabel users
 
         const response = await fetch(`${window.api.BASE_URL}/buat_event.php?aksi=tambah_event`, {
           method: 'POST',

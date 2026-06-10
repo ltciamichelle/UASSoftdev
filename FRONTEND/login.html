@@ -179,7 +179,6 @@
             <select class="form-control" id="regRole" onchange="toggleRoleFields(this.value)" required>
               <option value="mahasiswa">Mahasiswa</option>
               <option value="non_mahasiswa">Non Mahasiswa</option>
-              <option value="panitia">Panitia</option>
             </select>
           </div>
           
@@ -274,10 +273,6 @@
           </div>
           <div class="form-group"><label>Program Studi</label><input type="text" id="regProdi" class="form-control" required></div>
         `;
-      } else if (role === 'panitia') {
-        container.innerHTML = `
-          <div class="form-group"><label>NIM Panitia</label><input type="text" id="regNim" class="form-control" required></div>
-        `;
       } else {
         container.innerHTML = `
           <div class="form-group"><label>Pekerjaan / Instansi</label><input type="text" id="regPekerjaan" class="form-control" required></div>
@@ -326,8 +321,6 @@
         data.nim = document.getElementById('regNim').value;
         data.fakultas = document.getElementById('regFakultas').value;
         data.prodi = document.getElementById('regProdi').value;
-      } else if (role === 'panitia') {
-        data.nim = document.getElementById('regNim').value;
       } else {
         data.pekerjaan = document.getElementById('regPekerjaan').value;
       }
