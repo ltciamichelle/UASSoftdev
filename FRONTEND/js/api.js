@@ -183,6 +183,50 @@ async function incrementEventView(eventId) {
     }
 }
 
+/**
+ * Toast Notification System
+ */
+function showToast(message, type = 'success') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = 'position: fixed; top: 32px; right: 32px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; pointer-events: none;';
+        document.body.appendChild(container);
+        
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+            @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+            .eventra-toast { padding: 16px 24px; border-radius: 12px; font-weight: 600; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-family: inherit; font-size: 0.95rem; animation: slideInRight 0.4s cubic-bezier(0.32, 0.72, 0, 1) forwards; max-width: 350px; display: flex; align-items: center; gap: 12px; pointer-events: auto; }
+            .toast-success { background: #10b981; }
+            .toast-error { background: #ef4444; }
+            .toast-info { background: #3b82f6; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `eventra-toast toast-${type}`;
+    
+    let iconSvg = '';
+    if (type === 'success') {
+        iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+    } else if (type === 'error') {
+        iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+    } else {
+        iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+    }
+
+    toast.innerHTML = `${iconSvg} <span style="line-height:1.4;">${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.4s forwards';
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
+
 // Export fungsionalitas agar bisa digunakan di file lain jika module, 
 // atau bisa dipanggil langsung dari script HTML.
 window.api = {
@@ -200,5 +244,6 @@ window.api = {
     getEventPanitia,
     hitungPendaftar,
     incrementEventView,
-    BASE_URL
+    BASE_URL,
+    showToast
 };

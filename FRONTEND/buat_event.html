@@ -12,7 +12,7 @@
     // Security check before page fully loads to prevent flashing
     const user = JSON.parse(localStorage.getItem('eventra_user'));
     if (!user) {
-      alert("Anda harus login terlebih dahulu untuk membuat event!");
+      window.api.showToast("Anda harus login terlebih dahulu untuk membuat event!", 'error');
       window.location.href = 'login.html';
     }
   </script>
@@ -244,7 +244,7 @@
       
       const user = JSON.parse(localStorage.getItem('eventra_user'));
       if (!user) {
-        alert('Sesi Anda telah habis. Silakan login kembali.');
+        window.api.showToast('Sesi Anda telah habis. Silakan login kembali.', 'error');
         window.location.href = 'login.html';
         return;
       }
@@ -254,7 +254,7 @@
       const tanggalSelesai = new Date(form.tanggal_selesai.value + ' ' + form.waktu_selesai.value);
       
       if (tanggalSelesai <= tanggalMulai) {
-        alert('Waktu selesai harus lebih besar dari waktu mulai!');
+        window.api.showToast('Waktu selesai harus lebih besar dari waktu mulai!', 'error');
         return;
       }
 
@@ -278,19 +278,19 @@
           // Success animation then redirect
           gsap.to('.doppelrand-card', {
             y: -20, opacity: 0, duration: 0.5, onComplete: () => {
-              alert(result.message);
+              window.api.showToast('Berhasil: ' + result.message, 'success');
               window.location.href = 'activity.html'; // Redirect to Activity so they can see their events (if they are organizer)
             }
           });
         } else {
-          alert('Gagal: ' + result.message);
+          window.api.showToast('Gagal: ' + result.message, 'error');
           submitBtn.innerHTML = originalText;
           submitBtn.disabled = false;
         }
 
       } catch (error) {
         console.error('Error submitting form:', error);
-        alert('Terjadi kesalahan jaringan atau server. Pastikan backend berjalan.');
+        window.api.showToast('Terjadi kesalahan jaringan atau server. Pastikan backend berjalan.', 'error');
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
       }

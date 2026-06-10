@@ -288,13 +288,13 @@
         try {
           const res = await window.api.submitPendaftaran(data);
           if (res.status === 'success') {
-            alert('Pendaftaran Berhasil! Silakan cek menu Activity.');
+            window.api.showToast('Pendaftaran Berhasil! Silakan cek menu Activity.', 'success');
             closeRegistrationModal();
           } else {
-            alert(res.message);
+            window.api.showToast(res.message, 'error');
           }
         } catch (err) {
-          alert('Terjadi kesalahan jaringan atau server: ' + err.message);
+          window.api.showToast('Terjadi kesalahan jaringan atau server: ' + err.message, 'error');
         } finally {
           btn.innerText = originalText;
           btn.disabled = false;

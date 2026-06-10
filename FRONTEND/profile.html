@@ -331,13 +331,13 @@
         try {
           const res = await window.api.updateUser(dataToUpdate);
           if(res.status === 'sukses') {
-            alert('Profil berhasil diperbarui! Anda harus login ulang.');
+            window.api.showToast('Profil berhasil diperbarui! Anda harus login ulang.', 'success');
             window.api.logoutUser();
           } else {
-            alert(res.pesan);
+            window.api.showToast(res.pesan, 'error');
           }
         } catch (e) {
-          alert("Gagal menghubungi server.");
+          window.api.showToast("Gagal menghubungi server.", 'error');
         }
       });
 
@@ -358,15 +358,15 @@
             try {
               const res = await window.api.registerPanitia(user.user_id);
               if (res.status === 'sukses') {
-                alert(res.pesan);
+                window.api.showToast(res.pesan, 'error');
                 localStorage.setItem('eventra_user', JSON.stringify(res.user));
                 window.location.reload();
               } else {
-                alert(res.pesan);
+                window.api.showToast(res.pesan, 'error');
                 document.getElementById('btnRegisterPanitia').innerText = 'Daftar sebagai Panitia';
               }
             } catch (err) {
-              alert('Terjadi kesalahan.');
+              window.api.showToast('Terjadi kesalahan.', 'error');
               document.getElementById('btnRegisterPanitia').innerText = 'Daftar sebagai Panitia';
             }
           }

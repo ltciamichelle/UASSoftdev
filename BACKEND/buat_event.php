@@ -4,6 +4,63 @@
 // ==========================================
 include 'koneksi.php';
 
+// Fungsi kompresi gambar dan konversi ke WebP
+function compressAndConvertToWebP($source, $destination, $quality = 80, $max_width = 1200) {
+    $info = getimagesize($source);
+    if (!$info) return false;
+
+    $mime = $info['mime'];
+    if ($mime == 'image/jpeg') {
+        $image = imagecreatefromjpeg($source);
+    } elseif ($mime == 'image/gif') {
+        $image = imagecreatefromgif($source);
+    } elseif ($mime == 'image/png') {
+        $image = imagecreatefrompng($source);
+    } elseif ($mime == 'image/webp') {
+        $image = imagecreatefromwebp($source);
+    } else {
+        return false;
+    }
+
+    if (!$image) return false;
+
+    $width = $info[0];
+    $height = $info[1];
+    
+    if ($width > $max_width) {
+        $new_width = $max_width;
+        $new_height = floor($height * ($max_width / $width));
+    } else {
+        $new_width = $width;
+        $new_height = $height;
+    }
+
+    $new_image = imagecreatetruecolor($new_width, $new_height);
+
+    // Preserve transparency
+    if ($mime == 'image/png' || $mime == 'image/gif' || $mime == 'image/webp') {
+        imagealphablending($new_image, false);
+        imagesavealpha($new_image, true);
+        $transparent = imagecolorallocatealpha($new_image, 255, 255, 255, 127);
+        imagefilledrectangle($new_image, 0, 0, $new_width, $new_height, $transparent);
+    }
+
+    imagecopyresampled($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+    if (function_exists('imagewebp')) {
+        $result = imagewebp($new_image, $destination, $quality);
+    } else {
+        // Fallback to jpeg if webp not supported by GD
+        $destination = str_replace('.webp', '.jpg', $destination);
+        $result = imagejpeg($new_image, $destination, $quality);
+    }
+
+    imagedestroy($image);
+    imagedestroy($new_image);
+
+    return $result;
+}
+
 $aksi = isset($_GET['aksi']) ? $_GET['aksi'] : '';
 
 // ==========================================
@@ -47,10 +104,16 @@ if ($aksi === 'tambah_event') {
             exit;
         }
 
-        $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
+        $nama_file_gambar = time() . '_' . uniqid() . '.webp';
         $target_file = $target_dir . $nama_file_gambar;
         
-        move_uploaded_file($_FILES["banner_img"]["tmp_name"], $target_file);
+        // Kompres dan ubah ke webp
+        if (!compressAndConvertToWebP($_FILES["banner_img"]["tmp_name"], $target_file)) {
+            // Fallback jika GD error
+            $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
+            $target_file = $target_dir . $nama_file_gambar;
+            move_uploaded_file($_FILES["banner_img"]["tmp_name"], $target_file);
+        }
     }
 
     $query_insert = "INSERT INTO events (user_id, nama_event, kategori, tanggal, waktu, tanggal_selesai, waktu_selesai, lokasi, tipe_tiket, slot_kursi, banner_img) 
@@ -181,8 +244,13 @@ if ($aksi === 'update_event') {
             exit;
         }
 
-        $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
-        move_uploaded_file($_FILES["banner_img"]["tmp_name"], $target_dir . $nama_file_gambar);
+        $nama_file_gambar = time() . '_' . uniqid() . '.webp';
+        $target_file = $target_dir . $nama_file_gambar;
+        
+        if (!compressAndConvertToWebP($_FILES["banner_img"]["tmp_name"], $target_file)) {
+            $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
+            move_uploaded_file($_FILES["banner_img"]["tmp_name"], $target_dir . $nama_file_gambar);
+        }
     }
 
     $query_update = "UPDATE events SET 
