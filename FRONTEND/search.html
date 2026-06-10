@@ -355,7 +355,7 @@
 
       const modal = document.getElementById('registrationModal');
       modal.style.display = 'flex';
-      setTimeout(() => modal.classList.add('show'), 10);
+      setTimeout(() => modal.classList.add('active'), 10);
 
       // Increment View Event
       window.api.incrementEventView(eventId);
@@ -363,7 +363,7 @@
 
     function closeRegistrationModal() {
       const modal = document.getElementById('registrationModal');
-      modal.classList.remove('show');
+      modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     }
 
@@ -401,8 +401,8 @@
 
   <!-- Registration Modal -->
   <div class="modal-overlay" id="registrationModal">
-    <div class="modal-card" style="padding: 0; border: 1px solid var(--gray-200); background: var(--white); border-radius: 24px; box-shadow: none;">
-      <button class="modal-close" onclick="closeRegistrationModal()" style="z-index: 10; top: 24px; right: 24px; color: var(--gray-700); background: var(--gray-100); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i data-lucide="x"></i></button>
+    <div class="modal-container" style="padding: 0; overflow: hidden; max-width: 600px;">
+      <button class="modal-close" onclick="closeRegistrationModal()" style="z-index: 10;"><i data-lucide="x"></i></button>
       
       <div style="background: var(--primary-lighter); padding: 40px 32px 32px; position: relative; overflow: hidden;">
          <span style="background: var(--primary); padding: 6px 14px; border-radius: 50px; color: white; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; position: relative; z-index: 2;">Pendaftaran Tiket</span>

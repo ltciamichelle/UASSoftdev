@@ -164,9 +164,9 @@
   </div>
 
   <!-- QR Modal -->
-  <div id="qrModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;">
-    <div style="background: white; border-radius: 24px; width: 90%; max-width: 400px; padding: 40px; text-align: center; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
-      <button onclick="closeQrModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray-400); transition: color 0.3s;"><i data-lucide="x" class="icon-md"></i></button>
+  <div id="qrModal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 400px; text-align: center; padding: 40px;">
+      <button onclick="closeQrModal()" class="modal-close"><i data-lucide="x" class="icon-md"></i></button>
       
       <div style="width: 64px; height: 64px; background: rgba(102, 45, 145, 0.1); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
         <i data-lucide="qr-code" style="width: 32px; height: 32px;"></i>
@@ -205,7 +205,6 @@
       }, 300);
     }
 
-    let qrcode = null;
     function showQrTicket(regId, eventId, eventName) {
       document.getElementById('qrEventName').innerText = eventName;
       const modal = document.getElementById('qrModal');
@@ -228,13 +227,12 @@
       });
       
       modal.style.display = 'flex';
-      void modal.offsetWidth; // trigger reflow
-      modal.style.opacity = '1';
+      setTimeout(() => modal.classList.add('active'), 10);
     }
 
     function closeQrModal() {
       const modal = document.getElementById('qrModal');
-      modal.style.opacity = '0';
+      modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
       }, 300);

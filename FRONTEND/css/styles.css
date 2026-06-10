@@ -543,8 +543,213 @@ span.flatpickr-weekday {
     border-radius: 1.5rem 1.5rem 0 0;
   }
 }
+}
 @media (max-width: 768px) {
   .bento-hero .hero-content {
     padding: 24px;
+  }
+}
+
+/* ==========================================================
+   Premium Unified Forms, Tables & Modals
+   ========================================================== */
+
+/* Unified Forms */
+.form-group {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-700);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-control {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--gray-100);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--gray-900);
+  transition: all 0.3s var(--ease-spring);
+}
+
+.form-control::placeholder {
+  color: var(--gray-400);
+}
+
+.form-control:hover {
+  background: var(--white);
+  border-color: var(--gray-200);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.form-control:focus {
+  background: var(--white);
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(102, 45, 145, 0.15);
+  transform: scale(1.01);
+}
+
+/* Unified Tables */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 16px;
+  border: 1px solid var(--gray-200);
+}
+
+.table-premium {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+  background: var(--white);
+  min-width: 600px;
+}
+
+.table-premium thead {
+  background: rgba(245, 245, 245, 0.8);
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.table-premium th {
+  padding: 16px 24px;
+  color: var(--gray-500);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table-premium td {
+  padding: 16px 24px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+  transition: background 0.2s;
+}
+
+.table-premium tbody tr:hover td {
+  background: var(--gray-100);
+}
+
+.table-premium tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Unified Modals */
+.modal-overlay {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-container {
+  background: var(--white);
+  width: 90%;
+  max-width: 600px;
+  padding: 40px;
+  border-radius: 24px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.4s var(--ease-spring);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+}
+
+.modal-overlay.active .modal-container {
+  transform: translateY(0) scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: var(--gray-100);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--gray-500);
+  transition: all 0.3s var(--ease-spring);
+}
+
+.modal-close:hover {
+  background: var(--gray-200);
+  color: var(--gray-900);
+  transform: rotate(90deg);
+}
+
+/* List Item Card for Mobile Dashboards */
+.list-item-card {
+  padding: 24px;
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  background: var(--white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  transition: all 0.3s var(--ease-spring);
+}
+.list-item-card:hover {
+  border-color: var(--primary-light);
+  box-shadow: 0 10px 30px rgba(102, 45, 145, 0.08);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .list-item-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .list-item-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .list-item-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .modal-container {
+    padding: 24px;
+    border-radius: 20px;
+  }
+  .form-group {
+    margin-bottom: 16px;
   }
 }

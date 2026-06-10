@@ -272,8 +272,8 @@
   </main>
 
   <!-- Modal Konfirmasi Panitia -->
-  <div id="panitiaModal" class="modal" style="display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-    <div class="modal-content" style="background: white; max-width: 400px; text-align: center; padding: 32px; border-radius: 16px;">
+  <div id="panitiaModal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 400px; text-align: center;">
       <div style="width: 64px; height: 64px; background: rgba(102, 45, 145, 0.1); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
         <i data-lucide="shield-check" style="width: 32px; height: 32px;"></i>
       </div>
@@ -287,36 +287,36 @@
   </div>
 
   <!-- Modal Kelola Pendaftar -->
-  <div id="pendaftarModal" class="modal" style="display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-    <div class="modal-content" style="background: white; width: 90%; max-width: 800px; padding: 32px; border-radius: 16px; max-height: 90vh; display: flex; flex-direction: column;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+  <div id="pendaftarModal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 900px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
         <div>
             <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 4px;">Kelola Pendaftar</h2>
             <p style="color: var(--gray-500); font-size: 0.9rem;" id="pendaftarEventName">Nama Event</p>
         </div>
-        <div style="display: flex; gap: 16px; align-items: center;">
+        <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
             <button id="btnScanQR" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
                 <i data-lucide="qr-code" class="icon-sm"></i> Scan QR
             </button>
-            <button onclick="closePendaftarModal()" style="background: none; border: none; cursor: pointer; color: var(--gray-500);"><i data-lucide="x"></i></button>
+            <button onclick="closePendaftarModal()" class="modal-close"><i data-lucide="x"></i></button>
         </div>
       </div>
       
       <!-- QR Scanner UI -->
-      <div id="qrScannerContainer" style="display: none; flex-direction: column; align-items: center; margin-bottom: 24px; padding: 16px; background: var(--gray-100); border-radius: 16px;">
-        <div id="qr-reader" style="width: 100%; max-width: 400px; border-radius: 12px; overflow: hidden; margin-bottom: 16px;"></div>
-        <button onclick="stopScanner()" class="btn btn-outline" style="border-color: var(--gray-400); color: var(--gray-700);">Tutup Scanner</button>
+      <div id="qrScannerContainer" style="display: none; flex-direction: column; align-items: center; margin-bottom: 24px; padding: 24px; background: var(--gray-100); border-radius: 16px;">
+        <div id="qr-reader" style="width: 100%; max-width: 400px; border-radius: 12px; overflow: hidden; margin-bottom: 16px; border: 4px solid var(--white); box-shadow: 0 10px 30px rgba(0,0,0,0.05);"></div>
+        <button onclick="stopScanner()" class="btn btn-outline" style="background: var(--white); border: 1px solid var(--gray-300); color: var(--gray-700);">Tutup Scanner</button>
       </div>
 
-      <div style="overflow-y: auto; flex: 1;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
-          <thead style="background: var(--gray-100); border-bottom: 2px solid var(--gray-200);">
+      <div class="table-responsive" style="flex: 1;">
+        <table class="table-premium">
+          <thead>
             <tr>
-              <th style="padding: 12px; color: var(--gray-700);">Nama</th>
-              <th style="padding: 12px; color: var(--gray-700);">Kontak</th>
-              <th style="padding: 12px; color: var(--gray-700);">Status</th>
-              <th style="padding: 12px; color: var(--gray-700);">Kehadiran</th>
-              <th style="padding: 12px; color: var(--gray-700);">Bukti / Aksi</th>
+              <th>Nama</th>
+              <th>Kontak</th>
+              <th>Status</th>
+              <th>Kehadiran</th>
+              <th>Bukti / Aksi</th>
             </tr>
           </thead>
           <tbody id="pendaftarTableBody">
@@ -417,16 +417,18 @@
         
         document.getElementById('btnRegisterPanitia').addEventListener('click', () => {
           panitiaModal.style.display = 'flex';
-          // Animasi muncul tipis
-          gsap.fromTo(panitiaModal.querySelector('.modal-content'), {y: 20, opacity: 0}, {y: 0, opacity: 1, duration: 0.3});
+          // delay slighty for display flex to apply before opacity transition
+          setTimeout(() => panitiaModal.classList.add('active'), 10);
         });
 
         document.getElementById('btnCancelPanitia').addEventListener('click', () => {
-          panitiaModal.style.display = 'none';
+          panitiaModal.classList.remove('active');
+          setTimeout(() => panitiaModal.style.display = 'none', 300);
         });
 
         document.getElementById('btnConfirmPanitia').addEventListener('click', async () => {
-            panitiaModal.style.display = 'none';
+            panitiaModal.classList.remove('active');
+            setTimeout(() => panitiaModal.style.display = 'none', 300);
             document.getElementById('btnRegisterPanitia').innerText = 'Memproses...';
             try {
               const res = await window.api.registerPanitia(user.user_id);
@@ -462,22 +464,22 @@
             const views = ev.views || 0;
             
             eventContainer.innerHTML += `
-              <div style="padding: 16px; border: 1px solid var(--gray-200); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; background: white; gap: 16px;">
+              <div class="list-item-card">
                 <div style="flex: 1;">
                   <h5 style="margin-bottom: 4px; font-size: 1.1rem; color: var(--primary-dark);">${ev.nama_event}</h5>
-                  <span style="font-size: 0.85rem; color: var(--gray-500);">${window.api.formatTanggal(ev.tanggal)} · ${ev.kategori} · ${ev.tipe_tiket}</span>
+                  <span style="font-size: 0.85rem; color: var(--gray-500);">${window.api.formatTanggal(ev.tanggal)} · <span class="badge badge-primary" style="padding: 2px 8px; font-size: 0.7rem;">${ev.kategori}</span> · ${ev.tipe_tiket}</span>
                 </div>
-                <div style="display: flex; gap: 16px; text-align: center;">
+                <div style="display: flex; gap: 24px; text-align: center;">
                   <div>
-                    <div style="font-weight: 700; color: var(--primary); font-size: 1.2rem;">${views}</div>
-                    <div style="font-size: 0.7rem; color: var(--gray-500); text-transform: uppercase;">Views</div>
+                    <div style="font-weight: 800; color: var(--primary); font-size: 1.4rem; line-height: 1;">${views}</div>
+                    <div style="font-size: 0.7rem; color: var(--gray-500); text-transform: uppercase; font-weight: 700; margin-top: 4px;">Views</div>
                   </div>
                   <div>
-                    <div style="font-weight: 700; color: #22c55e; font-size: 1.2rem;">${pendaftar}</div>
-                    <div style="font-size: 0.7rem; color: var(--gray-500); text-transform: uppercase;">Pendaftar</div>
+                    <div style="font-weight: 800; color: #16A34A; font-size: 1.4rem; line-height: 1;">${pendaftar}</div>
+                    <div style="font-size: 0.7rem; color: var(--gray-500); text-transform: uppercase; font-weight: 700; margin-top: 4px;">Pendaftar</div>
                   </div>
                 </div>
-                <div style="display: flex; gap: 8px;">
+                <div class="list-item-actions">
                   <button class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem; border: 1px solid var(--primary); color: var(--primary);" onclick="bukaKelolaPendaftar(${ev.id}, '${ev.nama_event.replace(/'/g, "\\'")}')" title="Kelola Pendaftar">Kelola</button>
                   <a href="buat_event.html?edit_id=${ev.id}" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem; border: 1px solid #eab308; color: #eab308;" title="Edit Event"><i data-lucide="edit" class="icon-sm"></i></a>
                   <button class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem; border: 1px solid #ef4444; color: #ef4444;" onclick="konfirmasiHapusEvent(${ev.id}, '${ev.nama_event.replace(/'/g, "\\'")}')" title="Hapus Event"><i data-lucide="trash-2" class="icon-sm"></i></button>
@@ -500,17 +502,27 @@
             }
         }
 
+        window.closePendaftarModal = function() {
+            const modal = document.getElementById('pendaftarModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display='none', 300);
+            stopScanner();
+        }
+
         window.bukaKelolaPendaftar = async function(eventId, eventName) {
             currentEventId = eventId;
             currentEventName = eventName;
             document.getElementById('pendaftarEventName').innerText = eventName;
             const tbody = document.getElementById('pendaftarTableBody');
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 16px;">Memuat data...</td></tr>';
-            document.getElementById('pendaftarModal').style.display = 'flex';
+            
+            const modal = document.getElementById('pendaftarModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
             
             const data = await window.api.getPendaftarEvent(eventId);
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 16px;">Belum ada pendaftar.</td></tr>';
+            if(data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 16px; color: var(--gray-500);">Belum ada pendaftar.</td></tr>';
                 return;
             }
 
@@ -547,18 +559,18 @@
                     : '<span style="color: var(--gray-400);"><i data-lucide="minus-circle" class="icon-sm" style="vertical-align: middle;"></i> Tidak Hadir</span>';
 
                 return `
-                    <tr style="border-bottom: 1px solid var(--gray-200);">
-                        <td style="padding: 12px; vertical-align: top;">
+                    <tr>
+                        <td>
                             <div style="font-weight: 700; color: var(--gray-900);">${p.nama_lengkap}</div>
                             <div style="font-size: 0.8rem; color: var(--gray-500);">${p.instansi}</div>
                         </td>
-                        <td style="padding: 12px; vertical-align: top;">
+                        <td>
                             <div style="font-size: 0.85rem;">${p.email}</div>
                             <div style="font-size: 0.85rem; color: var(--gray-500);">${p.no_wa}</div>
                         </td>
-                        <td style="padding: 12px; vertical-align: top;">${statusBadge}</td>
-                        <td style="padding: 12px; vertical-align: top;">${kehadiranHtml}</td>
-                        <td style="padding: 12px; vertical-align: top;">${aksiHtml}</td>
+                        <td>${statusBadge}</td>
+                        <td>${kehadiranHtml}</td>
+                        <td>${aksiHtml}</td>
                     </tr>
                 `;
             }).join('');
@@ -583,7 +595,9 @@
         let isScanning = false;
 
         window.closePendaftarModal = function() {
-            document.getElementById('pendaftarModal').style.display='none';
+            const modal = document.getElementById('pendaftarModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display='none', 300);
             stopScanner();
         }
 
