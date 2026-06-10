@@ -146,7 +146,7 @@ if ($aksi === 'ambil_event_user') {
     }
 
     // Melakukan JOIN antara tabel registrasi_event dan events
-    $query = "SELECT e.*, r.tanggal_daftar, r.nama_lengkap 
+    $query = "SELECT e.*, r.tanggal_daftar, r.nama_lengkap, r.id as registrasi_id, r.status_pendaftaran 
               FROM registrasi_event r 
               JOIN events e ON r.event_id = e.id 
               WHERE r.user_id = '$user_id' 

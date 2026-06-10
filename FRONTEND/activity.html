@@ -9,6 +9,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     .tab-buttons {
       display: flex;
@@ -162,6 +163,23 @@
     </div>
   </div>
 
+  <!-- QR Modal -->
+  <div id="qrModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;">
+    <div style="background: white; border-radius: 24px; width: 90%; max-width: 400px; padding: 40px; text-align: center; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+      <button onclick="closeQrModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray-400); transition: color 0.3s;"><i data-lucide="x" class="icon-md"></i></button>
+      
+      <div style="width: 64px; height: 64px; background: rgba(102, 45, 145, 0.1); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+        <i data-lucide="qr-code" style="width: 32px; height: 32px;"></i>
+      </div>
+      <h2 style="font-size: 1.5rem; color: var(--gray-900); margin-bottom: 8px;">E-Ticket Anda</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem; margin-bottom: 24px;" id="qrEventName">Nama Event</p>
+      
+      <div id="qrcode" style="display: flex; justify-content: center; padding: 20px; background: var(--gray-100); border-radius: 16px; margin-bottom: 24px;"></div>
+      
+      <p style="color: var(--gray-600); font-size: 0.85rem; font-weight: 600;">Tunjukkan QR Code ini kepada panitia saat registrasi ulang di lokasi event.</p>
+    </div>
+  </div>
+
   <!-- Load API first for auth -->
   <script src="js/api.js?v=4"></script>
   <script src="js/gsap-animations.js?v=3"></script>
@@ -181,6 +199,41 @@
 
     function closeCertificate() {
       const modal = document.getElementById('certModal');
+      modal.style.opacity = '0';
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+
+    let qrcode = null;
+    function showQrTicket(regId, eventId, eventName) {
+      document.getElementById('qrEventName').innerText = eventName;
+      const modal = document.getElementById('qrModal');
+      
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = ''; // clear previous
+      
+      const payload = JSON.stringify({
+        registrasi_id: regId,
+        event_id: eventId
+      });
+      
+      qrcode = new QRCode(qrContainer, {
+        text: payload,
+        width: 200,
+        height: 200,
+        colorDark : "#662D91",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+      
+      modal.style.display = 'flex';
+      void modal.offsetWidth; // trigger reflow
+      modal.style.opacity = '1';
+    }
+
+    function closeQrModal() {
+      const modal = document.getElementById('qrModal');
       modal.style.opacity = '0';
       setTimeout(() => {
         modal.style.display = 'none';
@@ -242,11 +295,18 @@
           </button>`;
         } else {
           statusHtml = `<div style="background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.2); color: #16A34A; padding: 16px 24px; border-radius: 16px; font-weight: 900; font-size: 1rem; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; letter-spacing: 0.05em;">
-            <i data-lucide="calendar-clock" class="icon-md"></i> STATUS: TERDAFTAR
+            <i data-lucide="calendar-clock" class="icon-md"></i> STATUS: ${event.status_pendaftaran.toUpperCase()}
           </div>`;
-          certBtnHtml = `<button class="btn" disabled style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">
-            <i data-lucide="lock" class="icon-md"></i> E-Certificate Belum Tersedia
-          </button>`;
+          
+          if (event.status_pendaftaran === 'Sukses') {
+            certBtnHtml = `<button onclick="showQrTicket(${event.registrasi_id}, ${event.id}, '${event.nama_event.replace(/'/g, "\\'")}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--primary);">
+              <i data-lucide="qr-code" class="icon-md"></i> Lihat E-Ticket
+            </button>`;
+          } else {
+            certBtnHtml = `<button class="btn" disabled style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">
+              <i data-lucide="clock" class="icon-md"></i> Menunggu Verifikasi
+            </button>`;
+          }
         }
 
         html += `
