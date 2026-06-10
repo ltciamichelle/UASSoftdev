@@ -294,8 +294,20 @@
             <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 4px;">Kelola Pendaftar</h2>
             <p style="color: var(--gray-500); font-size: 0.9rem;" id="pendaftarEventName">Nama Event</p>
         </div>
-        <button onclick="document.getElementById('pendaftarModal').style.display='none'" style="background: none; border: none; cursor: pointer; color: var(--gray-500);"><i data-lucide="x"></i></button>
+        <div style="display: flex; gap: 16px; align-items: center;">
+            <button id="btnScanQR" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="qr-code" class="icon-sm"></i> Scan QR
+            </button>
+            <button onclick="closePendaftarModal()" style="background: none; border: none; cursor: pointer; color: var(--gray-500);"><i data-lucide="x"></i></button>
+        </div>
       </div>
+      
+      <!-- QR Scanner UI -->
+      <div id="qrScannerContainer" style="display: none; flex-direction: column; align-items: center; margin-bottom: 24px; padding: 16px; background: var(--gray-100); border-radius: 16px;">
+        <div id="qr-reader" style="width: 100%; max-width: 400px; border-radius: 12px; overflow: hidden; margin-bottom: 16px;"></div>
+        <button onclick="stopScanner()" class="btn btn-outline" style="border-color: var(--gray-400); color: var(--gray-700);">Tutup Scanner</button>
+      </div>
+
       <div style="overflow-y: auto; flex: 1;">
         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
           <thead style="background: var(--gray-100); border-bottom: 2px solid var(--gray-200);">
@@ -303,6 +315,7 @@
               <th style="padding: 12px; color: var(--gray-700);">Nama</th>
               <th style="padding: 12px; color: var(--gray-700);">Kontak</th>
               <th style="padding: 12px; color: var(--gray-700);">Status</th>
+              <th style="padding: 12px; color: var(--gray-700);">Kehadiran</th>
               <th style="padding: 12px; color: var(--gray-700);">Bukti / Aksi</th>
             </tr>
           </thead>
@@ -316,6 +329,7 @@
 
   <script src="js/api.js"></script>
   <script src="js/gsap-animations.js?v=3"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <script>
     lucide.createIcons();
     window.api.updateNavbarAuth();
@@ -487,9 +501,11 @@
         }
 
         window.bukaKelolaPendaftar = async function(eventId, eventName) {
+            currentEventId = eventId;
+            currentEventName = eventName;
             document.getElementById('pendaftarEventName').innerText = eventName;
             const tbody = document.getElementById('pendaftarTableBody');
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 16px;">Memuat data...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 16px;">Memuat data...</td></tr>';
             document.getElementById('pendaftarModal').style.display = 'flex';
             
             const data = await window.api.getPendaftarEvent(eventId);
@@ -526,6 +542,10 @@
                     aksiHtml = buktiHtml + actionButtons;
                 }
 
+                let kehadiranHtml = p.kehadiran === 'Hadir' 
+                    ? '<span style="color: #16A34A; font-weight: 800;"><i data-lucide="check-circle" class="icon-sm" style="vertical-align: middle;"></i> Hadir</span>'
+                    : '<span style="color: var(--gray-400);"><i data-lucide="minus-circle" class="icon-sm" style="vertical-align: middle;"></i> Tidak Hadir</span>';
+
                 return `
                     <tr style="border-bottom: 1px solid var(--gray-200);">
                         <td style="padding: 12px; vertical-align: top;">
@@ -537,6 +557,7 @@
                             <div style="font-size: 0.85rem; color: var(--gray-500);">${p.no_wa}</div>
                         </td>
                         <td style="padding: 12px; vertical-align: top;">${statusBadge}</td>
+                        <td style="padding: 12px; vertical-align: top;">${kehadiranHtml}</td>
                         <td style="padding: 12px; vertical-align: top;">${aksiHtml}</td>
                     </tr>
                 `;
@@ -554,6 +575,85 @@
                 window.api.showToast(res.message, 'error');
             }
         };
+
+        // --- QR SCANNER LOGIC ---
+        let html5QrcodeScanner = null;
+        let currentEventId = null;
+        let currentEventName = null;
+        let isScanning = false;
+
+        window.closePendaftarModal = function() {
+            document.getElementById('pendaftarModal').style.display='none';
+            stopScanner();
+        }
+
+        window.stopScanner = function() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().catch(e => console.error(e));
+                html5QrcodeScanner = null;
+            }
+            document.getElementById('qrScannerContainer').style.display = 'none';
+            isScanning = false;
+        }
+
+        document.getElementById('btnScanQR').addEventListener('click', () => {
+            if (isScanning) {
+                stopScanner();
+                return;
+            }
+            document.getElementById('qrScannerContainer').style.display = 'flex';
+            
+            html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: {width: 250, height: 250} }, false);
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            isScanning = true;
+        });
+
+        async function onScanSuccess(decodedText, decodedResult) {
+            // Berhenti scan agar tidak menembak API berkali-kali
+            stopScanner();
+            
+            try {
+                const qrData = JSON.parse(decodedText);
+                if (!qrData.registrasi_id || !qrData.event_id) throw new Error("Format QR Tidak Dikenali");
+                
+                if (qrData.event_id != currentEventId) {
+                    window.api.showToast("Tiket ini BUKAN untuk event ini!", "error");
+                    return;
+                }
+
+                // Kirim ke backend
+                const response = await fetch(`${window.api.BASE_URL}/scan_qr.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        aksi: 'verifikasi_qr', 
+                        registrasi_id: qrData.registrasi_id,
+                        event_id: qrData.event_id,
+                        panitia_id: user.user_id || user.id
+                    })
+                });
+
+                const res = await response.json();
+                
+                if (res.status === 'success') {
+                    window.api.showToast(res.message, 'success');
+                    // Reload table
+                    window.bukaKelolaPendaftar(currentEventId, currentEventName);
+                } else if (res.status === 'warning') {
+                    window.api.showToast(res.message, 'warning');
+                } else {
+                    window.api.showToast(res.message, 'error');
+                }
+
+            } catch (err) {
+                window.api.showToast("QR Code tidak valid atau rusak.", "error");
+                console.error(err);
+            }
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning
+        }
 
         loadPanitiaDashboard();
       }
