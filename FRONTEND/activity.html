@@ -437,10 +437,10 @@
           statusHtml = `<div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); color: #3B82F6; padding: 16px 24px; border-radius: 16px; font-weight: 900; font-size: 1rem; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; letter-spacing: 0.05em;">
             <i data-lucide="check-circle" class="icon-md"></i> STATUS: SELESAI
           </div>`;
-          certBtnHtml = `<button onclick="showCertificate('${event.nama_event.replace(/'/g, "\\'")}', '${user.nama.replace(/'/g, "\\'")}', '${event.template_sertifikat || ''}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px;">
+          certBtnHtml = `<button onclick="showCertificate('${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${user.nama.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.template_sertifikat || ''}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px;">
             <i data-lucide="award" class="icon-md"></i> Lihat E-Certificate
           </button>
-          <button onclick="showFeedbackModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'")}')" class="btn" style="padding: 16px 32px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 12px; background: transparent; border: 2px solid var(--gray-300); color: var(--gray-700);">
+          <button onclick="showFeedbackModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" class="btn" style="padding: 16px 32px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 12px; background: transparent; border: 2px solid var(--gray-300); color: var(--gray-700);">
             <i data-lucide="message-square" class="icon-md"></i> Beri Ulasan
           </button>`;
         } else {
@@ -449,7 +449,7 @@
           </div>`;
           
           if (event.status_pendaftaran === 'Sukses') {
-            certBtnHtml = `<button onclick="showQrTicket(${event.registrasi_id}, ${event.id}, '${event.nama_event.replace(/'/g, "\\'")}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--primary);">
+            certBtnHtml = `<button onclick="showQrTicket(${event.registrasi_id}, ${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--primary);">
               <i data-lucide="qr-code" class="icon-md"></i> Lihat E-Ticket
             </button>`;
           } else {
