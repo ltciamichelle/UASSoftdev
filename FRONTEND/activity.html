@@ -324,10 +324,15 @@
       setTimeout(() => modal.classList.add('active'), 10);
       
       // Initialize stars to 5
-      const stars = document.querySelectorAll('#starRating i');
+      const stars = document.querySelectorAll('#starRating svg, #starRating i');
       stars.forEach((s, idx) => {
-        if(idx < 5) s.style.color = '#F59E0B';
-        else s.style.color = 'var(--gray-300)';
+        if(idx < 5) {
+          s.style.color = '#F59E0B';
+          s.style.fill = '#F59E0B';
+        } else {
+          s.style.color = 'var(--gray-300)';
+          s.style.fill = 'none';
+        }
       });
       document.getElementById('feedbackRating').value = 5;
     }
@@ -342,16 +347,23 @@
 
     // Star Rating Logic
     document.addEventListener('DOMContentLoaded', () => {
-      const stars = document.querySelectorAll('#starRating i');
-      stars.forEach(star => {
-        star.addEventListener('click', (e) => {
-          const val = parseInt(e.currentTarget.getAttribute('data-val'));
+      const starContainer = document.getElementById('starRating');
+      starContainer.addEventListener('click', (e) => {
+        let target = e.target.closest('[data-val]');
+        if (target) {
+          const val = parseInt(target.getAttribute('data-val'));
           document.getElementById('feedbackRating').value = val;
+          const stars = starContainer.querySelectorAll('svg, i');
           stars.forEach((s, idx) => {
-            if (idx < val) s.style.color = '#F59E0B';
-            else s.style.color = 'var(--gray-300)';
+            if (idx < val) {
+              s.style.color = '#F59E0B';
+              s.style.fill = '#F59E0B';
+            } else {
+              s.style.color = 'var(--gray-300)';
+              s.style.fill = 'none';
+            }
           });
-        });
+        }
       });
 
       document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
