@@ -184,12 +184,23 @@ if ($aksi === 'ambil_event_panitia') {
     header('Content-Type: application/json');
     $id_panitia = isset($_GET['id_panitia']) ? mysqli_real_escape_string($koneksi, $_GET['id_panitia']) : '';
 
-    if (empty($id_panitia)) {
+    if (empty($id_panitia) || $id_panitia === 'undefined') {
         echo json_encode(["status" => "error", "message" => "Parameter Panitia tidak valid."]);
         exit;
     }
 
-    $query_select = "SELECT * FROM events WHERE user_id = '$id_panitia' ORDER BY id DESC";
+    // Resolve both users.id and panitia.id so we can catch events saved under either ID
+    $user_id_primary = $id_panitia;
+    $panitia_id = $id_panitia;
+    
+    // Cek apakah $id_panitia ada di tabel panitia
+    $cek_panitia = mysqli_query($koneksi, "SELECT id, user_id FROM panitia WHERE id = '$id_panitia' OR user_id = '$id_panitia' LIMIT 1");
+    if ($row = mysqli_fetch_assoc($cek_panitia)) {
+        $user_id_primary = $row['user_id'];
+        $panitia_id = $row['id'];
+    }
+
+    $query_select = "SELECT * FROM events WHERE user_id = '$user_id_primary' OR user_id = '$panitia_id' ORDER BY id DESC";
     $result = mysqli_query($koneksi, $query_select);
     $daftar_event = array();
 
