@@ -25,6 +25,9 @@ if (empty($data) && !empty($_POST)) {
 // Fallback ke GET parameter jika bukan POST JSON
 $aksi = isset($data['aksi']) ? $data['aksi'] : (isset($_GET['aksi']) ? $_GET['aksi'] : '');
 
+// Pastikan kolom kode_pendaftaran ada di database (auto-migrate)
+@mysqli_query($koneksi, "ALTER TABLE registrasi_event ADD COLUMN kode_pendaftaran VARCHAR(50) UNIQUE NULL AFTER event_id");
+
 // ==========================================
 // 1. DAFTAR EVENT
 // ==========================================
