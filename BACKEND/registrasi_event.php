@@ -115,11 +115,14 @@ if ($aksi === 'daftar') {
 
     // $nama_file_bukti = ($nama_file_bukti) ? "'$nama_file_bukti'" : "NULL";
 
-    $query_insert = "INSERT INTO registrasi_event (user_id, event_id, nama_lengkap, email, no_wa, instansi, status_pendaftaran, bukti_bayar) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    // Generate Kode Pendaftaran Unik
+    $kode_pendaftaran = 'EVT' . date('ymd') . strtoupper(substr(md5(uniqid(rand(), true)), 0, 5));
+
+    $query_insert = "INSERT INTO registrasi_event (user_id, event_id, kode_pendaftaran, nama_lengkap, email, no_wa, instansi, status_pendaftaran, bukti_bayar) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = mysqli_prepare($koneksi, $query_insert);
-    mysqli_stmt_bind_param($stmt, "iissssss", $user_id, $event_id, $nama_lengkap, $email, $no_wa, $instansi, $status_pendaftaran, $nama_file_bukti);
+    mysqli_stmt_bind_param($stmt, "iisssssss", $user_id, $event_id, $kode_pendaftaran, $nama_lengkap, $email, $no_wa, $instansi, $status_pendaftaran, $nama_file_bukti);
 
     try {
         if (mysqli_stmt_execute($stmt)) {
@@ -146,7 +149,7 @@ if ($aksi === 'ambil_event_user') {
     }
 
     // Melakukan JOIN antara tabel registrasi_event dan events
-    $query = "SELECT e.*, r.tanggal_daftar, r.nama_lengkap, r.id as registrasi_id, r.status_pendaftaran 
+    $query = "SELECT e.*, r.tanggal_daftar, r.nama_lengkap, r.id as registrasi_id, r.status_pendaftaran, r.kode_pendaftaran 
               FROM registrasi_event r 
               JOIN events e ON r.event_id = e.id 
               WHERE r.user_id = '$user_id' 

@@ -458,6 +458,19 @@ $username_panitia = $userData['username'];
     <div class="event-selector">
         <select id="eventSelect" onchange="loadParticipants()">
             <option value="">-- Pilih Event --</option>
+<?php
+                    // Ambil daftar event milik panitia
+                    $query_events = "SELECT id, nama_event FROM events WHERE user_id = '{$userData['user_id']}' OR user_id = '{$userData['id']}' ORDER BY tanggal DESC";
+                    $result_events = mysqli_query($koneksi, $query_events);
+                    
+                    if (mysqli_num_rows($result_events) > 0) {
+                        while ($row = mysqli_fetch_assoc($result_events)) {
+                            echo "<option value='{$row['id']}'>{$row['nama_event']}</option>";
+                        }
+                    } else {
+                        echo "<option value=''>Belum ada event</option>";
+                    }
+                    ?>
         </select>
     </div>
 

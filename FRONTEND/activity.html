@@ -283,7 +283,7 @@
       }, 300);
     }
 
-    function showQrTicket(regId, eventId, eventName) {
+    function showQrTicket(kodePendaftaran, eventId, eventName) {
       document.getElementById('qrEventName').innerText = eventName;
       const modal = document.getElementById('qrModal');
       
@@ -291,7 +291,7 @@
       qrContainer.innerHTML = ''; // clear previous
       
       const payload = JSON.stringify({
-        registrasi_id: regId,
+        kode_pendaftaran: kodePendaftaran,
         event_id: eventId
       });
       
@@ -460,10 +460,14 @@
             <i data-lucide="calendar-clock" class="icon-md"></i> STATUS: ${event.status_pendaftaran.toUpperCase()}
           </div>`;
           
-          if (event.status_pendaftaran === 'Sukses') {
-            certBtnHtml = `<button onclick="showQrTicket(${event.registrasi_id}, ${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--primary);">
-              <i data-lucide="qr-code" class="icon-md"></i> Lihat E-Ticket
+          if (event.kategori === 'Seminar' && (event.status_pendaftaran === 'Sukses' || event.status_pendaftaran === 'Terdaftar')) {
+            certBtnHtml = `<button onclick="showQrTicket('${event.kode_pendaftaran || ''}', ${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--primary);">
+              <i data-lucide="qr-code" class="icon-md"></i> Lihat E-Ticket (QR)
             </button>`;
+          } else if (event.status_pendaftaran === 'Terdaftar' || event.status_pendaftaran === 'Sukses') {
+             certBtnHtml = `<button class="btn" disabled style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">
+               <i data-lucide="check-circle" class="icon-md"></i> Terdaftar
+             </button>`;
           } else {
             certBtnHtml = `<button class="btn" disabled style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">
               <i data-lucide="clock" class="icon-md"></i> Menunggu Verifikasi

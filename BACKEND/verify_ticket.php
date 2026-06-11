@@ -270,14 +270,13 @@ $kode = isset($_GET['kode']) ? trim($_GET['kode']) : '';
                     $query = "SELECT 
                                 p.id as pendaftaran_id,
                                 p.kode_pendaftaran,
-                                p.nama_peserta,
-                                p.email_peserta,
-                                p.no_telepon,
+                                p.nama_lengkap as nama_peserta,
+                                p.email as email_peserta,
+                                p.no_wa as no_telepon,
                                 p.tanggal_daftar,
                                 p.status_pendaftaran,
                                 p.bukti_bayar,
-                                p.is_checked_in,
-                                p.check_in_time,
+                                p.kehadiran,
                                 e.id as event_id,
                                 e.nama_event,
                                 e.tanggal,
@@ -288,7 +287,7 @@ $kode = isset($_GET['kode']) ? trim($_GET['kode']) : '';
                                 e.tipe_tiket,
                                 e.harga_event,
                                 e.deskripsi
-                              FROM pendaftaran_event p 
+                              FROM registrasi_event p 
                               JOIN events e ON p.event_id = e.id 
                               WHERE p.kode_pendaftaran = ?";
                     
@@ -370,11 +369,11 @@ $kode = isset($_GET['kode']) ? trim($_GET['kode']) : '';
                             </div>
                         </div>
                         
-                        <?php if ($isValid && $ticket['is_checked_in'] == 1): ?>
+                        <?php if ($isValid && $ticket['kehadiran'] == 'Hadir'): ?>
                             <div class="success-box">
                                 <i class="fa-solid fa-check-circle" style="color: #10b981;"></i>
                                 <strong>✓ Sudah Check-in</strong><br>
-                                <small>Waktu check-in: <?php echo date('d F Y H:i', strtotime($ticket['check_in_time'])); ?></small>
+                                <small>Waktu check-in: Tercatat Hadir</small>
                             </div>
                         <?php elseif ($isValid): ?>
                             <div class="success-box">

@@ -153,6 +153,7 @@ CREATE TABLE `registrasi_event` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `event_id` int(11) NOT NULL,
+  `kode_pendaftaran` varchar(50) UNIQUE NOT NULL,
   `nama_lengkap` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `no_wa` varchar(50) NOT NULL,

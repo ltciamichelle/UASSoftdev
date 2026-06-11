@@ -51,14 +51,13 @@ function getParticipants($koneksi) {
                 p.user_id,
                 p.event_id,
                 p.kode_pendaftaran,
-                p.nama_peserta,
-                p.email_peserta,
-                p.no_telepon,
+                p.nama_lengkap as nama_peserta,
+                p.email as email_peserta,
+                p.no_wa as no_telepon,
                 p.tanggal_daftar,
                 p.status_pendaftaran,
                 p.bukti_bayar,
-                p.is_checked_in,
-                p.check_in_time,
+                p.kehadiran,
                 e.id as event_id_db,
                 e.nama_event,
                 e.tanggal,
@@ -66,15 +65,15 @@ function getParticipants($koneksi) {
                 e.lokasi,
                 e.tipe_tiket,
                 e.harga_event
-              FROM pendaftaran_event p 
+              FROM registrasi_event p 
               JOIN events e ON p.event_id = e.id 
               WHERE p.event_id = '$event_id'";
     
     if (!empty($search)) {
         $query .= " AND (p.kode_pendaftaran LIKE '%$search%' 
-                    OR p.nama_peserta LIKE '%$search%' 
-                    OR p.email_peserta LIKE '%$search%'
-                    OR p.no_telepon LIKE '%$search%')";
+                    OR p.nama_lengkap LIKE '%$search%' 
+                    OR p.email LIKE '%$search%'
+                    OR p.no_wa LIKE '%$search%')";
     }
     
     if (!empty($status)) {
@@ -101,8 +100,9 @@ function getParticipants($koneksi) {
     
     while ($row = mysqli_fetch_assoc($result)) {
         // Format status untuk tampilan
-        if ($row['is_checked_in'] == 1) {
+        if ($row['kehadiran'] == 'Hadir') {
             $row['status_pendaftaran'] = 'Sudah Check-in';
+            $row['check_in_time'] = 'Hadir';
         }
         
         $participants[] = $row;
@@ -137,9 +137,8 @@ function handleVerificationAction($input, $koneksi) {
         $status = 'Ditolak';
         $message = 'Pendaftaran ditolak!';
     } elseif ($aksi === 'checkin') {
-        // Update check-in time
-        $checkin_time = date('Y-m-d H:i:s');
-        $query = "UPDATE pendaftaran_event SET is_checked_in = 1, check_in_time = '$checkin_time' WHERE id = '$pendaftaran_id'";
+        // Update kehadiran
+        $query = "UPDATE registrasi_event SET kehadiran = 'Hadir' WHERE id = '$pendaftaran_id'";
         
         if (mysqli_query($koneksi, $query)) {
             echo json_encode(["status" => "success", "message" => "Check-in berhasil! Peserta sudah masuk area event."]);
@@ -153,7 +152,7 @@ function handleVerificationAction($input, $koneksi) {
     }
     
     // Untuk verify dan reject
-    $query = "UPDATE pendaftaran_event SET status_pendaftaran = '$status' WHERE id = '$pendaftaran_id'";
+    $query = "UPDATE registrasi_event SET status_pendaftaran = '$status' WHERE id = '$pendaftaran_id'";
     
     if (mysqli_query($koneksi, $query)) {
         echo json_encode(["status" => "success", "message" => $message]);
