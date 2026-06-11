@@ -47,6 +47,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `events` (
   `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `nama_event` varchar(255) NOT NULL,
   `kategori` varchar(100) NOT NULL,
   `tanggal` date NOT NULL,
@@ -55,8 +56,14 @@ CREATE TABLE `events` (
   `waktu_selesai` time DEFAULT NULL,
   `lokasi` varchar(255) NOT NULL,
   `tipe_tiket` varchar(50) NOT NULL,
+  `harga_event` int(11) DEFAULT 0,
   `slot_kursi` int(11) DEFAULT 0,
   `banner_img` varchar(255) DEFAULT '',
+  `bank_name` varchar(100) DEFAULT NULL,
+  `bank_rekening` varchar(100) DEFAULT NULL,
+  `bank_atas_nama` varchar(255) DEFAULT NULL,
+  `template_sertifikat` varchar(255) DEFAULT NULL,
+  `views` int(11) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -124,15 +131,36 @@ INSERT INTO `panitia` (`id`, `user_id`, `nama`, `email`, `phone`, `nim`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pendaftaran_event`
+-- Table structure for table `feedbacks`
 --
 
-CREATE TABLE `pendaftaran_event` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `feedbacks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `event_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL DEFAULT 5,
+  `ulasan` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `registrasi_event`
+--
+
+CREATE TABLE `registrasi_event` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `user_id` int(11) NOT NULL,
   `event_id` int(11) NOT NULL,
+  `nama_lengkap` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `no_wa` varchar(50) NOT NULL,
+  `instansi` varchar(255) NOT NULL,
   `tanggal_daftar` timestamp NOT NULL DEFAULT current_timestamp(),
-  `status_pendaftaran` varchar(50) DEFAULT 'Terdaftar'
+  `status_pendaftaran` varchar(50) DEFAULT 'Terdaftar',
+  `bukti_bayar` varchar(255) DEFAULT NULL,
+  `kehadiran` ENUM('Tidak Hadir', 'Hadir') DEFAULT 'Tidak Hadir'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

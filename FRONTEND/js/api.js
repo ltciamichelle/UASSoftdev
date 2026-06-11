@@ -1,9 +1,8 @@
 // js/api.js
 // Konfigurasi URL Backend API
-// Menggunakan jalur relatif karena Frontend dan Backend digabungkan di server yang sama (InfinityFree htdocs)
-const BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-    ? 'http://localhost/UASSoftdev/BACKEND' 
-    : '.';
+// Deteksi otomatis apakah kita berada di dalam folder FRONTEND
+const isFrontendFolder = window.location.pathname.includes('/FRONTEND/');
+const BASE_URL = isFrontendFolder ? '../BACKEND' : '.';
 
 /**
  * Fetch semua event dari database
