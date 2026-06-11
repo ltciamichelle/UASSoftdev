@@ -628,7 +628,6 @@
             try {
                 const response = await fetch(`${window.api.BASE_URL}/buat_event.php?aksi=ambil_feedback_event&event_id=${eventId}`);
                 const res = await response.json();
-                
                 if (res.status === 'success') {
                     if (res.data.length === 0) {
                         content.innerHTML = '<p style="text-align:center; color: var(--gray-500); padding: 16px;">Belum ada ulasan untuk event ini.</p>';

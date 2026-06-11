@@ -203,6 +203,19 @@ if ($aksi === 'simpan_feedback') {
         exit;
     }
 
+    // Ensure feedbacks table exists
+    $check_table = mysqli_query($koneksi, "SHOW TABLES LIKE 'feedbacks'");
+    if (mysqli_num_rows($check_table) == 0) {
+        mysqli_query($koneksi, "CREATE TABLE feedbacks (
+            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            event_id INT(11) NOT NULL,
+            user_id INT(11) NOT NULL,
+            rating INT(11) NOT NULL DEFAULT 5,
+            ulasan TEXT NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )");
+    }
+
     // Check if user already submitted feedback
     $check_fb = mysqli_query($koneksi, "SELECT id FROM feedbacks WHERE event_id = '$event_id' AND user_id = '$user_id'");
     if (mysqli_num_rows($check_fb) > 0) {
@@ -217,7 +230,7 @@ if ($aksi === 'simpan_feedback') {
         if (mysqli_query($koneksi, $insert)) {
             echo json_encode(['status' => 'success', 'message' => 'Terima kasih! Ulasan Anda berhasil disimpan.']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan ulasan.']);
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan ulasan: ' . mysqli_error($koneksi)]);
         }
     }
     exit;

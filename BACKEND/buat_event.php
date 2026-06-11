@@ -406,9 +406,12 @@ if ($aksi === 'ambil_feedback_event') {
         exit;
     }
 
-    $query = "SELECT f.rating, f.ulasan, f.created_at, u.nama 
+    $query = "SELECT f.rating, f.ulasan, f.created_at, COALESCE(m.nama, nm.nama, p.nama, u.username) as nama 
               FROM feedbacks f 
               JOIN users u ON f.user_id = u.id 
+              LEFT JOIN mahasiswa m ON u.id = m.user_id
+              LEFT JOIN non_mahasiswa nm ON u.id = nm.user_id
+              LEFT JOIN panitia p ON u.id = p.user_id
               WHERE f.event_id = '$event_id' 
               ORDER BY f.created_at DESC";
               
