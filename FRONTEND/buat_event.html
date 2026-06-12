@@ -136,107 +136,45 @@
               <span style="font-weight: 700; color: var(--primary-dark); z-index: 1;">Klik atau seret untuk mengunggah banner</span>
               <span style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px; z-index: 1;">Format JPG, PNG (Maks. 2MB)</span>
               <img id="imagePreview" src="" alt="Preview" style="background: rgba(255,255,255,0.9);">
-              <input type="file" id="banner_img" name="banner_img" accept="image/*" required>
+              <input type="file" id="banner_img" name="Poster_Event" accept="image/*" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label">Nama Event</label>
-            <input type="text" class="form-control" name="nama_event" placeholder="Cth: Seminar Nasional Teknologi 2026" required>
+            <input type="text" class="form-control" name="Nama_Event" placeholder="Cth: Seminar Nasional Teknologi 2026" required>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Kategori</label>
-              <select class="form-control" name="kategori" required>
+              <select class="form-control" name="Id_Kategori" required>
                 <option value="" disabled selected>Pilih Kategori</option>
-                <option value="Akademik">Akademik</option>
-                <option value="Olahraga">Olahraga</option>
-                <option value="Seni & Budaya">Seni & Budaya</option>
-                <option value="Seminar">Seminar</option>
-                <option value="Hiburan">Hiburan</option>
+                <option value="1">Akademik</option>
+                <option value="2">Olahraga</option>
+                <option value="3">Seni & Budaya</option>
+                <option value="4">Seminar</option>
+                <option value="5">Hiburan</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label">Lokasi</label>
-              <input type="text" class="form-control" name="lokasi" placeholder="Cth: Auditorium Utama" required>
+              <input type="text" class="form-control" name="Lokasi" placeholder="Cth: Auditorium Utama" required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Tanggal Mulai</label>
-              <input type="date" class="form-control" name="tanggal" required>
+              <label class="form-label">Tanggal Event</label>
+              <input type="date" class="form-control" name="Tanggal_Event" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Waktu Mulai</label>
-              <input type="time" class="form-control" name="waktu" required>
+              <label class="form-label">Deskripsi Event</label>
+              <textarea class="form-control" name="Deskripsi" rows="3" placeholder="Jelaskan detail acara Anda di sini..."></textarea>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Tanggal Selesai</label>
-              <input type="date" class="form-control" name="tanggal_selesai" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Waktu Selesai</label>
-              <input type="time" class="form-control" name="waktu_selesai" required>
-            </div>
-          </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Tipe Tiket</label>
-              <select class="form-control" name="tipe_tiket" required>
-                <option value="Gratis">Gratis</option>
-                <option value="Berbayar">Berbayar</option>
-              </select>
-            </div>
-            <div class="form-group" id="hargaGroup" style="display: none;">
-              <label class="form-label">Harga Tiket (Rp)</label>
-              <input type="number" class="form-control" name="harga_event" id="harga_event" placeholder="Cth: 50000" min="0">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Kuota Peserta</label>
-              <input type="number" class="form-control" name="slot_kursi" placeholder="Cth: 150" required>
-            </div>
-          </div>
-
-          <div id="rekeningGroup" class="doppelrand-card" style="display: none; padding: 24px !important; margin-bottom: 24px; border-color: var(--primary-lighter); background: rgba(102, 45, 145, 0.02);">
-            <h4 style="margin-bottom: 16px; color: var(--primary-dark);"><i data-lucide="credit-card" class="icon-sm"></i> Informasi Rekening Pembayaran</h4>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Nama Bank / E-Wallet</label>
-                <input type="text" class="form-control" name="bank_name" id="bank_name" placeholder="Cth: BCA, Mandiri, GoPay">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Nomor Rekening</label>
-                <input type="text" class="form-control" name="bank_rekening" id="bank_rekening" placeholder="Cth: 1234567890">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Atas Nama</label>
-              <input type="text" class="form-control" name="bank_atas_nama" id="bank_atas_nama" placeholder="Cth: BEM FTI UNTAR">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group" style="flex: 1;">
-              <label class="form-label">Template Sertifikat (Opsional)</label>
-              <div class="image-upload-wrapper" id="certUploadBox" style="height: 250px; background: transparent; border-color: var(--gray-300);">
-                <i data-lucide="award" style="width: 48px; height: 48px; color: var(--gray-400); margin-bottom: 16px; z-index: 1;"></i>
-                <p style="margin-bottom: 8px; color: var(--gray-700); z-index: 1;">Klik atau seret file gambar (.jpg, .png)</p>
-                <p style="font-size: 0.85rem; color: var(--gray-500); z-index: 1; padding: 0 16px; text-align: center;">Nama peserta akan ditempatkan otomatis di TENGAH gambar. Kosongkan untuk desain *default*.</p>
-                <img id="certPreview" src="" alt="Preview Sertifikat" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 5; background: rgba(255,255,255,0.9);">
-                <input type="file" name="template_sertifikat" id="template_sertifikat" accept="image/*">
-              </div>
-              <p id="certFileName" style="margin-top: 8px; font-size: 0.9rem; color: var(--primary-dark); font-weight: 600; text-align: center;"></p>
-            </div>
-          </div>
 
           <div style="text-align: right; margin-top: 32px;">
             <button type="submit" class="btn btn-primary" id="submitBtn">Publikasikan Event</button>
@@ -318,86 +256,7 @@
       }
     });
 
-    // Cert Upload Logic
-    const certUploadBox = document.getElementById('certUploadBox');
-    const certInput = document.getElementById('template_sertifikat');
-    const certFileName = document.getElementById('certFileName');
 
-    certUploadBox.addEventListener('click', () => certInput.click());
-    
-    certUploadBox.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      certUploadBox.style.borderColor = 'var(--primary)';
-      certUploadBox.style.background = 'rgba(102, 45, 145, 0.05)';
-    });
-    
-    certUploadBox.addEventListener('dragleave', (e) => {
-      e.preventDefault();
-      certUploadBox.style.borderColor = 'var(--gray-300)';
-      certUploadBox.style.background = 'transparent';
-    });
-    
-    certUploadBox.addEventListener('drop', (e) => {
-      e.preventDefault();
-      certUploadBox.style.borderColor = 'var(--gray-300)';
-      certUploadBox.style.background = 'transparent';
-      
-      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        certInput.files = e.dataTransfer.files;
-        updateCertFileName();
-      }
-    });
-
-    certInput.addEventListener('change', updateCertFileName);
-
-    function updateCertFileName() {
-      if (certInput.files && certInput.files[0]) {
-        certFileName.textContent = "File terpilih: " + certInput.files[0].name;
-        
-        // Show Image Preview
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const preview = document.getElementById('certPreview');
-          preview.src = e.target.result;
-          preview.style.display = 'block';
-        }
-        reader.readAsDataURL(certInput.files[0]);
-      } else {
-        certFileName.textContent = "";
-        document.getElementById('certPreview').style.display = 'none';
-      }
-    }
-
-    // Tipe Tiket Logic
-    const tipeTiket = document.querySelector('select[name="tipe_tiket"]');
-    const hargaGroup = document.getElementById('hargaGroup');
-    const hargaInput = document.getElementById('harga_event');
-    const rekeningGroup = document.getElementById('rekeningGroup');
-    const bankNameInput = document.getElementById('bank_name');
-    const bankRekeningInput = document.getElementById('bank_rekening');
-    const bankAtasNamaInput = document.getElementById('bank_atas_nama');
-
-    tipeTiket.addEventListener('change', function() {
-      if (this.value === 'Berbayar') {
-        hargaGroup.style.display = 'block';
-        hargaInput.required = true;
-        rekeningGroup.style.display = 'block';
-        bankNameInput.required = true;
-        bankRekeningInput.required = true;
-        bankAtasNamaInput.required = true;
-      } else {
-        hargaGroup.style.display = 'none';
-        hargaInput.required = false;
-        hargaInput.value = '';
-        rekeningGroup.style.display = 'none';
-        bankNameInput.required = false;
-        bankRekeningInput.required = false;
-        bankAtasNamaInput.required = false;
-        bankNameInput.value = '';
-        bankRekeningInput.value = '';
-        bankAtasNamaInput.value = '';
-      }
-    });
 
     // Form Submission
     const form = document.getElementById('buatEventForm');
@@ -434,38 +293,16 @@
                     return;
                 }
 
-                form.nama_event.value = ev.nama_event;
-                form.kategori.value = ev.kategori;
-                form.lokasi.value = ev.lokasi;
-                form.tanggal.value = ev.tanggal;
-                form.waktu.value = ev.waktu;
-                form.tanggal_selesai.value = ev.tanggal_selesai;
-                form.waktu_selesai.value = ev.waktu_selesai;
-                form.tipe_tiket.value = ev.tipe_tiket;
-                form.slot_kursi.value = ev.slot_kursi;
+                form.Nama_Event.value = ev.Nama_Event;
+                form.Id_Kategori.value = ev.Id_Kategori;
+                form.Lokasi.value = ev.Lokasi;
+                form.Tanggal_Event.value = ev.Tanggal_Event;
+                form.Deskripsi.value = ev.Deskripsi || '';
 
-                if (ev.tipe_tiket === 'Berbayar') {
-                    hargaGroup.style.display = 'block';
-                    hargaInput.required = true;
-                    hargaInput.value = ev.harga_event;
-                    
-                    rekeningGroup.style.display = 'block';
-                    bankNameInput.required = true;
-                    bankRekeningInput.required = true;
-                    bankAtasNamaInput.required = true;
-                    bankNameInput.value = ev.bank_name;
-                    bankRekeningInput.value = ev.bank_rekening;
-                    bankAtasNamaInput.value = ev.bank_atas_nama;
-                }
-
-                if (ev.banner_img) {
-                    imagePreview.src = `http://eventra-api.infinityfree.me/BACKEND/uploads/${ev.banner_img}`;
+                if (ev.Poster_Event) {
+                    imagePreview.src = `http://eventra-api.infinityfree.me/BACKEND/uploads/${ev.Poster_Event}`;
                     imagePreview.style.display = 'block';
-                    document.getElementById('banner_img').required = false; // Not required if already has image
-                }
-                
-                if (ev.template_sertifikat) {
-                    certFileName.textContent = "File saat ini: " + ev.template_sertifikat;
+                    document.getElementById('banner_img').required = false; 
                 }
             } else {
                 window.api.showToast(data.message, 'error');
@@ -484,14 +321,7 @@
         return;
       }
 
-      // Basic validation
-      const tanggalMulai = new Date(form.tanggal.value + ' ' + form.waktu.value);
-      const tanggalSelesai = new Date(form.tanggal_selesai.value + ' ' + form.waktu_selesai.value);
-      
-      if (tanggalSelesai <= tanggalMulai) {
-        window.api.showToast('Waktu selesai harus lebih besar dari waktu mulai!', 'error');
-        return;
-      }
+
 
       // Setup loading state
       const originalText = submitBtn.innerHTML;
@@ -500,7 +330,10 @@
 
       try {
         const formData = new FormData(form);
-        formData.append('user_id', user.Id_User || user.id); 
+        formData.append('Id_User', user.Id_User || user.id); 
+        if (isEditMode) {
+            formData.append('Id_Event', editId);
+        }
 
         const actionUrl = isEditMode 
             ? `${window.api.BASE_URL}/buat_event.php?aksi=update_event` 
