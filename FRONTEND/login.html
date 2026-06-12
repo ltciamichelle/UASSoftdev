@@ -277,12 +277,12 @@
 
       try {
         const res = await window.api.loginUser(data);
-        if(res.status === 'sukses') {
-          showMsg(res.pesan, 'success');
-          localStorage.setItem('eventra_user', JSON.stringify(res.user));
+        if(res.status === 'success') {
+          showMsg(res.message, 'success');
+          localStorage.setItem('eventra_user', JSON.stringify(res.data));
           setTimeout(() => { window.location.href = 'index.html'; }, 1000);
         } else {
-          showMsg(res.pesan, 'error');
+          showMsg(res.message, 'error');
         }
       } catch (err) {
         showMsg('Gagal terhubung ke server', 'error');
@@ -313,11 +313,11 @@
 
       try {
         const res = await window.api.registerUser(data);
-        if(res.status === 'sukses') {
-          showMsg(res.pesan, 'success');
+        if(res.status === 'success') {
+          showMsg(res.message, 'success');
           document.getElementById('registerForm').reset();
         } else {
-          showMsg(res.pesan, 'error');
+          showMsg(res.message, 'error');
         }
       } catch (err) {
         showMsg('Gagal terhubung ke server', 'error');
