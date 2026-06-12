@@ -505,8 +505,45 @@
                         <label>Tipe Tiket</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-ticket"></i>
-                            <input type="text" id="tipe_tiket" name="tipe_tiket" required
-                                placeholder="Contoh: Gratis / Rp 50.000">
+                            <select id="tipe_tiket" name="tipe_tiket" required onchange="togglePembayaran()">
+                                <option value="" disabled selected>Pilih Tipe Tiket</option>
+                                <option value="Gratis">Gratis</option>
+                                <option value="Berbayar">Berbayar</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-title" id="pembayaran_section_title" style="display:none;">
+                    <i class="fa-solid fa-money-bill-wave"></i> Informasi Pembayaran & Harga Tiket
+                </div>
+                <div class="inputs-grid" id="pembayaran_grid" style="display:none;">
+                    <div class="input-group">
+                        <label>Harga Event (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-rupiah-sign"></i>
+                            <input type="number" id="harga_event" name="harga_event" placeholder="Contoh: 50000">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Nama Bank</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <input type="text" id="bank_name" name="bank_name" placeholder="Contoh: BCA, Mandiri">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>No. Rekening</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-credit-card"></i>
+                            <input type="text" id="bank_rekening" name="bank_rekening" placeholder="No Rekening Tujuan">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Atas Nama Rekening</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user-tag"></i>
+                            <input type="text" id="bank_atas_nama" name="bank_atas_nama" placeholder="Atas Nama Pemilik Rekening">
                         </div>
                     </div>
                 </div>
@@ -557,16 +594,26 @@
                     <i class="fa-solid fa-file-image"></i> Poster & Lampiran Media (Poster Event)
                 </div>
                 <div class="inputs-grid" id="poster_upload_grid">
-                    <div class="input-group full-width">
+                    <div class="input-group">
                         <label>Unggah File Gambar/Poster</label>
                         <div class="upload-box" onclick="document.getElementById('file_poster').click()">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <p>Klik disini untuk memilih file Poster Event</p>
-                            <span style="font-size: 0.75rem; color: var(--text-muted);">Format: PNG, JPG (Maks. 5MB) |
-                                Biarkan kosong jika tidak ingin mengubah gambar</span>
+                            <p>Klik disini untuk memilih file Poster</p>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Format: PNG, JPG | Kosongkan jika tidak diubah</span>
                             <input type="file" id="file_poster" name="banner_img" accept="image/*"
                                 style="display:none;">
                             <div class="file-info-preview" id="file_preview"></div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Unggah Template Sertifikat</label>
+                        <div class="upload-box" onclick="document.getElementById('file_sertifikat').click()">
+                            <i class="fa-solid fa-certificate"></i>
+                            <p>Klik disini untuk memilih file Sertifikat</p>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Format: PDF, PNG, JPG | Kosongkan jika tidak ada</span>
+                            <input type="file" id="file_sertifikat" name="template_sertifikat" accept=".pdf,image/*"
+                                style="display:none;">
+                            <div class="file-info-preview" id="sertifikat_preview"></div>
                         </div>
                     </div>
                 </div>
@@ -748,6 +795,11 @@
                         document.getElementById('selesai_event').value = data.tanggal_selesai;
                         document.getElementById('waktu_selesai').value = data.waktu_selesai;
                         document.getElementById('nama_lokasi').value = data.lokasi;
+                        document.getElementById('harga_event').value = data.harga_event;
+                        document.getElementById('bank_name').value = data.bank_name;
+                        document.getElementById('bank_rekening').value = data.bank_rekening;
+                        document.getElementById('bank_atas_nama').value = data.bank_atas_nama;
+                        togglePembayaran();
 
                         // Tampilkan form dan sesuaikan tombolnya
                         document.getElementById('area_formulir').style.display = 'block';
@@ -770,6 +822,16 @@
         document.getElementById('file_poster').addEventListener('change', function () {
             const file = this.files[0];
             const preview = document.getElementById('file_preview');
+            if (file) {
+                const ukuranFile = (file.size / 1024).toFixed(2) + " KB";
+                preview.style.display = "block";
+                preview.innerHTML = `<i class="fa-solid fa-check-circle"></i> File siap: <strong>${file.name}</strong> (${ukuranFile})`;
+            }
+        });
+
+        document.getElementById('file_sertifikat').addEventListener('change', function () {
+            const file = this.files[0];
+            const preview = document.getElementById('sertifikat_preview');
             if (file) {
                 const ukuranFile = (file.size / 1024).toFixed(2) + " KB";
                 preview.style.display = "block";
@@ -834,11 +896,36 @@
             }
         }
 
+        function togglePembayaran() {
+            const tipe = document.getElementById('tipe_tiket').value;
+            const section = document.getElementById('pembayaran_section_title');
+            const grid = document.getElementById('pembayaran_grid');
+            if (tipe === 'Berbayar') {
+                section.style.display = 'flex';
+                grid.style.display = 'grid';
+                document.getElementById('harga_event').setAttribute('required', 'true');
+                document.getElementById('bank_name').setAttribute('required', 'true');
+                document.getElementById('bank_rekening').setAttribute('required', 'true');
+                document.getElementById('bank_atas_nama').setAttribute('required', 'true');
+            } else {
+                section.style.display = 'none';
+                grid.style.display = 'none';
+                document.getElementById('harga_event').removeAttribute('required');
+                document.getElementById('bank_name').removeAttribute('required');
+                document.getElementById('bank_rekening').removeAttribute('required');
+                document.getElementById('bank_atas_nama').removeAttribute('required');
+            }
+        }
+
         function resetForm() {
             document.getElementById('formBuatEvent').reset();
             document.getElementById('event_id_primary').value = '';
             document.getElementById('file_preview').style.display = "none";
-            document.getElementById('id_panitia').value = globalUsername;
+            document.getElementById('sertifikat_preview').style.display = "none";
+            togglePembayaran();
+            if(document.getElementById('id_panitia')) {
+                document.getElementById('id_panitia').value = globalUsername;
+            }
         }
     </script>
 </body>
