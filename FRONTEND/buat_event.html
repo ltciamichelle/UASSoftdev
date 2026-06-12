@@ -293,7 +293,7 @@
                 const ev = data.data;
                 // Check authorization
                 const user = JSON.parse(localStorage.getItem('eventra_user'));
-                if(parseInt(ev.user_id) !== parseInt(user.Id_User)) {
+                if(parseInt(ev.Id_User) !== parseInt(user.Id_User)) {
                     window.api.showToast('Akses ditolak. Anda bukan pemilik event ini.', 'error');
                     setTimeout(() => window.location.href = 'profile.html', 1500);
                     return;
@@ -306,7 +306,7 @@
                 form.Deskripsi.value = ev.Deskripsi || '';
 
                 if (ev.Poster_Event) {
-                    imagePreview.src = `http://eventra-api.infinityfree.me/BACKEND/uploads/${ev.Poster_Event}`;
+                    imagePreview.src = `${window.api.BASE_URL}/uploads/${ev.Poster_Event}`;
                     imagePreview.style.display = 'block';
                     document.getElementById('banner_img').required = false; 
                 }
