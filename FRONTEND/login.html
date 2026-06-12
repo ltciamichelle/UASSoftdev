@@ -146,8 +146,8 @@
         <!-- FORM LOGIN -->
         <form id="loginForm" class="auth-form active">
           <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="logUsername" class="form-control" required>
+            <label>Email</label>
+            <input type="email" id="logEmail" class="form-control" required>
           </div>
           <div class="form-group">
             <label>Password</label>
@@ -168,14 +168,10 @@
             </select>
           </div>
           
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
             <div class="form-group">
               <label>Nama Lengkap</label>
               <input type="text" id="regNama" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label>Username</label>
-              <input type="text" id="regUsername" class="form-control" required>
             </div>
           </div>
 
@@ -271,7 +267,7 @@
       e.preventDefault();
       
       const data = {
-        username: document.getElementById('logUsername').value,
+        email: document.getElementById('logEmail').value,
         password: document.getElementById('logPassword').value
       };
 
@@ -297,9 +293,8 @@
       const data = {
         role: role,
         nama: document.getElementById('regNama').value,
-        username: document.getElementById('regUsername').value,
         email: document.getElementById('regEmail').value,
-        phone: document.getElementById('regPhone').value,
+        no_hp: document.getElementById('regPhone').value,
         password: document.getElementById('regPassword').value
       };
 
