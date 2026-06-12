@@ -355,14 +355,14 @@
       const user = JSON.parse(userStr);
       
       // Populate Header
-      document.getElementById('profileInitials').innerText = user.nama.charAt(0).toUpperCase();
-      document.getElementById('profileName').innerText = user.nama;
+      document.getElementById('profileInitials').innerText = user.Nama.charAt(0).toUpperCase();
+      document.getElementById('profileName').innerText = user.Nama;
       document.getElementById('profileUsername').innerText = user.username;
       document.getElementById('profileRole').innerText = user.role;
 
       // Populate Edit Form
-      document.getElementById('editNama').value = user.nama;
-      document.getElementById('editEmail').value = user.email;
+      document.getElementById('editNama').value = user.Nama;
+      document.getElementById('editEmail').value = user.Email;
       document.getElementById('editPhone').value = user.phone;
 
       // Populate Dynamic Fields
@@ -386,7 +386,7 @@
         e.preventDefault();
         
         const dataToUpdate = {
-          user_id: user.user_id, // ini dari relasi foreign key
+          user_id: user.Id_User, // ini dari relasi foreign key
           role: user.role,
           nama: document.getElementById('editNama').value,
           email: document.getElementById('editEmail').value,
@@ -445,7 +445,7 @@
             setTimeout(() => panitiaModal.style.display = 'none', 300);
             document.getElementById('btnRegisterPanitia').innerText = 'Memproses...';
             try {
-              const res = await window.api.registerPanitia(user.user_id);
+              const res = await window.api.registerPanitia(user.Id_User);
               if (res.status === 'sukses') {
                 window.api.showToast(res.pesan, 'success');
                 localStorage.setItem('eventra_user', JSON.stringify(res.user));
@@ -466,7 +466,7 @@
 
         // Fetch Panitia Events
         async function loadPanitiaDashboard() {
-          const events = await window.api.getEventPanitia(user.user_id || user.id);
+          const events = await window.api.getEventPanitia(user.Id_User || user.id);
           if (events.length === 0) {
             eventContainer.innerHTML = '<p style="text-align: center; color: var(--gray-500); padding: 24px;">Belum ada event yang diunggah.</p>';
             return;
@@ -507,7 +507,7 @@
 
         window.konfirmasiHapusEvent = async function(eventId, eventName) {
             if (confirm(`Apakah Anda yakin ingin menghapus event "${eventName}"? Tindakan ini tidak dapat dibatalkan.`)) {
-                const res = await window.api.deleteEvent(eventId, user.user_id);
+                const res = await window.api.deleteEvent(eventId, user.Id_User);
                 if (res.status === 'success') {
                     window.api.showToast(res.message, 'success');
                     loadPanitiaDashboard(); // Reload the list
@@ -734,7 +734,7 @@
                         aksi: 'verifikasi_qr', 
                         registrasi_id: qrData.registrasi_id,
                         event_id: qrData.event_id,
-                        panitia_id: user.user_id || user.id
+                        panitia_id: user.Id_User || user.id
                     })
                 });
 

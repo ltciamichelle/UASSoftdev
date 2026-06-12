@@ -394,7 +394,7 @@
                 const ev = data.data;
                 // Check authorization
                 const user = JSON.parse(localStorage.getItem('eventra_user'));
-                if(parseInt(ev.user_id) !== parseInt(user.user_id)) {
+                if(parseInt(ev.user_id) !== parseInt(user.Id_User)) {
                     window.api.showToast('Akses ditolak. Anda bukan pemilik event ini.', 'error');
                     setTimeout(() => window.location.href = 'profile.html', 1500);
                     return;
@@ -466,7 +466,7 @@
 
       try {
         const formData = new FormData(form);
-        formData.append('user_id', user.user_id || user.id); 
+        formData.append('user_id', user.Id_User || user.id); 
 
         const actionUrl = isEditMode 
             ? `${window.api.BASE_URL}/buat_event.php?aksi=update_event` 

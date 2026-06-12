@@ -225,8 +225,8 @@
       let registeredEventIds = new Set();
       if (userStr) {
         const userObj = JSON.parse(userStr);
-        const userEvents = await window.api.fetchEventUser(userObj.user_id || userObj.id);
-        userEvents.forEach(e => registeredEventIds.add(parseInt(e.id)));
+        const userEvents = await window.api.fetchEventUser(userObj.Id_User || userObj.Id_User);
+        userEvents.forEach(e => registeredEventIds.add(parseInt(e.Id_Event)));
       }
 
       if (events.length === 0) {
@@ -265,8 +265,8 @@
       const latestEvents = events.slice(0, 3);
 
       latestEvents.forEach((event, index) => {
-        const imageUrl = event.banner_img
-          ? `${window.api.BASE_URL}/uploads/${event.banner_img}`
+        const imageUrl = event.Poster_Event
+          ? `${window.api.BASE_URL}/uploads/${event.Poster_Event}`
           : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600';
 
         const article = document.createElement('article');
@@ -287,21 +287,21 @@
             <div style="flex: 0 0 ${window.innerWidth <= 900 ? '200px' : '300px'}; background: url('${imageUrl}') center/cover; border-radius: ${window.innerWidth <= 900 ? '1.5rem 1.5rem 0 0' : '1.5rem 0 0 1.5rem'};"></div>
             <div style="flex: 1; padding: 40px; display: flex; flex-direction: column;">
               <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
-                <span class="badge badge-primary">${event.kategori}</span>
+                <span class="badge badge-primary">${event.Nama_Kategori}</span>
                 <div style="background: rgba(22, 163, 74, 0.1); color: #16A34A; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
                   <i data-lucide="timer" class="icon-sm"></i> Segera
                 </div>
               </div>
               <div style="flex: 1;">
-                <h3 style="margin-bottom: 16px; font-size: clamp(1.5rem, 2.5vw, 2.5rem); line-height:1.1;">${event.nama_event}</h3>
+                <h3 style="margin-bottom: 16px; font-size: clamp(1.5rem, 2.5vw, 2.5rem); line-height:1.1;">${event.Nama_Event}</h3>
                 <p style="font-size: 1rem; color: var(--gray-700); margin-bottom: 32px; display: flex; align-items: center; gap: 8px;">
-                  <i data-lucide="calendar" class="icon-sm"></i> ${window.api.formatTanggal(event.tanggal)} · ${event.waktu}
+                  <i data-lucide="calendar" class="icon-sm"></i> ${window.api.formatTanggal(event.Tanggal_Event)} · ${event.waktu}
                 </p>
                 <div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
                   ${ticketDisplay}
-                  ${registeredEventIds.has(parseInt(event.id))
+                  ${registeredEventIds.has(parseInt(event.Id_Event))
                     ? `<button class="btn" disabled style="width: 100%; padding: 12px; font-size: 0.95rem; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">Sudah Terdaftar <i data-lucide="check" class="icon-sm"></i></button>`
-                    : `<button class="btn btn-primary" onclick="openRegistrationModal(${event.id}, '${event.nama_event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="width: 100%; padding: 12px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>`
+                    : `<button class="btn btn-primary" onclick="openRegistrationModal(${event.Id_Event}, '${event.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="width: 100%; padding: 12px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>`
                   }
                 </div>
               </div>
@@ -319,8 +319,8 @@
             <div class="card-inner">
               <div style="height: 120px; background: url('${imageUrl}') center/cover;"></div>
               <div style="padding: 24px; flex: 1; display: flex; flex-direction: column;">
-                <h4 style="margin-bottom: 8px;">${event.nama_event}</h4>
-                <p style="font-size: 0.85rem; color: var(--gray-400); margin-bottom: 16px;">${window.api.formatTanggal(event.tanggal)}</p>
+                <h4 style="margin-bottom: 8px;">${event.Nama_Event}</h4>
+                <p style="font-size: 0.85rem; color: var(--gray-400); margin-bottom: 16px;">${window.api.formatTanggal(event.Tanggal_Event)}</p>
                 <div style="margin-top: auto;">
                   ${ticketDisplay}
                 </div>
@@ -353,8 +353,8 @@
       const user = JSON.parse(userStr);
       document.getElementById('reg_event_id').value = eventId;
       document.getElementById('reg_event_name').innerText = eventName;
-      document.getElementById('reg_nama').value = user.nama || '';
-      document.getElementById('reg_email').value = user.email || '';
+      document.getElementById('reg_nama').value = user.Nama || '';
+      document.getElementById('reg_email').value = user.Email || '';
       document.getElementById('reg_wa').value = user.phone || '';
       document.getElementById('reg_instansi').value = user.fakultas || user.pekerjaan || '';
       
@@ -437,7 +437,7 @@
 
         const form = document.getElementById('registrationForm');
         const formData = new FormData(form);
-        formData.append('user_id', user.user_id || user.id);
+        formData.append('user_id', user.Id_User || user.id);
 
         try {
           const res = await window.api.submitPendaftaran(formData);
@@ -469,7 +469,7 @@
       </div>
       
       <form id="registrationForm" style="padding: 32px; display: flex; flex-direction: column; gap: 20px;">
-        <input type="hidden" id="reg_event_id" name="event_id">
+        <input type="hidden" id="reg_event_id" name="Id_Event">
         <div class="input-group" style="display: flex; flex-direction: column; gap: 8px;">
           <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Nama Lengkap</label>
           <input type="text" id="reg_nama" name="nama_lengkap" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">

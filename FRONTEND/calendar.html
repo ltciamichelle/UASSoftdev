@@ -278,8 +278,8 @@
       const user = JSON.parse(userStr);
       document.getElementById('reg_event_id').value = eventId;
       document.getElementById('reg_event_name').innerText = eventName;
-      document.getElementById('reg_nama').value = user.nama || '';
-      document.getElementById('reg_email').value = user.email || '';
+      document.getElementById('reg_nama').value = user.Nama || '';
+      document.getElementById('reg_email').value = user.Email || '';
       document.getElementById('reg_wa').value = user.phone || '';
       document.getElementById('reg_instansi').value = user.fakultas || user.pekerjaan || '';
 
@@ -373,8 +373,8 @@
         return;
       } else {
         userObj = JSON.parse(userStr);
-        const userEvents = await window.api.fetchEventUser(userObj.user_id || userObj.id);
-        userEvents.forEach(e => registeredEventIds.add(parseInt(e.id)));
+        const userEvents = await window.api.fetchEventUser(userObj.Id_User || userObj.Id_User);
+        userEvents.forEach(e => registeredEventIds.add(parseInt(e.Id_Event)));
       }
 
       const calendarEl = document.getElementById('calendar');
@@ -505,18 +505,18 @@
             const color = colors[e.kategori] || '#3B82F6';
 
             return {
-              id: e.id,
-              title: e.nama_event,
-              start: e.tanggal,
+              id: e.Id_Event,
+              title: e.Nama_Event,
+              start: e.Tanggal_Event,
               backgroundColor: color,
               borderColor: color,
               extendedProps: {
                 waktu: e.waktu,
-                lokasi: e.lokasi,
+                lokasi: e.Lokasi,
                 kategori: e.kategori,
                 tipe: e.tipe_tiket,
                 deskripsi: e.deskripsi,
-                banner_img: e.banner_img
+                banner_img: e.Poster_Event
               }
             };
           });
