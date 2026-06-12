@@ -89,18 +89,14 @@ try {
             if (!is_dir($target_dir)) mkdir($target_dir, 0755, true);
             
             $ekstensi_file = strtolower(pathinfo($_FILES["Poster_Event"]["name"], PATHINFO_EXTENSION));
-            $nama_file_gambar = time() . '_' . uniqid() . '.webp';
+            $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
             $target_file = $target_dir . $nama_file_gambar;
             
-            if (!compressAndConvertToWebP($_FILES["Poster_Event"]["tmp_name"], $target_file)) {
-                $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
-                $target_file = $target_dir . $nama_file_gambar;
-                move_uploaded_file($_FILES["Poster_Event"]["tmp_name"], $target_file);
-            }
+            move_uploaded_file($_FILES["Poster_Event"]["tmp_name"], $target_file);
         }
 
-        $query_insert = "INSERT INTO Event (Id_User, Id_Kategori, Nama_Event, Deskripsi, Lokasi, Tanggal_Event, Poster_Event) 
-                         VALUES ($id_user, $id_kategori, '$nama_event', '$deskripsi', '$lokasi', '$tanggal_event', '$nama_file_gambar')";
+        $query_insert = "INSERT INTO Event (Id_User, Id_Kategori, Nama_Event, Deskripsi, Lokasi, Tanggal_Event, Poster_Event, Status_Event) 
+                         VALUES ($id_user, $id_kategori, '$nama_event', '$deskripsi', '$lokasi', '$tanggal_event', '$nama_file_gambar', 'Aktif')";
 
         if (mysqli_query($koneksi, $query_insert)) {
             echo json_encode(["status" => "success", "message" => "Event berhasil dibuat!"]);
@@ -176,32 +172,25 @@ try {
         if (isset($_FILES['Poster_Event']) && $_FILES['Poster_Event']['error'] === 0) {
             $target_dir = "uploads/";
             $ekstensi_file = strtolower(pathinfo($_FILES["Poster_Event"]["name"], PATHINFO_EXTENSION));
-            $nama_file_gambar = time() . '_' . uniqid() . '.webp';
+            $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
             $target_file = $target_dir . $nama_file_gambar;
             
-            if (!compressAndConvertToWebP($_FILES["Poster_Event"]["tmp_name"], $target_file)) {
-                $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
-                $target_file = $target_dir . $nama_file_gambar;
-                move_uploaded_file($_FILES["Poster_Event"]["tmp_name"], $target_file);
-            }
-            if (!empty($data_lama['Poster_Event']) && file_exists("uploads/" . $data_lama['Poster_Event'])) {
-                unlink("uploads/" . $data_lama['Poster_Event']);
-            }
+            move_uploaded_file($_FILES["Poster_Event"]["tmp_name"], $target_file);
         }
 
-        $query = "UPDATE Event SET 
-                  Id_Kategori = $id_kategori,
-                  Nama_Event = '$nama_event',
-                  Deskripsi = '$deskripsi',
-                  Lokasi = '$lokasi',
-                  Tanggal_Event = '$tanggal_event',
-                  Poster_Event = '$nama_file_gambar'
-                  WHERE Id_Event = $id_event AND Id_User = $id_user";
+        $query_update = "UPDATE Event SET 
+                            Nama_Event = '$nama_event',
+                            Id_Kategori = $id_kategori,
+                            Tanggal_Event = '$tanggal_event',
+                            Lokasi = '$lokasi',
+                            Deskripsi = '$deskripsi',
+                            Poster_Event = '$nama_file_gambar'
+                         WHERE Id_Event = $id_event";
 
-        if (mysqli_query($koneksi, $query)) {
+        if (mysqli_query($koneksi, $query_update)) {
             echo json_encode(["status" => "success", "message" => "Event berhasil diperbarui!"]);
         } else {
-            echo json_encode(["status" => "error", "message" => "Gagal update: " . mysqli_error($koneksi)]);
+            echo json_encode(["status" => "error", "message" => "Gagal mengupdate database: " . mysqli_error($koneksi)]);
         }
         exit;
     }
