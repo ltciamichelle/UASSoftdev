@@ -15,12 +15,15 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background: #fafafa;
+      background: transparent; /* Changed from #fafafa to show liquid bg */
+      color: var(--text-main);
     }
     .auth-container {
       width: 100%;
-      max-width: 500px;
+      max-width: 440px; /* slightly smaller for better proportion */
       margin: 24px;
+      position: relative;
+      z-index: 10;
     }
     .auth-tabs {
       display: flex;
@@ -71,7 +74,7 @@
     .liquid-bg {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: var(--gray-50);
+      background: #ede9fe; /* Very soft light purple base */
       z-index: -2;
       overflow: hidden;
     }
@@ -79,26 +82,26 @@
       position: absolute;
       filter: blur(90px);
       z-index: -1;
-      opacity: 0.7;
+      opacity: 0.8;
       animation: liquidMotion 15s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
     }
     .blob-1 {
       top: -10%; left: -10%;
       width: 50vw; height: 50vw;
-      background: var(--primary);
+      background: #c4b5fd; /* Soft purple */
       animation-delay: 0s;
     }
     .blob-2 {
       bottom: -20%; right: -10%;
       width: 60vw; height: 60vw;
-      background: var(--primary-lighter);
+      background: #a78bfa; /* Slightly deeper soft purple */
       animation-delay: -5s;
       animation-duration: 20s;
     }
     .blob-3 {
       top: 30%; left: 40%;
       width: 45vw; height: 45vw;
-      background: var(--primary-dark);
+      background: #ddd6fe; /* Lighter soft purple */
       animation-delay: -10s;
       animation-duration: 18s;
     }
@@ -124,13 +127,13 @@
   </div>
 
   <div class="auth-container gsap-reveal">
-    <div style="text-align: center; margin-bottom: 48px;">
+    <div style="text-align: center; margin-bottom: 40px;">
       <a href="index.html">
-        <img src="assets/logo%20full.png?v=2" alt="Eventra" style="width: 320px; height: auto; margin: 0 auto;">
+        <img src="assets/logo%20full.png?v=2" alt="Eventra" style="width: 260px; height: auto; margin: 0 auto; filter: invert(0.3) sepia(1) saturate(4) hue-rotate(240deg) drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
       </a>
     </div>
 
-    <div class="doppelrand-card">
+    <div class="doppelrand-card" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(102, 45, 145, 0.25); border: 1px solid rgba(255, 255, 255, 0.6);">
       <div class="card-inner" style="padding: 40px;">
         
         <div id="msgBox" class="message-box"></div>
