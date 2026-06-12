@@ -398,47 +398,9 @@
       const orgDash = document.getElementById('orgDashboard');
       const eventContainer = document.getElementById('eventListContainer');
 
-      if (user.Role === 'mahasiswa') {
-        orgPanel.style.display = 'block';
-        orgReg.style.display = 'block';
-        orgDash.style.display = 'none';
-
-        const panitiaModal = document.getElementById('panitiaModal');
-        
-        document.getElementById('btnRegisterPanitia').addEventListener('click', () => {
-          panitiaModal.style.display = 'flex';
-          // delay slighty for display flex to apply before opacity transition
-          setTimeout(() => panitiaModal.classList.add('active'), 10);
-        });
-
-        document.getElementById('btnCancelPanitia').addEventListener('click', () => {
-          panitiaModal.classList.remove('active');
-          setTimeout(() => panitiaModal.style.display = 'none', 300);
-        });
-
-        document.getElementById('btnConfirmPanitia').addEventListener('click', async () => {
-            panitiaModal.classList.remove('active');
-            setTimeout(() => panitiaModal.style.display = 'none', 300);
-            document.getElementById('btnRegisterPanitia').innerText = 'Memproses...';
-            try {
-              const res = await window.api.registerPanitia(user.Id_User);
-              if (res.status === 'sukses') {
-                window.api.showToast(res.pesan, 'success');
-                localStorage.setItem('eventra_user', JSON.stringify(res.user));
-                setTimeout(() => window.location.reload(), 1500);
-              } else {
-                window.api.showToast(res.pesan, 'error');
-                document.getElementById('btnRegisterPanitia').innerText = 'Daftar sebagai Panitia';
-              }
-            } catch (err) {
-              window.api.showToast('Terjadi kesalahan.', 'error');
-              document.getElementById('btnRegisterPanitia').innerText = 'Daftar sebagai Panitia';
-            }
-        });
-      } else if (user.Role === 'panitia') {
-        orgPanel.style.display = 'block';
-        orgReg.style.display = 'none';
-        orgDash.style.display = 'block';
+      orgPanel.style.display = 'block';
+      orgReg.style.display = 'none';
+      orgDash.style.display = 'block';
 
         // Fetch Panitia Events
         async function loadPanitiaDashboard() {
@@ -745,9 +707,8 @@
         }
 
         loadPanitiaDashboard();
-      }
+      // End of user check
     }
-
 
   </script>
 
