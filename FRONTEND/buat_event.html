@@ -133,13 +133,13 @@
           <div class="form-group">
             <label class="form-label">Banner Event</label>
             <div class="image-upload-wrapper" id="uploadWrapper">
-              <i data-lucide="image" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px; position: relative; z-index: 1;"></i>
-              <span style="font-weight: 700; color: var(--primary-dark); position: relative; z-index: 1;">Klik atau seret untuk mengunggah banner</span>
-              <span style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px; position: relative; z-index: 1;">Format JPG, PNG (Maks. 2MB)</span>
-              <img id="imagePreview" src="" alt="Preview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; display: none; background: rgba(255,255,255,0.9); border-radius: 10px;">
+              <i data-lucide="image" class="upload-icon" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px; position: relative; z-index: 1; transition: opacity 0.3s;"></i>
+              <span class="upload-text-1" style="font-weight: 700; color: var(--primary-dark); position: relative; z-index: 1; transition: opacity 0.3s;">Klik atau seret untuk mengunggah banner</span>
+              <span class="upload-text-2" style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px; position: relative; z-index: 1; transition: opacity 0.3s;">Format JPG, PNG (Maks. 2MB)</span>
+              <div id="imagePreview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 5; display: none; border-radius: 10px; background-color: var(--white);"></div>
               <input type="file" id="banner_img" name="Poster_Event" accept="image/*" required style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
             </div>
-            <p id="fileNameDisplay" style="text-align: center; font-size: 0.85rem; color: var(--primary); margin-top: 8px; font-weight: 600;"></p>
+            <p id="fileNameDisplay" style="text-align: center; font-size: 0.9rem; color: var(--primary-dark); margin-top: 12px; font-weight: 700; min-height: 20px;"></p>
           </div>
 
           <div class="form-group">
@@ -245,20 +245,31 @@
     bannerInput.addEventListener('change', handleFileSelect);
 
     function handleFileSelect() {
+      const icon = uploadWrapper.querySelector('.upload-icon');
+      const text1 = uploadWrapper.querySelector('.upload-text-1');
+      const text2 = uploadWrapper.querySelector('.upload-text-2');
+
       if (bannerInput.files && bannerInput.files[0]) {
         const file = bannerInput.files[0];
-        fileNameDisplay.textContent = "File terpilih: " + file.name;
+        fileNameDisplay.textContent = "File: " + file.name;
+        
+        if (icon) icon.style.opacity = '0';
+        if (text1) text1.style.opacity = '0';
+        if (text2) text2.style.opacity = '0';
         
         const reader = new FileReader();
         reader.onload = function(e) {
-          imagePreview.src = e.target.result;
+          imagePreview.style.backgroundImage = `url('${e.target.result}')`;
           imagePreview.style.display = 'block';
         }
         reader.readAsDataURL(file);
       } else {
         fileNameDisplay.textContent = "";
         imagePreview.style.display = 'none';
-        imagePreview.src = "";
+        imagePreview.style.backgroundImage = 'none';
+        if (icon) icon.style.opacity = '1';
+        if (text1) text1.style.opacity = '1';
+        if (text2) text2.style.opacity = '1';
       }
     }
 
@@ -306,9 +317,17 @@
                 form.Deskripsi.value = ev.Deskripsi || '';
 
                 if (ev.Poster_Event) {
-                    imagePreview.src = `${window.api.BASE_URL}/uploads/${ev.Poster_Event}`;
+                    imagePreview.style.backgroundImage = `url('${window.api.BASE_URL}/uploads/${ev.Poster_Event}')`;
                     imagePreview.style.display = 'block';
                     document.getElementById('banner_img').required = false; 
+                    
+                    const icon = uploadWrapper.querySelector('.upload-icon');
+                    const text1 = uploadWrapper.querySelector('.upload-text-1');
+                    const text2 = uploadWrapper.querySelector('.upload-text-2');
+                    if (icon) icon.style.opacity = '0';
+                    if (text1) text1.style.opacity = '0';
+                    if (text2) text2.style.opacity = '0';
+                    fileNameDisplay.textContent = "Gambar saat ini: " + ev.Poster_Event;
                 }
             } else {
                 window.api.showToast(data.message, 'error');
