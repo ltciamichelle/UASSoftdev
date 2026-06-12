@@ -75,11 +75,7 @@
       background: rgba(102, 45, 145, 0.1);
     }
     .image-upload-wrapper input[type="file"] {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      opacity: 0;
-      cursor: pointer;
-      z-index: 10;
+      display: none;
     }
     #imagePreview {
       position: absolute;
@@ -136,10 +132,10 @@
           <div class="form-group">
             <label class="form-label">Banner Event</label>
             <div class="image-upload-wrapper" id="uploadWrapper">
-              <i data-lucide="image" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px;"></i>
-              <span style="font-weight: 700; color: var(--primary-dark);">Klik untuk mengunggah banner</span>
-              <span style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px;">Format JPG, PNG (Maks. 2MB)</span>
-              <img id="imagePreview" src="" alt="Preview">
+              <i data-lucide="image" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 16px; z-index: 1;"></i>
+              <span style="font-weight: 700; color: var(--primary-dark); z-index: 1;">Klik atau seret untuk mengunggah banner</span>
+              <span style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px; z-index: 1;">Format JPG, PNG (Maks. 2MB)</span>
+              <img id="imagePreview" src="" alt="Preview" style="background: rgba(255,255,255,0.9);">
               <input type="file" id="banner_img" name="banner_img" accept="image/*" required>
             </div>
           </div>
@@ -278,9 +274,36 @@
       allowInput: true
     });
 
-    // Image Preview Logic
+    // Banner Upload Logic
+    const uploadWrapper = document.getElementById('uploadWrapper');
     const bannerInput = document.getElementById('banner_img');
     const imagePreview = document.getElementById('imagePreview');
+
+    uploadWrapper.addEventListener('click', () => bannerInput.click());
+    
+    uploadWrapper.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadWrapper.style.borderColor = 'var(--primary-dark)';
+      uploadWrapper.style.background = 'rgba(102, 45, 145, 0.15)';
+    });
+    
+    uploadWrapper.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      uploadWrapper.style.borderColor = 'var(--primary)';
+      uploadWrapper.style.background = 'rgba(102, 45, 145, 0.05)';
+    });
+    
+    uploadWrapper.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadWrapper.style.borderColor = 'var(--primary)';
+      uploadWrapper.style.background = 'rgba(102, 45, 145, 0.05)';
+      
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        bannerInput.files = e.dataTransfer.files;
+        const event = new Event('change');
+        bannerInput.dispatchEvent(event);
+      }
+    });
 
     bannerInput.addEventListener('change', function(e) {
       if (this.files && this.files[0]) {
