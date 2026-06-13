@@ -564,7 +564,7 @@
             setTimeout(() => modal.classList.add('active'), 10);
             
             try {
-                const response = await fetch(`${window.api.BASE_URL}/buat_event.php?aksi=ambil_feedback_event&event_id=${eventId}`);
+                const response = await fetch(`${window.api.BASE_URL}/Event.php?aksi=ambil_feedback_event&event_id=${eventId}`);
                 const res = await response.json();
                 if (res.status === 'success') {
                     if (res.data.length === 0) {

@@ -361,8 +361,8 @@
         }
 
         const actionUrl = isEditMode 
-            ? `${window.api.BASE_URL}/buat_event.php?aksi=update_event` 
-            : `${window.api.BASE_URL}/buat_event.php?aksi=tambah_event`;
+            ? `${window.api.BASE_URL}/Event.php?aksi=update_event` 
+            : `${window.api.BASE_URL}/Event.php?aksi=tambah_event`;
 
         const response = await fetch(actionUrl, {
           method: 'POST',

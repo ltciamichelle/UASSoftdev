@@ -4,7 +4,7 @@ const BASE_URL = isFrontendFolder ? '../BACKEND' : '.';
 
 async function fetchEvents() {
     try {
-        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=ambil_event&t=${Date.now()}`);
+        const response = await fetch(`${BASE_URL}/Event.php?aksi=ambil_event&t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         if (data.status === 'error') return [];
@@ -23,7 +23,7 @@ function formatTanggal(tanggalStr) {
 
 async function loginUser(data) {
     data.aksi = 'login';
-    const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
+    const res = await fetch(`${BASE_URL}/User.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -33,7 +33,7 @@ async function loginUser(data) {
 
 async function registerUser(data) {
     data.aksi = 'daftar';
-    const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
+    const res = await fetch(`${BASE_URL}/User.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -43,7 +43,7 @@ async function registerUser(data) {
 
 async function updateUser(data) {
     data.aksi = 'update_profil';
-    const res = await fetch(`${BASE_URL}/simpan_akun.php`, {
+    const res = await fetch(`${BASE_URL}/User.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -52,7 +52,7 @@ async function updateUser(data) {
 }
 
 async function submitPendaftaran(data) {
-    const res = await fetch(`${BASE_URL}/pendaftaran_event.php?aksi=daftar_event`, {
+    const res = await fetch(`${BASE_URL}/Pendaftaran_Event.php?aksi=daftar_event`, {
         method: 'POST',
         body: data // FormData for uploads if any, but ERD doesn't have it. We'll pass FormData.
     });
@@ -61,7 +61,7 @@ async function submitPendaftaran(data) {
 
 async function fetchEventUser(userId) {
     try {
-        const response = await fetch(`${BASE_URL}/pendaftaran_event.php?aksi=event_diikuti&Id_User=${userId}&t=${Date.now()}`);
+        const response = await fetch(`${BASE_URL}/Pendaftaran_Event.php?aksi=event_diikuti&Id_User=${userId}&t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error!`);
         return await response.json();
     } catch (error) {
@@ -101,7 +101,7 @@ function updateNavbarAuth() {
 
 async function getEventPanitia(userId) {
     try {
-        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=ambil_event_panitia&Id_User=${userId}&t=${Date.now()}`);
+        const response = await fetch(`${BASE_URL}/Event.php?aksi=ambil_event_panitia&Id_User=${userId}&t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error!`);
         return await response.json();
     } catch (error) {
@@ -111,7 +111,7 @@ async function getEventPanitia(userId) {
 
 async function deleteEvent(eventId, userId) {
     try {
-        const res = await fetch(`${BASE_URL}/buat_event.php?aksi=hapus_event`, {
+        const res = await fetch(`${BASE_URL}/Event.php?aksi=hapus_event`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ Id_Event: eventId, Id_User: userId })
@@ -124,7 +124,7 @@ async function deleteEvent(eventId, userId) {
 
 async function getEventById(eventId) {
     try {
-        const response = await fetch(`${BASE_URL}/buat_event.php?aksi=get_event_by_id&Id_Event=${eventId}&t=${Date.now()}`);
+        const response = await fetch(`${BASE_URL}/Event.php?aksi=get_event_by_id&Id_Event=${eventId}&t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error!`);
         return await response.json();
     } catch (error) {
