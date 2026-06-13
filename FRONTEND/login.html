@@ -162,9 +162,9 @@
         <form id="registerForm" class="auth-form">
           <div class="form-group">
             <label>Pilih Peran</label>
-            <select class="form-control" id="regRole" onchange="toggleRoleFields(this.value)" required>
-              <option value="mahasiswa">Mahasiswa</option>
-              <option value="non_mahasiswa">Non Mahasiswa</option>
+            <select class="form-control" id="regRole" required>
+              <option value="peserta">Peserta</option>
+              <option value="panitia">Panitia</option>
             </select>
           </div>
           
@@ -191,15 +191,7 @@
             <input type="password" id="regPassword" class="form-control" required>
           </div>
 
-          <!-- Dynamic Fields based on Role -->
-          <div id="dynamicFields">
-            <!-- Mahasiswa Default -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-              <div class="form-group"><label>NIM</label><input type="text" id="regNim" class="form-control"></div>
-              <div class="form-group"><label>Fakultas</label><input type="text" id="regFakultas" class="form-control"></div>
-            </div>
-            <div class="form-group"><label>Program Studi</label><input type="text" id="regProdi" class="form-control"></div>
-          </div>
+
 
           <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 16px;">
             Daftar Akun Baru
@@ -244,23 +236,7 @@
 
 
 
-    // Toggle dynamic fields for Register
-    function toggleRoleFields(role) {
-      const container = document.getElementById('dynamicFields');
-      if (role === 'mahasiswa') {
-        container.innerHTML = `
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div class="form-group"><label>NIM</label><input type="text" id="regNim" class="form-control" required></div>
-            <div class="form-group"><label>Fakultas</label><input type="text" id="regFakultas" class="form-control" required></div>
-          </div>
-          <div class="form-group"><label>Program Studi</label><input type="text" id="regProdi" class="form-control" required></div>
-        `;
-      } else {
-        container.innerHTML = `
-          <div class="form-group"><label>Pekerjaan / Instansi</label><input type="text" id="regPekerjaan" class="form-control" required></div>
-        `;
-      }
-    }
+
 
     // Handle Login
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -298,13 +274,7 @@
         password: document.getElementById('regPassword').value
       };
 
-      if(role === 'mahasiswa') {
-        data.nim = document.getElementById('regNim').value;
-        data.fakultas = document.getElementById('regFakultas').value;
-        data.prodi = document.getElementById('regProdi').value;
-      } else {
-        data.pekerjaan = document.getElementById('regPekerjaan').value;
-      }
+
 
       try {
         const res = await window.api.registerUser(data);
