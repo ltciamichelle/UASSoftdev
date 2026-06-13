@@ -25,8 +25,35 @@ try {
             exit;
         }
 
-        $query_insert = "INSERT INTO Pendaftaran_Event (Id_User, Id_Event, Status_Pendaftaran) 
-                         VALUES ($id_user, $id_event, 'Terdaftar')";
+        // Ambil tipe tiket dari Event
+        $cek_event = mysqli_query($koneksi, "SELECT Tipe_Tiket FROM Event WHERE Id_Event = $id_event");
+        $event_data = mysqli_fetch_assoc($cek_event);
+        $tipe_tiket = $event_data ? $event_data['Tipe_Tiket'] : 'Gratis';
+
+        $status_pendaftaran = ($tipe_tiket === 'Berbayar') ? 'Menunggu Verifikasi' : 'Sukses';
+        $nama_file_bukti = "";
+
+        if ($tipe_tiket === 'Berbayar' && isset($_FILES['Bukti_Bayar']) && $_FILES['Bukti_Bayar']['error'] === 0) {
+            $target_dir = "uploads/bukti_bayar/";
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0755, true);
+            }
+            
+            $ekstensi_file = strtolower(pathinfo($_FILES["Bukti_Bayar"]["name"], PATHINFO_EXTENSION));
+            $nama_file_bukti = time() . '_' . uniqid() . '.' . $ekstensi_file;
+            $target_file = $target_dir . $nama_file_bukti;
+            
+            if (!move_uploaded_file($_FILES["Bukti_Bayar"]["tmp_name"], $target_file)) {
+                echo json_encode(["status" => "error", "message" => "Gagal mengunggah file bukti bayar."]);
+                exit;
+            }
+        } else if ($tipe_tiket === 'Berbayar') {
+            echo json_encode(["status" => "error", "message" => "Bukti bayar wajib diunggah untuk event berbayar!"]);
+            exit;
+        }
+
+        $query_insert = "INSERT INTO Pendaftaran_Event (Id_User, Id_Event, Status_Pendaftaran, Bukti_Bayar) 
+                         VALUES ($id_user, $id_event, '$status_pendaftaran', '$nama_file_bukti')";
 
         if (mysqli_query($koneksi, $query_insert)) {
             echo json_encode(["status" => "success", "message" => "Pendaftaran berhasil!"]);

@@ -266,7 +266,12 @@
             ? `${window.api.BASE_URL}/uploads/${event.Poster_Event}` 
             : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600';
 
-        let ticketDisplay = '<span class="badge badge-primary" style="background: var(--primary-lighter); color: var(--primary-dark); font-weight: 800; font-size: 0.85rem;">Gratis</span>';
+        let ticketDisplay = '';
+        if (event.Tipe_Tiket === 'Berbayar') {
+            ticketDisplay = `<span class="badge" style="background: #FEF3C7; color: #D97706; font-weight: 800; font-size: 0.85rem;">Berbayar - Rp ${parseInt(event.Harga || 0).toLocaleString('id-ID')}</span>`;
+        } else {
+            ticketDisplay = '<span class="badge" style="background: var(--primary-lighter); color: var(--primary-dark); font-weight: 800; font-size: 0.85rem;">Gratis</span>';
+        }
 
         const article = document.createElement('article');
         article.className = 'doppelrand-card list-card';
@@ -286,9 +291,9 @@
                   <span class="badge badge-primary">${event.Nama_Kategori}</span>
                   ${ticketDisplay}
                 </div>
-                ${registeredEventIds.has(parseInt(event.Id_Event))
+                  ${registeredEventIds.has(parseInt(event.Id_Event))
                   ? `<button class="btn" disabled style="padding: 10px 20px; font-size: 0.9rem; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">Sudah Terdaftar <i data-lucide="check" class="icon-sm"></i></button>`
-                  : `<button class="btn btn-primary" onclick="openRegistrationModal(${event.Id_Event}, '${event.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="padding: 10px 20px; font-size: 0.9rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>`
+                  : `<button class="btn btn-primary" onclick="openRegistrationModal(${event.Id_Event})" style="padding: 10px 20px; font-size: 0.9rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>`
                 }
               </div>
             </div>
@@ -305,19 +310,44 @@
     }
 
     // Registration Modal Logic
-    function openRegistrationModal(eventId, eventName) {
+    function openRegistrationModal(eventId) {
       const userStr = localStorage.getItem('eventra_user');
       if (!userStr) {
         window.location.href = 'login.html';
         return;
       }
       
+      const event = allEvents.find(e => parseInt(e.Id_Event) === eventId);
+      if (!event) return;
+
       const user = JSON.parse(userStr);
       document.getElementById('reg_event_id').value = eventId;
-      document.getElementById('reg_event_name').innerText = eventName;
+      document.getElementById('reg_event_name').innerText = event.Nama_Event;
       document.getElementById('reg_nama').value = user.Nama || '';
       document.getElementById('reg_email').value = user.Email || '';
       document.getElementById('reg_wa').value = user.No_HP || '';
+
+      const bankInfoContainer = document.getElementById('bankInfoContainer');
+      const uploadBuktiContainer = document.getElementById('uploadBuktiContainer');
+      const regBuktiInput = document.getElementById('reg_bukti');
+      
+      if (event.Tipe_Tiket === 'Berbayar') {
+        bankInfoContainer.style.display = 'block';
+        bankInfoContainer.innerHTML = `
+          <div style="background: #FEF3C7; padding: 16px; border-radius: 12px; border: 1px solid #FDE68A;">
+            <p style="font-size: 0.85rem; font-weight: 700; color: #92400E; margin-bottom: 8px;">Informasi Pembayaran</p>
+            <p style="font-size: 1rem; color: #B45309; font-weight: 800; margin-bottom: 4px;">Rp ${parseInt(event.Harga || 0).toLocaleString('id-ID')}</p>
+            <p style="font-size: 0.9rem; color: #92400E;">Bank: <strong>${event.Bank_Name || '-'}</strong></p>
+            <p style="font-size: 0.9rem; color: #92400E;">No. Rek: <strong>${event.Bank_Rekening || '-'}</strong></p>
+          </div>
+        `;
+        uploadBuktiContainer.style.display = 'flex';
+        regBuktiInput.required = true;
+      } else {
+        bankInfoContainer.style.display = 'none';
+        uploadBuktiContainer.style.display = 'none';
+        regBuktiInput.required = false;
+      }
 
       const modal = document.getElementById('registrationModal');
       modal.style.display = 'flex';
@@ -391,9 +421,15 @@
           <input type="text" id="reg_wa" name="no_wa" required style="width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--bg); font-size: 0.95rem; transition: all 0.3s; outline: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.backgroundColor='#fff';" onblur="this.style.borderColor='var(--gray-200)'; this.style.backgroundColor='var(--bg)';">
         </div>
         
+        </div>
         
+        <div id="bankInfoContainer" style="display: none; margin-top: 8px;"></div>
         
-        
+        <div class="input-group" id="uploadBuktiContainer" style="display: none; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--gray-700);">Upload Bukti Bayar</label>
+          <input type="file" id="reg_bukti" name="Bukti_Bayar" accept="image/*" style="width: 100%; padding: 10px; border: 1px dashed var(--gray-400); border-radius: 12px; background: var(--bg); font-size: 0.9rem;">
+          <small style="color: var(--gray-500); font-size: 0.8rem;">Format: JPG, PNG (Max 2MB)</small>
+        </div>
 
         <button type="submit" class="btn btn-primary" id="regSubmitBtn" style="margin-top: 12px; padding: 16px; font-size: 1.05rem; font-weight: 700; border-radius: 16px; box-shadow: none; display: flex; justify-content: center; align-items: center; gap: 10px;">
           Konfirmasi Pendaftaran <i data-lucide="check-circle"></i>

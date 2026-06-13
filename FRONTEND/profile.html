@@ -513,9 +513,12 @@
                         sertifikatHtml = `<div style="margin-top: 8px;"><button onclick="bukaUploadSertifikat(${p.Id_Pendaftaran || p.id}, '${p.nama_lengkap.replace(/'/g, "\\'")}')" style="background: var(--primary); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 4px;"><i data-lucide="upload" class="icon-xs"></i> Upload Sertifikat</button></div>`;
                     }
                 }
-                
-                
-                let aksiHtml = sertifikatHtml || '-';
+                let buktiHtml = '';
+                if (p.Bukti_Bayar) {
+                    buktiHtml = `<div style="margin-top: 4px; margin-bottom: 8px;"><a href="${window.api.BASE_URL}/uploads/bukti_bayar/${p.Bukti_Bayar}" target="_blank" style="color: #2563EB; text-decoration: underline; font-size: 0.8rem; display: flex; align-items: center; gap: 4px;"><i data-lucide="image" class="icon-xs"></i> Lihat Bukti Bayar</a></div>`;
+                }
+
+                let aksiHtml = buktiHtml + (sertifikatHtml || '-');
                 if ((p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Terdaftar' || (p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Menunggu Verifikasi') {
                     let actionButtons = `
                         <div style="display: flex; gap: 4px; margin-bottom: 8px;">
@@ -525,7 +528,6 @@
                     `;
                     aksiHtml = actionButtons + aksiHtml;
                 }
-        
 
                 let kehadiranHtml = p.kehadiran === 'Hadir' 
                     ? '<span style="color: #16A34A; font-weight: 800;"><i data-lucide="check-circle" class="icon-sm" style="vertical-align: middle;"></i> Hadir</span>'

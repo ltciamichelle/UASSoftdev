@@ -77,6 +77,11 @@ try {
         $lokasi           = mysqli_real_escape_string($koneksi, $_POST['Lokasi']);
         $deskripsi        = isset($_POST['Deskripsi']) ? mysqli_real_escape_string($koneksi, $_POST['Deskripsi']) : '';
         $id_user          = isset($_POST['Id_User']) ? (int)$_POST['Id_User'] : 0;
+        
+        $tipe_tiket       = isset($_POST['Tipe_Tiket']) ? mysqli_real_escape_string($koneksi, $_POST['Tipe_Tiket']) : 'Gratis';
+        $harga            = isset($_POST['Harga']) ? (int)$_POST['Harga'] : 0;
+        $bank_name        = isset($_POST['Bank_Name']) ? mysqli_real_escape_string($koneksi, $_POST['Bank_Name']) : '';
+        $bank_rekening    = isset($_POST['Bank_Rekening']) ? mysqli_real_escape_string($koneksi, $_POST['Bank_Rekening']) : '';
 
         if (empty($nama_event) || empty($id_kategori) || empty($tanggal_event) || empty($lokasi)) {
             echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi! Pastikan kategori telah dipilih."]);
@@ -108,8 +113,8 @@ try {
             }
         }
 
-        $query_insert = "INSERT INTO Event (Id_User, Id_Kategori, Nama_Event, Deskripsi, Lokasi, Tanggal_Event, Poster_Event, Status_Event) 
-                         VALUES ($id_user, $id_kategori, '$nama_event', '$deskripsi', '$lokasi', '$tanggal_event', '$nama_file_gambar', 'Aktif')";
+        $query_insert = "INSERT INTO Event (Id_User, Id_Kategori, Nama_Event, Deskripsi, Lokasi, Tanggal_Event, Poster_Event, Status_Event, Tipe_Tiket, Harga, Bank_Name, Bank_Rekening) 
+                         VALUES ($id_user, $id_kategori, '$nama_event', '$deskripsi', '$lokasi', '$tanggal_event', '$nama_file_gambar', 'Aktif', '$tipe_tiket', $harga, '$bank_name', '$bank_rekening')";
 
         if (mysqli_query($koneksi, $query_insert)) {
             echo json_encode(["status" => "success", "message" => "Event berhasil dibuat!"]);

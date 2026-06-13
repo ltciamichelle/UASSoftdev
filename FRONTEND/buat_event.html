@@ -180,6 +180,31 @@
             </div>
           </div>
 
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tipe Tiket</label>
+              <select class="form-control" name="Tipe_Tiket" id="tipeTiketSelect" required>
+                <option value="Gratis">Gratis</option>
+                <option value="Berbayar">Berbayar</option>
+              </select>
+            </div>
+            <div class="form-group" id="hargaGroup" style="display: none;">
+              <label class="form-label">Harga Tiket (Rp)</label>
+              <input type="number" class="form-control" name="Harga" placeholder="Cth: 50000">
+            </div>
+          </div>
+          
+          <div class="form-row" id="bankGroup" style="display: none;">
+            <div class="form-group">
+              <label class="form-label">Nama Bank</label>
+              <input type="text" class="form-control" name="Bank_Name" placeholder="Cth: BCA">
+            </div>
+            <div class="form-group">
+              <label class="form-label">No. Rekening & Atas Nama</label>
+              <input type="text" class="form-control" name="Bank_Rekening" placeholder="Cth: 123456789 a.n BEM">
+            </div>
+          </div>
+
 
 
           <div style="text-align: right; margin-top: 32px;">
@@ -248,7 +273,20 @@
 
     bannerInput.addEventListener('change', handleFileSelect);
 
-    function handleFileSelect() {
+    const tipeTiketSelect = document.getElementById('tipeTiketSelect');
+    const hargaGroup = document.getElementById('hargaGroup');
+    const bankGroup = document.getElementById('bankGroup');
+    if(tipeTiketSelect) {
+      tipeTiketSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'Berbayar') {
+          hargaGroup.style.display = 'block';
+          bankGroup.style.display = 'grid'; // because it's a form-row
+        } else {
+          hargaGroup.style.display = 'none';
+          bankGroup.style.display = 'none';
+        }
+      });
+    }    function handleFileSelect() {
       const icon = uploadWrapper.querySelector('.upload-icon') || uploadWrapper.querySelector('svg');
       const text1 = uploadWrapper.querySelector('.upload-text-1');
       const text2 = uploadWrapper.querySelector('.upload-text-2');
