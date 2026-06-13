@@ -72,27 +72,40 @@ try {
         header('Content-Type: application/json');
 
         $nama_event       = mysqli_real_escape_string($koneksi, $_POST['Nama_Event']);
-        $id_kategori      = (int)$_POST['Id_Kategori'];
+        $id_kategori      = isset($_POST['Id_Kategori']) ? (int)$_POST['Id_Kategori'] : 0;
         $tanggal_event    = mysqli_real_escape_string($koneksi, $_POST['Tanggal_Event']);
         $lokasi           = mysqli_real_escape_string($koneksi, $_POST['Lokasi']);
         $deskripsi        = isset($_POST['Deskripsi']) ? mysqli_real_escape_string($koneksi, $_POST['Deskripsi']) : '';
         $id_user          = isset($_POST['Id_User']) ? (int)$_POST['Id_User'] : 0;
 
         if (empty($nama_event) || empty($id_kategori) || empty($tanggal_event) || empty($lokasi)) {
-            echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi!"]);
+            echo json_encode(["status" => "error", "message" => "Semua bidang wajib diisi! Pastikan kategori telah dipilih."]);
             exit;
         }
 
         $nama_file_gambar = "";
-        if (isset($_FILES['Poster_Event']) && $_FILES['Poster_Event']['error'] === 0) {
-            $target_dir = "uploads/";
-            if (!is_dir($target_dir)) mkdir($target_dir, 0755, true);
-            
-            $ekstensi_file = strtolower(pathinfo($_FILES["Poster_Event"]["name"], PATHINFO_EXTENSION));
-            $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
-            $target_file = $target_dir . $nama_file_gambar;
-            
-            move_uploaded_file($_FILES["Poster_Event"]["tmp_name"], $target_file);
+        if (isset($_FILES['Poster_Event'])) {
+            if ($_FILES['Poster_Event']['error'] === 0) {
+                $target_dir = "uploads/";
+                if (!is_dir($target_dir)) {
+                    if (!mkdir($target_dir, 0755, true)) {
+                        echo json_encode(["status" => "error", "message" => "Gagal membuat folder uploads."]);
+                        exit;
+                    }
+                }
+                
+                $ekstensi_file = strtolower(pathinfo($_FILES["Poster_Event"]["name"], PATHINFO_EXTENSION));
+                $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
+                $target_file = $target_dir . $nama_file_gambar;
+                
+                if (!move_uploaded_file($_FILES["Poster_Event"]["tmp_name"], $target_file)) {
+                    echo json_encode(["status" => "error", "message" => "Gagal mengunggah file poster event."]);
+                    exit;
+                }
+            } else if ($_FILES['Poster_Event']['error'] !== UPLOAD_ERR_NO_FILE) {
+                echo json_encode(["status" => "error", "message" => "Error upload file: kode " . $_FILES['Poster_Event']['error']]);
+                exit;
+            }
         }
 
         $query_insert = "INSERT INTO Event (Id_User, Id_Kategori, Nama_Event, Deskripsi, Lokasi, Tanggal_Event, Poster_Event, Status_Event) 
@@ -101,7 +114,7 @@ try {
         if (mysqli_query($koneksi, $query_insert)) {
             echo json_encode(["status" => "success", "message" => "Event berhasil dibuat!"]);
         } else {
-            echo json_encode(["status" => "error", "message" => "Gagal menyimpan ke database: " . mysqli_error($koneksi)]);
+            echo json_encode(["status" => "error", "message" => "Gagal menyimpan ke database: " . mysqli_error($koneksi) . " (Query: " . $query_insert . ")"]);
         }
         exit;
     }
@@ -155,7 +168,7 @@ try {
         $id_event         = (int)$_POST['Id_Event'];
         $id_user          = (int)$_POST['Id_User'];
         $nama_event       = mysqli_real_escape_string($koneksi, $_POST['Nama_Event']);
-        $id_kategori      = (int)$_POST['Id_Kategori'];
+        $id_kategori      = isset($_POST['Id_Kategori']) ? (int)$_POST['Id_Kategori'] : 0;
         $tanggal_event    = mysqli_real_escape_string($koneksi, $_POST['Tanggal_Event']);
         $lokasi           = mysqli_real_escape_string($koneksi, $_POST['Lokasi']);
         $deskripsi        = isset($_POST['Deskripsi']) ? mysqli_real_escape_string($koneksi, $_POST['Deskripsi']) : '';
@@ -169,13 +182,28 @@ try {
         }
 
         $nama_file_gambar = $data_lama['Poster_Event'];
-        if (isset($_FILES['Poster_Event']) && $_FILES['Poster_Event']['error'] === 0) {
-            $target_dir = "uploads/";
-            $ekstensi_file = strtolower(pathinfo($_FILES["Poster_Event"]["name"], PATHINFO_EXTENSION));
-            $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
-            $target_file = $target_dir . $nama_file_gambar;
-            
-            move_uploaded_file($_FILES["Poster_Event"]["tmp_name"], $target_file);
+        if (isset($_FILES['Poster_Event'])) {
+            if ($_FILES['Poster_Event']['error'] === 0) {
+                $target_dir = "uploads/";
+                if (!is_dir($target_dir)) {
+                    if (!mkdir($target_dir, 0755, true)) {
+                        echo json_encode(["status" => "error", "message" => "Gagal membuat folder uploads."]);
+                        exit;
+                    }
+                }
+                
+                $ekstensi_file = strtolower(pathinfo($_FILES["Poster_Event"]["name"], PATHINFO_EXTENSION));
+                $nama_file_gambar = time() . '_' . uniqid() . '.' . $ekstensi_file;
+                $target_file = $target_dir . $nama_file_gambar;
+                
+                if (!move_uploaded_file($_FILES["Poster_Event"]["tmp_name"], $target_file)) {
+                    echo json_encode(["status" => "error", "message" => "Gagal mengunggah file poster event saat update."]);
+                    exit;
+                }
+            } else if ($_FILES['Poster_Event']['error'] !== UPLOAD_ERR_NO_FILE) {
+                echo json_encode(["status" => "error", "message" => "Error upload file: kode " . $_FILES['Poster_Event']['error']]);
+                exit;
+            }
         }
 
         $query_update = "UPDATE Event SET 
@@ -190,7 +218,7 @@ try {
         if (mysqli_query($koneksi, $query_update)) {
             echo json_encode(["status" => "success", "message" => "Event berhasil diperbarui!"]);
         } else {
-            echo json_encode(["status" => "error", "message" => "Gagal mengupdate database: " . mysqli_error($koneksi)]);
+            echo json_encode(["status" => "error", "message" => "Gagal mengupdate database: " . mysqli_error($koneksi) . " (Query: " . $query_update . ")"]);
         }
         exit;
     }
