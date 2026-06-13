@@ -299,7 +299,7 @@
                   ${ticketDisplay}
                   ${registeredEventIds.has(parseInt(event.Id_Event))
                     ? `<button class="btn" disabled style="width: 100%; padding: 12px; font-size: 0.95rem; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">Sudah Terdaftar <i data-lucide="check" class="icon-sm"></i></button>`
-                    : `<button class="btn btn-primary" onclick="openRegistrationModal(${event.Id_Event}, '${event.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}', '${event.tipe_tiket}', ${event.harga_event || 0}, '${event.bank_name || ''}', '${event.bank_rekening || ''}', '${event.bank_atas_nama || ''}')" style="width: 100%; padding: 12px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>`
+                    : `<button class="btn btn-primary" onclick="openRegistrationModal(${event.Id_Event}, '${event.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="width: 100%; padding: 12px; font-size: 0.95rem;">Daftar <i data-lucide="arrow-right" class="icon-sm"></i></button>`
                   }
                 </div>
               </div>
@@ -352,18 +352,8 @@
       document.getElementById('reg_nama').value = user.Nama || '';
       document.getElementById('reg_email').value = user.Email || '';
       document.getElementById('reg_wa').value = user.No_HP || '';
-      
-      const buktiGroup = document.getElementById('buktiBayarGroup');
-      const buktiInput = document.getElementById('reg_bukti_bayar');
-      const infoRekening = document.getElementById('infoRekening');
 
-      
-      } else {
-        buktiGroup.style.display = 'none';
-        buktiInput.required = false;
-        document.getElementById('reg_event_price_tag').style.display = 'none';
-        infoRekening.style.display = 'none';
-      }
+      closeEventModal();
 
       const modal = document.getElementById('registrationModal');
       modal.style.display = 'flex';

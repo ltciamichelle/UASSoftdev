@@ -276,21 +276,8 @@
       document.getElementById('reg_email').value = user.Email || '';
       document.getElementById('reg_wa').value = user.No_HP || '';
 
-      const buktiGroup = document.getElementById('buktiBayarGroup');
-      const buktiInput = document.getElementById('reg_bukti_bayar');
-      const infoRekening = document.getElementById('infoRekening');
-
-      
-      } else {
-        if(buktiGroup) buktiGroup.style.display = 'none';
-        if(buktiInput) buktiInput.required = false;
-        const priceTag = document.getElementById('reg_event_price_tag');
-        if(priceTag) priceTag.style.display = 'none';
-        if(infoRekening) infoRekening.style.display = 'none';
-      }
-      
       closeEventModal();
-      
+
       const modal = document.getElementById('registrationModal');
       modal.style.display = 'flex';
       setTimeout(() => modal.classList.add('active'), 10);
@@ -381,11 +368,7 @@
           
           // Badge
           let tagsHtml = `<span class="badge badge-primary" style="font-weight: 800;">${evt.extendedProps.kategori || 'Event'}</span>`;
-          if(evt.extendedProps.tipe === 'Gratis') {
-            tagsHtml += `<span class="badge" style="background:rgba(22, 163, 74, 0.1); color:#16A34A; font-weight: 800;">Gratis</span>`;
-          } else {
-            tagsHtml += `<span class="badge" style="background:rgba(245, 158, 11, 0.1); color:#D97706; font-weight: 800;">Berbayar</span>`;
-          }
+          tagsHtml += `<span class="badge" style="background:rgba(22, 163, 74, 0.1); color:#16A34A; font-weight: 800;">Gratis</span>`;
           document.getElementById('modalTags').innerHTML = tagsHtml;
 
           // Image
@@ -412,7 +395,7 @@
             btnDaftar.style.color = '';
             btnDaftar.style.cursor = '';
             btnDaftar.onclick = () => {
-              openRegistrationModal(evt.id, evt.title, evt.extendedProps.tipe, evt.extendedProps.harga_event || 0, evt.extendedProps.bank_name || '', evt.extendedProps.bank_rekening || '', evt.extendedProps.bank_atas_nama || '');
+              openRegistrationModal(evt.id, evt.title);
             };
           }
           lucide.createIcons();
