@@ -249,7 +249,7 @@
     bannerInput.addEventListener('change', handleFileSelect);
 
     function handleFileSelect() {
-      const icon = uploadWrapper.querySelector('.upload-icon');
+      const icon = uploadWrapper.querySelector('.upload-icon') || uploadWrapper.querySelector('svg');
       const text1 = uploadWrapper.querySelector('.upload-text-1');
       const text2 = uploadWrapper.querySelector('.upload-text-2');
 
@@ -261,12 +261,13 @@
         if (text1) text1.style.opacity = '0';
         if (text2) text2.style.opacity = '0';
         
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          imagePreview.src = e.target.result;
-          imagePreview.style.display = 'block';
-        }
-        reader.readAsDataURL(file);
+        // Use createObjectURL which is faster and more reliable for previews
+        const objectUrl = URL.createObjectURL(file);
+        imagePreview.src = objectUrl;
+        imagePreview.style.display = 'block';
+        imagePreview.style.visibility = 'visible';
+        imagePreview.style.opacity = '1';
+        imagePreview.style.zIndex = '5';
       } else {
         fileNameDisplay.textContent = "";
         imagePreview.style.display = 'none';
