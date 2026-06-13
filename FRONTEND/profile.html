@@ -510,25 +510,18 @@
                     }
                 }
                 
-                let aksiHtml = '-';
-                if (p.tipe_tiket === 'Berbayar') {
-                    let buktiHtml = p.bukti_bayar 
-                        ? `<a href="${window.api.BASE_URL}/uploads/bukti_bayar/${p.bukti_bayar}" target="_blank" style="color: var(--primary); text-decoration: underline; font-size: 0.8rem; display: block; margin-bottom: 8px;">Lihat Bukti</a>` 
-                        : `<span style="font-size: 0.8rem; color: var(--gray-500); display: block; margin-bottom: 8px;">Tidak ada bukti</span>`;
-                    
-                    let actionButtons = '';
-                    if (p.status_pendaftaran === 'Menunggu Verifikasi') {
-                        actionButtons = `
-                            <div style="display: flex; gap: 4px;">
-                                <button onclick="verifikasiStatus(${p.Id_Pendaftaran || p.id}, 'Sukses', ${eventId}, '${eventName.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: #16A34A; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Terima</button>
-                                <button onclick="verifikasiStatus(${p.Id_Pendaftaran || p.id}, 'Ditolak', ${eventId}, '${eventName.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: #DC2626; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tolak</button>
-                            </div>
-                        `;
-                    }
-                    aksiHtml = buktiHtml + actionButtons + sertifikatHtml;
-                } else {
-                    aksiHtml = sertifikatHtml || '-';
+                
+                let aksiHtml = sertifikatHtml || '-';
+                if (p.status_pendaftaran === 'Terdaftar' || p.status_pendaftaran === 'Menunggu Verifikasi') {
+                    let actionButtons = `
+                        <div style="display: flex; gap: 4px; margin-bottom: 8px;">
+                            <button onclick="verifikasiStatus(${p.Id_Pendaftaran || p.id}, 'Sukses', ${eventId}, '${eventName.replace(/'/g, "\'").replace(/"/g, "&quot;")}')" style="background: #16A34A; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Terima</button>
+                            <button onclick="verifikasiStatus(${p.Id_Pendaftaran || p.id}, 'Ditolak', ${eventId}, '${eventName.replace(/'/g, "\'").replace(/"/g, "&quot;")}')" style="background: #DC2626; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tolak</button>
+                        </div>
+                    `;
+                    aksiHtml = actionButtons + aksiHtml;
                 }
+        
 
                 let kehadiranHtml = p.kehadiran === 'Hadir' 
                     ? '<span style="color: #16A34A; font-weight: 800;"><i data-lucide="check-circle" class="icon-sm" style="vertical-align: middle;"></i> Hadir</span>'
