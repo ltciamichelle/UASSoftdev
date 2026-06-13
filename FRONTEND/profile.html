@@ -437,7 +437,7 @@
                   <h5 style="margin-bottom: 4px; font-size: 1.1rem; color: var(--primary-dark);">${ev.Nama_Event}</h5>
                   <span style="font-size: 0.85rem; color: var(--gray-500);">${window.api.formatTanggal(ev.Tanggal_Event)} · <span class="badge badge-primary" style="padding: 2px 8px; font-size: 0.7rem;">Kategori ${ev.Id_Kategori}</span></span>
                 </div>
-                <div style="display: flex; gap: 24px; text-align: center;">
+                <div style="display: flex; gap: 24px; text-align: center; align-items: center;">
                   <div>
                     <div style="font-weight: 800; color: var(--primary); font-size: 1.4rem; line-height: 1;">${views}</div>
                     <div style="font-size: 0.7rem; color: var(--gray-500); text-transform: uppercase; font-weight: 700; margin-top: 4px;">Views</div>
@@ -447,7 +447,7 @@
                     <div style="font-size: 0.7rem; color: var(--gray-500); text-transform: uppercase; font-weight: 700; margin-top: 4px;">Pendaftar</div>
                   </div>
                 </div>
-                <div class="list-item-actions">
+                <div class="list-item-actions" style="display: flex; align-items: center; gap: 8px;">
                   <button class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem; border: 1px solid var(--primary); color: var(--primary);" onclick="bukaKelolaPendaftar(${ev.Id_Event}, '${ev.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" title="Kelola Pendaftar">Kelola</button>
                   <button class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem; border: 1px solid #10B981; color: #10B981;" onclick="bukaUlasanEvent(${ev.Id_Event}, '${ev.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" title="Lihat Ulasan"><i data-lucide="star" class="icon-sm"></i></button>
                   <a href="buat_event.html?edit_id=${ev.Id_Event}" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.85rem; border: 1px solid #eab308; color: #eab308;" title="Edit Event"><i data-lucide="edit" class="icon-sm"></i></a>
