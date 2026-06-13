@@ -294,18 +294,11 @@
             <p style="color: var(--gray-500); font-size: 0.9rem;" id="pendaftarEventName">Nama Event</p>
         </div>
         <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
-            <button id="btnScanQR" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                <i data-lucide="qr-code" class="icon-sm"></i> Scan QR
-            </button>
             <button onclick="closePendaftarModal()" class="modal-close"><i data-lucide="x"></i></button>
         </div>
       </div>
       
-      <!-- QR Scanner UI -->
-      <div id="qrScannerContainer" style="display: none; flex-direction: column; align-items: center; margin-bottom: 24px; padding: 24px; background: var(--gray-100); border-radius: 16px;">
-        <div id="qr-reader" style="width: 100%; max-width: 400px; border-radius: 12px; overflow: hidden; margin-bottom: 16px; border: 4px solid var(--white); box-shadow: 0 10px 30px rgba(0,0,0,0.05);"></div>
-        <button onclick="stopScanner()" class="btn btn-outline" style="background: var(--white); border: 1px solid var(--gray-300); color: var(--gray-700);">Tutup Scanner</button>
-      </div>
+
 
       <div class="table-responsive" style="flex: 1;">
         <table class="table-premium">
@@ -340,9 +333,28 @@
     </div>
   </div>
 
+  <!-- Sertifikat Upload Modal -->
+  <div id="sertifikatModal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 400px; padding: 40px; text-align: left;">
+      <button onclick="closeSertifikatModal()" class="modal-close"><i data-lucide="x" class="icon-md"></i></button>
+      
+      <h2 style="font-size: 1.5rem; color: var(--primary-dark); margin-bottom: 8px;">Upload Sertifikat</h2>
+      <p style="color: var(--gray-500); font-size: 0.9rem; margin-bottom: 24px;">Untuk: <strong id="sertifikatPesertaName">Nama Peserta</strong></p>
+      
+      <form id="formUploadSertifikat">
+        <input type="hidden" id="sertifikatPendaftaranId">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label">File Sertifikat (PDF/JPG/PNG)</label>
+          <input type="file" id="sertifikatFile" class="form-input" accept=".pdf,.jpg,.jpeg,.png" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;" id="btnSubmitSertifikat">Upload</button>
+      </form>
+    </div>
+  </div>
+
   <script src="js/api.js?v=7"></script>
   <script src="js/gsap-animations.js?v=5"></script>
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
   <script>
     lucide.createIcons();
     window.api.updateNavbarAuth();
@@ -489,6 +501,15 @@
                     statusBadge = '<span style="background: rgba(239, 68, 68, 0.1); color: #DC2626; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Ditolak</span>';
                 }
 
+                let sertifikatHtml = '';
+                if (p.status_pendaftaran === 'Sukses') {
+                    if (p.File_Sertifikat) {
+                        sertifikatHtml = `<div style="margin-top: 8px;"><a href="${window.api.BASE_URL}/uploads/sertifikat/${p.File_Sertifikat}" target="_blank" style="color: #F59E0B; text-decoration: underline; font-size: 0.8rem; display: flex; align-items: center; gap: 4px;"><i data-lucide="award" class="icon-xs"></i> Lihat Sertifikat</a></div>`;
+                    } else {
+                        sertifikatHtml = `<div style="margin-top: 8px;"><button onclick="bukaUploadSertifikat(${p.Id_Pendaftaran || p.id}, '${p.nama_lengkap.replace(/'/g, "\\'")}')" style="background: var(--primary); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 4px;"><i data-lucide="upload" class="icon-xs"></i> Upload Sertifikat</button></div>`;
+                    }
+                }
+                
                 let aksiHtml = '-';
                 if (p.tipe_tiket === 'Berbayar') {
                     let buktiHtml = p.bukti_bayar 
@@ -499,12 +520,14 @@
                     if (p.status_pendaftaran === 'Menunggu Verifikasi') {
                         actionButtons = `
                             <div style="display: flex; gap: 4px;">
-                                <button onclick="verifikasiStatus(${p.id}, 'Sukses', ${eventId}, '${eventName.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: #16A34A; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Terima</button>
-                                <button onclick="verifikasiStatus(${p.id}, 'Ditolak', ${eventId}, '${eventName.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: #DC2626; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tolak</button>
+                                <button onclick="verifikasiStatus(${p.Id_Pendaftaran || p.id}, 'Sukses', ${eventId}, '${eventName.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: #16A34A; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Terima</button>
+                                <button onclick="verifikasiStatus(${p.Id_Pendaftaran || p.id}, 'Ditolak', ${eventId}, '${eventName.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" style="background: #DC2626; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tolak</button>
                             </div>
                         `;
                     }
-                    aksiHtml = buktiHtml + actionButtons;
+                    aksiHtml = buktiHtml + actionButtons + sertifikatHtml;
+                } else {
+                    aksiHtml = sertifikatHtml || '-';
                 }
 
                 let kehadiranHtml = p.kehadiran === 'Hadir' 
@@ -541,17 +564,12 @@
             }
         };
 
-        // --- QR SCANNER LOGIC ---
-        let html5QrcodeScanner = null;
-        let currentEventId = null;
-        let currentEventName = null;
-        let isScanning = false;
+
 
         window.closePendaftarModal = function() {
             const modal = document.getElementById('pendaftarModal');
             modal.classList.remove('active');
             setTimeout(() => modal.style.display='none', 300);
-            stopScanner();
         }
 
         window.bukaUlasanEvent = async function(eventId, eventName) {
@@ -617,94 +635,58 @@
             setTimeout(() => modal.style.display='none', 300);
         }
 
-        window.stopScanner = function() {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.clear().catch(e => console.error(e));
-                html5QrcodeScanner = null;
-            }
-            document.getElementById('qrScannerContainer').style.display = 'none';
-            isScanning = false;
+        window.bukaUploadSertifikat = function(pendaftaranId, pesertaName) {
+            document.getElementById('sertifikatPendaftaranId').value = pendaftaranId;
+            document.getElementById('sertifikatPesertaName').innerText = pesertaName;
+            document.getElementById('sertifikatFile').value = '';
+            
+            const modal = document.getElementById('sertifikatModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
         }
 
-        document.getElementById('btnScanQR').addEventListener('click', () => {
-            if (isScanning) {
-                stopScanner();
-                return;
-            }
-            document.getElementById('qrScannerContainer').style.display = 'flex';
-            
-            html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: {width: 250, height: 250} }, false);
-            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-            isScanning = true;
-        });
+        window.closeSertifikatModal = function() {
+            const modal = document.getElementById('sertifikatModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display='none', 300);
+        }
 
-        async function onScanSuccess(decodedText, decodedResult) {
-            // Berhenti scan agar tidak menembak API berkali-kali
-            stopScanner();
-            
-            let qrData;
-            try {
-                // Bersihkan spasi atau karakter aneh yang mungkin terbaca scanner
-                const cleanText = decodedText.trim();
-                qrData = JSON.parse(cleanText);
-            } catch (e) {
-                window.api.showToast("Bukan QR Tiket Eventra! Isi QR: " + decodedText.substring(0, 30), "error");
-                console.error("Gagal parse JSON:", e, decodedText);
+        document.getElementById('formUploadSertifikat').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitSertifikat');
+            btn.innerHTML = '<i data-lucide="loader" class="icon-sm" style="animation: spin 2s linear infinite;"></i> Mengunggah...';
+            btn.disabled = true;
+
+            const id_pendaftaran = document.getElementById('sertifikatPendaftaranId').value;
+            const fileInput = document.getElementById('sertifikatFile');
+
+            if (!fileInput.files[0]) {
+                window.api.showToast('Harap pilih file sertifikat.', 'error');
+                btn.innerHTML = 'Upload';
+                btn.disabled = false;
                 return;
             }
 
+            const formData = new FormData();
+            formData.append('Id_Pendaftaran', id_pendaftaran);
+            formData.append('Sertifikat_File', fileInput.files[0]);
+
             try {
-                if (!qrData.registrasi_id || !qrData.event_id) {
-                    window.api.showToast("Format QR salah. Isi: " + JSON.stringify(qrData), "error");
-                    return;
-                }
-                
-                if (qrData.event_id != currentEventId) {
-                    window.api.showToast("Tiket ini BUKAN untuk event ini!", "error");
-                    return;
-                }
-
-                // Kirim ke backend
-                const response = await fetch(`${window.api.BASE_URL}/scan_qr.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        aksi: 'verifikasi_qr', 
-                        registrasi_id: qrData.registrasi_id,
-                        event_id: qrData.event_id,
-                        panitia_id: user.Id_User || user.id
-                    })
-                });
-
-                const rawText = await response.text();
-                let res;
-                try {
-                    res = JSON.parse(rawText);
-                } catch(e) {
-                    window.api.showToast("Respons server bukan JSON: " + rawText.substring(0, 40), "error");
-                    console.error("Raw response:", rawText);
-                    return;
-                }
-                
+                const res = await window.api.uploadSertifikat(formData);
                 if (res.status === 'success') {
                     window.api.showToast(res.message, 'success');
-                    // Reload table
-                    window.bukaKelolaPendaftar(currentEventId, currentEventName);
-                } else if (res.status === 'warning') {
-                    window.api.showToast(res.message, 'warning');
+                    closeSertifikatModal();
+                    if (currentEventId) window.bukaKelolaPendaftar(currentEventId, currentEventName); // reload table
                 } else {
                     window.api.showToast(res.message, 'error');
                 }
-
             } catch (err) {
-                window.api.showToast("Terjadi kesalahan sistem saat memproses QR.", "error");
-                console.error(err);
+                window.api.showToast('Terjadi kesalahan saat mengunggah.', 'error');
+            } finally {
+                btn.innerHTML = 'Upload';
+                btn.disabled = false;
             }
-        }
-
-        function onScanFailure(error) {
-            // handle scan failure, usually better to ignore and keep scanning
-        }
+        });
 
         loadPanitiaDashboard();
       // End of user check

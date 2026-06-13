@@ -43,9 +43,10 @@ try {
         header('Content-Type: application/json');
         $id_user = isset($_GET['Id_User']) ? (int)$_GET['Id_User'] : 0;
         
-        $query = "SELECT E.*, P.Id_Pendaftaran, P.Status_Pendaftaran, P.Tanggal_Daftar 
+        $query = "SELECT E.*, P.Id_Pendaftaran, P.Status_Pendaftaran, P.Tanggal_Daftar, S.File_Sertifikat 
                   FROM Pendaftaran_Event P 
                   JOIN Event E ON P.Id_Event = E.Id_Event 
+                  LEFT JOIN Sertifikat S ON P.Id_Pendaftaran = S.Id_Pendaftaran
                   WHERE P.Id_User = $id_user 
                   ORDER BY P.Tanggal_Daftar DESC";
                   
@@ -96,6 +97,67 @@ try {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan feedback']);
             }
+        }
+        exit;
+    }
+
+    // ==========================================
+    // 4. AMBIL PENDAFTAR EVENT (PANITIA)
+    // ==========================================
+    if ($aksi === 'ambil_pendaftar_event') {
+        header('Content-Type: application/json');
+        $id_event = isset($_GET['Id_Event']) ? (int)$_GET['Id_Event'] : 0;
+        
+        $query = "SELECT P.*, U.Nama AS nama_lengkap, U.Email AS email, U.No_HP AS no_wa, S.File_Sertifikat 
+                  FROM Pendaftaran_Event P 
+                  JOIN User U ON P.Id_User = U.Id_User 
+                  LEFT JOIN Sertifikat S ON P.Id_Pendaftaran = S.Id_Pendaftaran
+                  WHERE P.Id_Event = $id_event 
+                  ORDER BY P.Tanggal_Daftar DESC";
+                  
+        $result = mysqli_query($koneksi, $query);
+        $data = array();
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $data[] = $row;
+            }
+        }
+        echo json_encode($data);
+        exit;
+    }
+
+    // ==========================================
+    // 5. HITUNG PENDAFTAR (PANITIA)
+    // ==========================================
+    if ($aksi === 'hitung_pendaftar') {
+        header('Content-Type: application/json');
+        $id_event = isset($_GET['Id_Event']) ? (int)$_GET['Id_Event'] : 0;
+        
+        $query = "SELECT COUNT(Id_Pendaftaran) AS total FROM Pendaftaran_Event WHERE Id_Event = $id_event";
+        $result = mysqli_query($koneksi, $query);
+        $data = array("total" => 0);
+        if ($result && $row = mysqli_fetch_assoc($result)) {
+            $data["total"] = (int)$row["total"];
+        }
+        echo json_encode($data);
+        exit;
+    }
+
+    // ==========================================
+    // 6. VERIFIKASI PEMBAYARAN (PANITIA)
+    // ==========================================
+    if ($aksi === 'verifikasi_pembayaran') {
+        header('Content-Type: application/json');
+        $data = json_decode(file_get_contents("php://input"), true);
+        
+        $id_pendaftaran = (int)$data['registrasi_id'];
+        $status = mysqli_real_escape_string($koneksi, $data['status']);
+        
+        $update = "UPDATE Pendaftaran_Event SET Status_Pendaftaran = '$status' WHERE Id_Pendaftaran = $id_pendaftaran";
+        if (mysqli_query($koneksi, $update)) {
+            echo json_encode(['status' => 'success', 'message' => 'Status pendaftaran berhasil diperbarui!']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengubah status pendaftaran']);
         }
         exit;
     }

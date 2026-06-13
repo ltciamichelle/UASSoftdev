@@ -163,8 +163,55 @@ function showToast(message, type = 'success') {
     }, 4000);
 }
 
+async function hitungPendaftar(eventId) {
+    try {
+        const response = await fetch(`${BASE_URL}/Pendaftaran_Event.php?aksi=hitung_pendaftar&Id_Event=${eventId}&t=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP error!`);
+        const data = await response.json();
+        return data.total || 0;
+    } catch (error) {
+        return 0;
+    }
+}
+
+async function getPendaftarEvent(eventId) {
+    try {
+        const response = await fetch(`${BASE_URL}/Pendaftaran_Event.php?aksi=ambil_pendaftar_event&Id_Event=${eventId}&t=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP error!`);
+        return await response.json();
+    } catch (error) {
+        return [];
+    }
+}
+
+async function verifikasiPembayaran(registrasiId, status) {
+    try {
+        const res = await fetch(`${BASE_URL}/Pendaftaran_Event.php?aksi=verifikasi_pembayaran`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ registrasi_id: registrasiId, status: status })
+        });
+        return await res.json();
+    } catch (err) {
+        return { status: 'error', message: err.message };
+    }
+}
+
+async function uploadSertifikat(formData) {
+    try {
+        const res = await fetch(`${BASE_URL}/Sertifikat.php?aksi=upload`, {
+            method: 'POST',
+            body: formData
+        });
+        return await res.json();
+    } catch (err) {
+        return { status: 'error', message: err.message };
+    }
+}
+
 window.api = {
     fetchEvents, formatTanggal, loginUser, registerUser, updateUser, logoutUser,
     updateNavbarAuth, submitPendaftaran, fetchEventUser, getEventPanitia, deleteEvent, getEventById,
+    hitungPendaftar, getPendaftarEvent, verifikasiPembayaran, uploadSertifikat,
     BASE_URL, showToast
 };
