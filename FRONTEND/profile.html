@@ -497,16 +497,16 @@
 
             tbody.innerHTML = data.map(p => {
                 let statusBadge = '';
-                if (p.status_pendaftaran === 'Sukses') {
+                if ((p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Sukses') {
                     statusBadge = '<span style="background: rgba(22, 163, 74, 0.1); color: #16A34A; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Sukses</span>';
-                } else if (p.status_pendaftaran === 'Menunggu Verifikasi') {
+                } else if ((p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Menunggu Verifikasi') {
                     statusBadge = '<span style="background: rgba(245, 158, 11, 0.1); color: #D97706; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Menunggu Verifikasi</span>';
                 } else {
                     statusBadge = '<span style="background: rgba(239, 68, 68, 0.1); color: #DC2626; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Ditolak</span>';
                 }
 
                 let sertifikatHtml = '';
-                if (p.status_pendaftaran === 'Sukses') {
+                if ((p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Sukses') {
                     if (p.File_Sertifikat) {
                         sertifikatHtml = `<div style="margin-top: 8px;"><a href="${window.api.BASE_URL}/uploads/sertifikat/${p.File_Sertifikat}" target="_blank" style="color: #F59E0B; text-decoration: underline; font-size: 0.8rem; display: flex; align-items: center; gap: 4px;"><i data-lucide="award" class="icon-xs"></i> Lihat Sertifikat</a></div>`;
                     } else {
@@ -516,7 +516,7 @@
                 
                 
                 let aksiHtml = sertifikatHtml || '-';
-                if (p.status_pendaftaran === 'Terdaftar' || p.status_pendaftaran === 'Menunggu Verifikasi') {
+                if ((p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Terdaftar' || (p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Menunggu Verifikasi') {
                     let actionButtons = `
                         <div style="display: flex; gap: 4px; margin-bottom: 8px;">
                             <button onclick="verifikasiStatus(${p.Id_Pendaftaran || p.id}, 'Sukses', ${eventId}, '${eventName.replace(/'/g, "\'").replace(/"/g, "&quot;")}')" style="background: #16A34A; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Terima</button>

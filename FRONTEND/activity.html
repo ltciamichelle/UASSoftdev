@@ -471,14 +471,14 @@
           </button>`;
         } else {
           statusHtml = `<div style="background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.2); color: #16A34A; padding: 16px 24px; border-radius: 16px; font-weight: 900; font-size: 1rem; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; letter-spacing: 0.05em;">
-            <i data-lucide="calendar-clock" class="icon-md"></i> STATUS: ${event.status_pendaftaran.toUpperCase()}
+            <i data-lucide="calendar-clock" class="icon-md"></i> STATUS: ${(event.Status_Pendaftaran || event.status_pendaftaran || "").toUpperCase()}
           </div>`;
           
-          if (event.Nama_Kategori === 'Seminar' && (event.status_pendaftaran === 'Sukses' || event.status_pendaftaran === 'Terdaftar')) {
+          if (event.Nama_Kategori === 'Seminar' && ((event.Status_Pendaftaran || event.status_pendaftaran || "") === 'Sukses' || (event.Status_Pendaftaran || event.status_pendaftaran || "") === 'Terdaftar')) {
             certBtnHtml = `<button onclick="showQrTicket('${event.kode_pendaftaran || ''}', ${event.Id_Event}, '${event.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--primary);">
               <i data-lucide="qr-code" class="icon-md"></i> Lihat E-Ticket (QR)
             </button>`;
-          } else if (event.status_pendaftaran === 'Terdaftar' || event.status_pendaftaran === 'Sukses') {
+          } else if ((event.Status_Pendaftaran || event.status_pendaftaran || "") === 'Terdaftar' || (event.Status_Pendaftaran || event.status_pendaftaran || "") === 'Sukses') {
              certBtnHtml = `<button class="btn" disabled style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--gray-200); color: var(--gray-400); cursor: not-allowed; border: none;">
                <i data-lucide="check-circle" class="icon-md"></i> Terdaftar
              </button>`;
