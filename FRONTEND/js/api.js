@@ -33,12 +33,22 @@ async function loginUser(data) {
 
 async function registerUser(data) {
     data.aksi = 'daftar';
-    const res = await fetch(`${BASE_URL}/User.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    return await res.json();
+    try {
+        const res = await fetch(`${BASE_URL}/User.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const text = await res.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error("Server response:", text);
+            throw new Error("Invalid JSON response from server. Check console.");
+        }
+    } catch (error) {
+        throw error;
+    }
 }
 
 async function updateUser(data) {

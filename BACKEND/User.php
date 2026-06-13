@@ -40,8 +40,13 @@ try {
         $nama = mysqli_real_escape_string($koneksi, $data['nama']);
         $email = mysqli_real_escape_string($koneksi, $data['email']);
         $password = password_hash($data['password'], PASSWORD_DEFAULT);
-        $role = isset($data['role']) ? mysqli_real_escape_string($koneksi, $data['role']) : 'user';
+        $role = 'peserta'; // Di tabel ERD Role adalah ENUM('peserta','panitia')
         $no_hp = isset($data['no_hp']) ? mysqli_real_escape_string($koneksi, $data['no_hp']) : '';
+        
+        $nim = isset($data['nim']) ? mysqli_real_escape_string($koneksi, $data['nim']) : '';
+        $fakultas = isset($data['fakultas']) ? mysqli_real_escape_string($koneksi, $data['fakultas']) : '';
+        $prodi = isset($data['prodi']) ? mysqli_real_escape_string($koneksi, $data['prodi']) : '';
+        $pekerjaan = isset($data['pekerjaan']) ? mysqli_real_escape_string($koneksi, $data['pekerjaan']) : '';
 
         // Cek email ganda
         $cek = mysqli_query($koneksi, "SELECT Id_User FROM User WHERE Email = '$email'");
@@ -50,7 +55,8 @@ try {
             exit;
         }
 
-        $query = "INSERT INTO User (Nama, Email, Password, Role, No_HP) VALUES ('$nama', '$email', '$password', '$role', '$no_hp')";
+        $query = "INSERT INTO User (Nama, Email, Password, Role, No_HP, Pekerjaan, NIM, Fakultas, Prodi) 
+                  VALUES ('$nama', '$email', '$password', '$role', '$no_hp', '$pekerjaan', '$nim', '$fakultas', '$prodi')";
         if (mysqli_query($koneksi, $query)) {
             echo json_encode(["status" => "success", "message" => "Registrasi berhasil! Silakan login."]);
         } else {
