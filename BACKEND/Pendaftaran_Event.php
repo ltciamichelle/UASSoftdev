@@ -43,9 +43,10 @@ try {
         header('Content-Type: application/json');
         $id_user = isset($_GET['Id_User']) ? (int)$_GET['Id_User'] : 0;
         
-        $query = "SELECT E.*, P.Id_Pendaftaran, P.Status_Pendaftaran, P.Tanggal_Daftar, S.File_Sertifikat 
+        $query = "SELECT E.*, K.Nama_Kategori, P.Id_Pendaftaran, P.Status_Pendaftaran, P.Tanggal_Daftar, S.File_Sertifikat 
                   FROM Pendaftaran_Event P 
                   JOIN Event E ON P.Id_Event = E.Id_Event 
+                  LEFT JOIN Kategori K ON E.Id_Kategori = K.Id_Kategori
                   LEFT JOIN Sertifikat S ON P.Id_Pendaftaran = S.Id_Pendaftaran
                   WHERE P.Id_User = $id_user 
                   ORDER BY P.Tanggal_Daftar DESC";

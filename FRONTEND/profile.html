@@ -496,11 +496,11 @@
             }
 
             tbody.innerHTML = data.map(p => {
-                let statusBadge = '';
-                if ((p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Sukses') {
+                let statusVal = p.Status_Pendaftaran || p.status_pendaftaran || "";
+                if (statusVal === 'Sukses') {
                     statusBadge = '<span style="background: rgba(22, 163, 74, 0.1); color: #16A34A; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Sukses</span>';
-                } else if ((p.Status_Pendaftaran || p.status_pendaftaran || "") === 'Menunggu Verifikasi') {
-                    statusBadge = '<span style="background: rgba(245, 158, 11, 0.1); color: #D97706; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Menunggu Verifikasi</span>';
+                } else if (statusVal === 'Menunggu Verifikasi' || statusVal === 'Terdaftar') {
+                    statusBadge = `<span style="background: rgba(245, 158, 11, 0.1); color: #D97706; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">${statusVal}</span>`;
                 } else {
                     statusBadge = '<span style="background: rgba(239, 68, 68, 0.1); color: #DC2626; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">Ditolak</span>';
                 }
@@ -535,7 +535,6 @@
                     <tr>
                         <td>
                             <div style="font-weight: 700; color: var(--gray-900);">${p.nama_lengkap}</div>
-                            <div style="font-size: 0.8rem; color: var(--gray-500);">${p.instansi}</div>
                         </td>
                         <td>
                             <div style="font-size: 0.85rem;">${p.email}</div>
