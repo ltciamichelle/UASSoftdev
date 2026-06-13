@@ -378,15 +378,15 @@
         const user = JSON.parse(localStorage.getItem('eventra_user'));
         
         try {
-          const response = await fetch(`${window.api.BASE_URL}/registrasi_event.php`, {
+          const response = await fetch(`${window.api.BASE_URL}/Pendaftaran_Event.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              aksi: 'simpan_feedback',
-              event_id: eventId,
-              user_id: user.Id_User || user.id,
-              rating: rating,
-              ulasan: ulasan
+              aksi: 'submit_feedback',
+              Id_Event: eventId,
+              Id_User: user.Id_User || user.id,
+              Rating: rating,
+              Isi_Feedback: ulasan
             })
           });
           const res = await response.json();
@@ -465,10 +465,7 @@
               </a>`;
           }
 
-          certBtnHtml = (downloadSertifikatBtnHtml || eCertHtml) + `
-          <button onclick="showFeedbackModal(${event.Id_Event}, '${event.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" class="btn" style="padding: 16px 32px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 12px; background: transparent; border: 2px solid var(--gray-300); color: var(--gray-700);">
-            <i data-lucide="message-square" class="icon-md"></i> Beri Ulasan
-          </button>`;
+          certBtnHtml = (downloadSertifikatBtnHtml || eCertHtml);
         } else {
           statusHtml = `<div style="background: rgba(22, 163, 74, 0.08); border: 1px solid rgba(22, 163, 74, 0.2); color: #16A34A; padding: 16px 24px; border-radius: 16px; font-weight: 900; font-size: 1rem; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; letter-spacing: 0.05em;">
             <i data-lucide="calendar-clock" class="icon-md"></i> STATUS: ${(event.Status_Pendaftaran || event.status_pendaftaran || "").toUpperCase()}
@@ -488,6 +485,13 @@
             </button>`;
           }
         }
+        
+        // Add Ulasan button for every event
+        certBtnHtml += `
+          <button onclick="showFeedbackModal(${event.Id_Event}, '${event.Nama_Event.replace(/'/g, "\\'").replace(/"/g, "&quot;")}')" class="btn" style="padding: 16px 32px; font-size: 1.1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: transparent; border: 2px solid var(--gray-300); color: var(--gray-700);">
+            <i data-lucide="message-square" class="icon-md"></i> Beri Ulasan
+          </button>`;
+
 
         html += `
         <article class="doppelrand-card" style="margin-bottom: 32px;">
