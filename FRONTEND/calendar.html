@@ -262,7 +262,7 @@
 
     function closeEventModal() {
       const modal = document.getElementById('eventModal');
-      modal.classList.remove('show');
+      modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     }
 
@@ -442,7 +442,7 @@
           // Open Modal
           const modal = document.getElementById('eventModal');
           modal.style.display = 'flex';
-          setTimeout(() => modal.classList.add('show'), 10);
+          setTimeout(() => modal.classList.add('active'), 10);
         }
       });
       
